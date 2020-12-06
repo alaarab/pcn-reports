@@ -7,9 +7,11 @@
     "build": "next build",
     "start": "next start"
   },
+  "license": "UNLICENSED",
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "bootstrap": "^4.5.3",
+    "dotenv": "^8.2.0",
     "express-session": "^1.17.1",
     "next": "10.0.3",
     "next-connect": "^0.9.1",
@@ -20,7 +22,8 @@
     "react": "17.0.1",
     "react-bootstrap": "^1.4.0",
     "react-dom": "17.0.1",
-    "sequelize": "^6.3.5"
+    "sequelize": "^6.3.5",
+    "sqlite3": "^5.0.0"
   },
   "devDependencies": {
     "sequelize-cli": "^6.2.0"
