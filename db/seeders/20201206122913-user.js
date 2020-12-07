@@ -14,7 +14,7 @@ module.exports = {
      *
      */
 
-    await queryInterface.bulkInsert("users", [
+    await queryInterface.bulkInsert("Users", [
       {
         username: "johndoe1",
         firstName: "John",

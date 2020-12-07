@@ -45,21 +45,44 @@ if (config.use_env_variable) {
 //   }
 // });
 
+// fs.readdirSync("./models").forEach((file) => {
+//   //const model = sequelize.import(path.join('./models', file));
+//   const model = require(path.join(__dirname, "models", file))(
+//     sequelize,
+//     Sequelize
+//   );
+//   sequelize[model.name] = model;
+// });
+
+// const files = require.context('.', false, /\.js$/)
+// files.keys().forEach(key => {
+//   if (key === './index.js') return
+//   db[key.replace(/(\.\/|\.js)/g, '')] = files(key)(sequelize, Sequelize) // import model
+// })
+
+// Object.keys(db).forEach(modelName => {
+//   if (db[modelName].associate) {
+//     db[modelName].associate(db)
+//   }
+// })
+
+//https://github.com/sequelize/sequelize/issues/7934
 
 const models = [
-  require('./users')(sequelize, Sequelize),
-]
-models.forEach(model => {
-  db[model.name] = model
-})
+  require("./user")(sequelize, Sequelize),
+  require("./patient")(sequelize, Sequelize),
+  require("./visit")(sequelize, Sequelize),
+];
+models.forEach((model) => {
+  db[model.name] = model;
+});
 
-models.forEach(model => {
+models.forEach((model) => {
   if (db[model.name].associate) {
-    console.log('entered', model.name)
-    db[model.name].associate(db)
+    console.log("entered", model.name);
+    db[model.name].associate(db);
   }
-})
-
+});
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
