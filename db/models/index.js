@@ -79,7 +79,7 @@ models.forEach((model) => {
 
 models.forEach((model) => {
   if (db[model.name].associate) {
-    console.log("entered", model.name);
+    // console.log("entered", model.name);
     db[model.name].associate(db);
   }
 });

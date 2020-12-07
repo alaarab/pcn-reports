@@ -1,7 +1,9 @@
 import nextConnect from "next-connect";
+import middleware from "middlewares/middleware";
 const models = require("../../../db/models/index");
 
 const handler = nextConnect()
+  .use(middleware)
   .get(async (req, res) => {
     const {
       query: { id, name },
@@ -13,8 +15,7 @@ const handler = nextConnect()
         patientNumber: patientNumber,
       },
     });
-    res.statusCode = 200;
-    return res.json({ status: "success", data: user });
+    return res.status(200).json(user);
   })
   .post(async (req, res) => {})
   .put(async (req, res) => {})

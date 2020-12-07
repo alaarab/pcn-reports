@@ -13,8 +13,7 @@ const handler = nextConnect()
         id: userId,
       },
     });
-    res.statusCode = 200;
-    return res.json({ status: "success", data: user });
+    return res.status(200).json(user);
   })
   .post(async (req, res) => {})
   .put(async (req, res) => {})
