@@ -12,13 +12,7 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      middleName: {
-        type: Sequelize.STRING,
-      },
-      lastName: {
-        type: Sequelize.STRING,
-      },
-      dob: {
+      visitDate: {
         type: Sequelize.DATE,
       },
       patientNumber: {
