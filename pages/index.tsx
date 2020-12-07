@@ -6,12 +6,11 @@ import PatientSearch from "components/PatientSearch";
 
 const App: React.FC = () => {
   return (
-    <Container className="p-3">
-      <Jumbotron>
-        <h1 className="header">PCN Reporting Tool</h1>
-      </Jumbotron>
-      <PatientSearch />
-    </Container>
+    <>
+      <Container className="p-3">
+        <PatientSearch />
+      </Container>
+    </>
   );
 };
 

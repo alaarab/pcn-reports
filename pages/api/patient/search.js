@@ -12,21 +12,21 @@ const handler = nextConnect()
     const { slug } = req.query;
     const patients = await models.Patient.findAll({
       where: {
-        // firstName: {
-        //   [Op.like]: `%${req.query.firstName}%`,
-        // },
-        // middleName: {
-        //   [Op.like]: `%${req.query.middleName}%`,
-        // },
-        // lastName: {
-        //   [Op.like]: `%${req.query.lastName}%`,
-        // },
+        firstName: {
+          [Op.like]: `%${req.query.firstName}%`,
+        },
+        middleName: {
+          [Op.like]: `%${req.query.middleName}%`,
+        },
+        lastName: {
+          [Op.like]: `%${req.query.lastName}%`,
+        },
         // dob: {
         //   [Op.like]: `%${req.query.dob}%`,
         // },
-        // patientNumber: {
-        //   [Op.like]: `%${req.query.patientNumber}%`,
-        // },
+        patientNumber: {
+          [Op.like]: `%${req.query.patientNumber}%`,
+        },
       },
     });
     return res.status(200).json(patients);

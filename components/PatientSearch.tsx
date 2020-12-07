@@ -1,13 +1,34 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import useSWR from "swr";
 import { Button, Col, Form } from "react-bootstrap";
 import Link from "next/link";
+import axios from "axios";
 
 const PatientSearch: React.FC = () => {
-  const { data: patients } = useSWR("/api/patient/search");
+  const [state, setState] = React.useState({
+    patientNumber: "",
+    firstName: "",
+    middleName: "",
+    lastName: "",
+  });
+
+  const [patients, setPatients] = useState([]);
+
+  let patientsParam = useMemo(
+    () => ({
+      params: {
+        patientNumber: state.patientNumber,
+        firstName: state.firstName,
+        middleName: state.middleName,
+        lastName: state.lastName,
+      },
+    }),
+    [state]
+  );
+
   const columns = [
     {
       dataField: "patientNumber",
@@ -26,30 +47,73 @@ const PatientSearch: React.FC = () => {
       dataField: "lastName",
       text: "Last Name",
     },
+    {
+      dataField: "dob",
+      text: "Date of Birth",
+    },
   ];
+
+  function handleChange(evt) {
+    const value = evt.target.value;
+    setState({
+      ...state,
+      [evt.target.name]: value,
+    });
+  }
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await axios("/api/patient/search", patientsParam);
+      console.log(result);
+      setPatients(result.data);
+    };
+    fetchData();
+  }, [state]);
 
   return (
     <>
-      {/* <Form>
-        <Form.Row>
+      <Form>
+        <Form.Row className='mb-3'>
           <Col>
-            <Form.Control placeholder="First name" />
+            <Form.Control
+              placeholder="Patient Number"
+              name="patientNumber"
+              value={state.patientNumber}
+              onChange={handleChange}
+            />
           </Col>
           <Col>
-            <Form.Control placeholder="Middle name" />
+            <Form.Control
+              placeholder="First name"
+              name="firstName"
+              value={state.firstName}
+              onChange={handleChange}
+            />
           </Col>
           <Col>
-            <Form.Control placeholder="Last name" />
+            <Form.Control
+              placeholder="Middle name"
+              name="middleName"
+              value={state.middleName}
+              onChange={handleChange}
+            />
+          </Col>
+          <Col>
+            <Form.Control
+              placeholder="Last name"
+              name="lastName"
+              value={state.lastName}
+              onChange={handleChange}
+            />
           </Col>
         </Form.Row>
-      </Form> */}
+      </Form>
       <BootstrapTable
         keyField="id"
-        data={patients?.data || []}
+        data={patients || []}
         columns={columns}
         pagination={paginationFactory()}
       />
-      {JSON.stringify(patients)}
     </>
   );
 };
