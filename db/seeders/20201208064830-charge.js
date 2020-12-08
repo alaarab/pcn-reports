@@ -13,7 +13,7 @@ module.exports = {
     */
     await queryInterface.bulkInsert("Charges", [
       {
-        visitNumber: "1",
+        visitId: "1",
         legacyId: "1",
         procedure: "1",
         provider: "1",

@@ -7,7 +7,7 @@ const handler = nextConnect()
   .use(middleware)
   .get(async (req, res) => {
     const {
-      query: { firstName, middleName, lastName, dob, patientNumber },
+      query: { firstName, middleName, lastName, dob, patientId },
     } = req;
     const { slug } = req.query;
     const patients = await models.Patient.findAll({
@@ -24,21 +24,10 @@ const handler = nextConnect()
         // dob: {
         //   [Op.like]: `%${req.query.dob}%`,
         // },
-        patientNumber: {
-          [Op.like]: `%${req.query.patientNumber}%`,
+        patientId: {
+          [Op.like]: `%${req.query.patientId}%`,
         },
       },
-      include: [
-        {
-          model: models.Visit,
-          as: "visit",
-          include: [
-            { model: models.Charge, as: "charge" },
-            { model: models.PlanCoverage, as: "planCoverage" },
-            { model: models.Payment, as: "payment" },
-          ],
-        },
-      ],
     });
     return res.status(200).json(patients);
   });

@@ -8,7 +8,7 @@ import axios from "axios";
 
 const PatientSearch: React.FC = () => {
   const [state, setState] = React.useState({
-    patientNumber: "",
+    patientId: "",
     firstName: "",
     middleName: "",
     lastName: "",
@@ -19,7 +19,7 @@ const PatientSearch: React.FC = () => {
   let patientsParam = useMemo(
     () => ({
       params: {
-        patientNumber: state.patientNumber,
+        patientId: state.patientId,
         firstName: state.firstName,
         middleName: state.middleName,
         lastName: state.lastName,
@@ -30,9 +30,9 @@ const PatientSearch: React.FC = () => {
 
   const columns = [
     {
-      dataField: "patientNumber",
-      text: "Patient Number",
-      formatter: patientNumberFormatter,
+      dataField: "patientId",
+      text: "Patient Id",
+      formatter: patientIdFormatter,
     },
     {
       dataField: "firstName",
@@ -75,8 +75,8 @@ const PatientSearch: React.FC = () => {
           <Col>
             <Form.Control
               placeholder="Patient Number"
-              name="patientNumber"
-              value={state.patientNumber}
+              name="patientId"
+              value={state.patientId}
               onChange={handleChange}
             />
           </Col>
@@ -116,7 +116,7 @@ const PatientSearch: React.FC = () => {
   );
 };
 
-function patientNumberFormatter(cell) {
+function patientIdFormatter(cell) {
   return (
     <Link href={{ pathname: "/patient/[slug]", query: { slug: cell } }}>
       {cell}

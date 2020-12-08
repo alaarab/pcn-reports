@@ -8,14 +8,14 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      visitNumber: {
+      visitId: {
         type: Sequelize.STRING,
         allowNull: false,
         references: {
           model: {
             tableName: "Visits",
           },
-          key: "visitNumber",
+          key: "id",
         },
       },
       procedure: {

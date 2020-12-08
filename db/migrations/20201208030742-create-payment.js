@@ -2,20 +2,16 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('Payments', {
-      id: {
-        allowNull: false,
-        autoIncrement: true,
-        primaryKey: true,
-        type: Sequelize.INTEGER
-      },
-      paymentNumber: {
+      paymentId: {
         type: Sequelize.STRING,
+        primaryKey: true,
         unique: true,
+        allowNull: false,
       },
-      guarantorNumber: {
+      guarantorId: {
         type: Sequelize.STRING
       },
-      plan: {
+      planId: {
         type: Sequelize.STRING
       },
       postDate: {
@@ -27,7 +23,7 @@ module.exports = {
       amount: {
         type: Sequelize.DECIMAL
       },
-      voucherNumber: {
+      voucherId: {
         type: Sequelize.STRING
       },
       legacyId: {

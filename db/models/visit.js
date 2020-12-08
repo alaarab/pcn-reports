@@ -10,18 +10,18 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Visit.belongsTo(models.Patient, {
-        foreignKey: "patientNumber",
-        targetKey: "patientNumber",
+        foreignKey: "patientId",
+        targetKey: "patientId",
         as: "patient",
       });
       Visit.hasMany(models.Charge, {
-        foreignKey: "visitNumber",
-        sourceKey: "visitNumber",
+        foreignKey: "visitId",
+        sourceKey: "visitId",
         as: "charge",
       });
       Visit.hasMany(models.PlanCoverage, {
-        foreignKey: "visitNumber",
-        sourceKey: "visitNumber",
+        foreignKey: "visitId",
+        sourceKey: "visitId",
         as: "planCoverage",
       });
       Visit.hasMany(models.Payment, {
@@ -33,9 +33,9 @@ module.exports = (sequelize, DataTypes) => {
   }
   Visit.init(
     {
-      visitNumber: DataTypes.STRING,
+      visitId: DataTypes.STRING,
       visitDate: DataTypes.DATE,
-      patientNumber: DataTypes.STRING,
+      patientId: DataTypes.STRING,
       legacyId: DataTypes.STRING,
     },
     {

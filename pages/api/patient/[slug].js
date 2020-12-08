@@ -9,11 +9,22 @@ const handler = nextConnect()
       query: { id, name },
     } = req;
     const { slug } = req.query;
-    const patientNumber = slug;
+    const patientId = slug;
     const user = await models.Patient.findOne({
       where: {
-        patientNumber: patientNumber,
+        patientId: patientId,
       },
+      include: [
+        {
+          model: models.Visit,
+          as: "visit",
+          include: [
+            { model: models.Charge, as: "charge" },
+            { model: models.PlanCoverage, as: "planCoverage" },
+            { model: models.Payment, as: "payment" },
+          ],
+        },
+      ],
     });
     return res.status(200).json(user);
   })

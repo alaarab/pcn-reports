@@ -13,9 +13,9 @@ module.exports = {
     */
     await queryInterface.bulkInsert("PatientPlans", [
       {
-        patientNumber: "1",
-        insurancePlanNumber: "1",
-        groupNumber: "1",
+        patientId: "1",
+        insurancePlanId: "1",
+        groupId: "1",
         createdAt: new Date(),
         updatedAt: new Date(),
       },

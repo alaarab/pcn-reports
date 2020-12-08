@@ -13,7 +13,7 @@ module.exports = {
      */
     await queryInterface.bulkInsert("InsurancePlans", [
       {
-        number: "1",
+        id: "1",
         name: "Some Name",
         address: "2550 Earth St.",
         zip: "91919",

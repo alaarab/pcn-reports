@@ -10,24 +10,24 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Patient.hasMany(models.Visit, {
-        sourceKey: "patientNumber",
-        foreignKey: "patientNumber",
+        sourceKey: "patientId",
+        foreignKey: "patientId",
         as: "visit",
       });
       Patient.hasMany(models.PatientPlan, {
-        sourceKey: "patientNumber",
-        foreignKey: "patientNumber",
+        sourceKey: "patientId",
+        foreignKey: "patientId",
         as: "patientPlan",
       });
     }
   }
   Patient.init(
     {
+      id: DataTypes.STRING,
       firstName: DataTypes.STRING,
       middleName: DataTypes.STRING,
       lastName: DataTypes.STRING,
       dob: DataTypes.DATE,
-      patientNumber: DataTypes.STRING,
     },
     {
       sequelize,

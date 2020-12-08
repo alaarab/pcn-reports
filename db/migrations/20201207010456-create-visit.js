@@ -4,14 +4,9 @@ module.exports = {
     await queryInterface.createTable("Visits", {
       id: {
         allowNull: false,
-        autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER,
-      },
-      visitNumber: {
-        type: Sequelize.STRING,
-        allowNull: false,
         unique: true,
+        type: Sequelize.STRING,
       },
       legacyId: {
         type: Sequelize.STRING,
@@ -21,14 +16,14 @@ module.exports = {
       visitDate: {
         type: Sequelize.DATE,
       },
-      patientNumber: {
+      patientId: {
         type: Sequelize.STRING,
         allowNull: false,
         references: {
           model: {
             tableName: "Patients",
           },
-          key: "patientNumber",
+          key: "id",
         },
       },
       createdAt: {

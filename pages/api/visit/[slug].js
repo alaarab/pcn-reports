@@ -7,10 +7,10 @@ const handler = nextConnect()
       query: { id, name },
     } = req;
     const { slug } = req.query;
-    const visitNumber = slug;
+    const visitId = slug;
     const visit = await models.Visit.findOne({
       where: {
-        visitNumber: visitNumber,
+        visitId: visitId,
       },
     });
     return res.status(200).json(visit);

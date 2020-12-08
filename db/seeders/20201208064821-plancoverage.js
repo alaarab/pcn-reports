@@ -13,9 +13,9 @@ module.exports = {
     */
     await queryInterface.bulkInsert("PlanCoverages", [
       {
-        visitNumber: "1",
+        visitId: "1",
         legacyId: "1",
-        groupNumber: "1",
+        groupId: "1",
         performingProvider: "1",
         procedure: "1",
         amount: 30.05,

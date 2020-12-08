@@ -13,11 +13,11 @@ module.exports = {
      */
     await queryInterface.bulkInsert("Patients", [
       {
+        id: "1",
         firstName: "Ala",
         middleName: "K",
         lastName: "Arab",
         dob: new Date(),
-        patientNumber: "1",
         createdAt: new Date(),
         updatedAt: new Date(),
       },

@@ -17,13 +17,13 @@ module.exports = (sequelize, DataTypes) => {
   }
   Payment.init(
     {
-      paymentNumber: DataTypes.STRING,
-      guarantorNumber: DataTypes.STRING,
+      id: DataTypes.STRING,
+      guarantorId: DataTypes.STRING,
       plan: DataTypes.STRING,
       postDate: DataTypes.DATE,
       referenceDate: DataTypes.DATE,
       amount: DataTypes.DECIMAL,
-      voucherNumber: DataTypes.STRING,
+      voucherId: DataTypes.STRING,
       legacyId: DataTypes.STRING,
     },
     {

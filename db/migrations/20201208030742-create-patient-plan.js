@@ -8,25 +8,25 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      patientNumber: {
+      patientId: {
         type: Sequelize.STRING,
         references: {
           model: {
             tableName: "Patients",
           },
-          key: "patientNumber",
+          key: "id",
         },
       },
-      insurancePlanNumber: {
+      insurancePlanId: {
         type: Sequelize.STRING,
         references: {
           model: {
             tableName: "InsurancePlans",
           },
-          key: "number",
+          key: "id",
         },
       },
-      groupNumber: {
+      groupId: {
         type: Sequelize.STRING,
       },
       createdAt: {
