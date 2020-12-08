@@ -8,7 +8,7 @@ import axios from "axios";
 
 const PatientSearch: React.FC = () => {
   const [state, setState] = React.useState({
-    patientId: "",
+    id: "",
     firstName: "",
     middleName: "",
     lastName: "",
@@ -19,7 +19,7 @@ const PatientSearch: React.FC = () => {
   let patientsParam = useMemo(
     () => ({
       params: {
-        patientId: state.patientId,
+        id: state.id,
         firstName: state.firstName,
         middleName: state.middleName,
         lastName: state.lastName,
@@ -30,8 +30,8 @@ const PatientSearch: React.FC = () => {
 
   const columns = [
     {
-      dataField: "patientId",
-      text: "Patient Id",
+      dataField: "id",
+      text: "Id",
       formatter: patientIdFormatter,
     },
     {
@@ -74,9 +74,9 @@ const PatientSearch: React.FC = () => {
         <Form.Row className='mb-3'>
           <Col>
             <Form.Control
-              placeholder="Patient Number"
-              name="patientId"
-              value={state.patientId}
+              placeholder="Id"
+              name="id"
+              value={state.id}
               onChange={handleChange}
             />
           </Col>

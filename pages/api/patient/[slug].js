@@ -10,7 +10,7 @@ const handler = nextConnect()
     } = req;
     const { slug } = req.query;
     const patientId = slug;
-    const user = await models.Patient.findOne({
+    const patient = await models.Patient.findOne({
       where: {
         id: patientId,
       },
@@ -26,7 +26,8 @@ const handler = nextConnect()
         },
       ],
     });
-    return res.status(200).json(user);
+    console.log(patient);
+    return res.status(200).json(patient);
   })
   .post(async (req, res) => {})
   .put(async (req, res) => {})

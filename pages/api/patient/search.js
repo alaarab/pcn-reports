@@ -7,25 +7,25 @@ const handler = nextConnect()
   .use(middleware)
   .get(async (req, res) => {
     const {
-      query: { firstName, middleName, lastName, dob, patientId },
+      query: { id, firstName, middleName, lastName, dob },
     } = req;
     const patients = await models.Patient.findAll({
       where: {
+        id: {
+          [Op.like]: `%${id}%`,
+        },
         firstName: {
-          [Op.like]: `%${req.query.firstName}%`,
+          [Op.like]: `%${firstName}%`,
         },
         middleName: {
-          [Op.like]: `%${req.query.middleName}%`,
+          [Op.like]: `%${middleName}%`,
         },
         lastName: {
-          [Op.like]: `%${req.query.lastName}%`,
+          [Op.like]: `%${lastName}%`,
         },
         // dob: {
-        //   [Op.like]: `%${req.query.dob}%`,
+        //   [Op.like]: `%${dob}%`,
         // },
-        id: {
-          [Op.like]: `%${req.query.patientId}%`,
-        },
       },
     });
     return res.status(200).json(patients);
