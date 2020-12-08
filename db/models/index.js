@@ -72,6 +72,11 @@ const models = [
   require("./user")(sequelize, Sequelize),
   require("./patient")(sequelize, Sequelize),
   require("./visit")(sequelize, Sequelize),
+  require("./charge")(sequelize, Sequelize),
+  require("./patientplan")(sequelize, Sequelize),
+  require("./payment")(sequelize, Sequelize),
+  require("./plancoverage")(sequelize, Sequelize),
+  require("./insuranceplan")(sequelize, Sequelize),
 ];
 models.forEach((model) => {
   db[model.name] = model;
