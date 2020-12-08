@@ -43,7 +43,7 @@ const Patient: React.FC = (props) => {
             {/* Patient Address:  */}
             <h2>Visits</h2>
             {patient.visit.map((visit) => (
-              <Visit data={visit} />
+              <Visit data={visit} key={visit.id} />
             ))}
           </div>{" "}
         </>
@@ -57,13 +57,13 @@ const Visit: React.FC = (props) => {
     <>
       <h4>Visit {props.data.visitId}</h4>
       {props.data.charge.map((charge) => (
-        <Charge data={charge} />
+        <Charge data={charge} key={charge.legacyId} />
       ))}
       {props.data.payment.map((payment) => (
-        <Payment data={payment} />
+        <Payment data={payment} key={payment.id} />
       ))}
       {props.data.planCoverage.map((planCoverage) => (
-        <PlanCoverage data={planCoverage} />
+        <PlanCoverage data={planCoverage} key={planCoverage.id} />
       ))}
     </>
   );

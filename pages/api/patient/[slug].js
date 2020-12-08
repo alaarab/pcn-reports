@@ -26,7 +26,6 @@ const handler = nextConnect()
         },
       ],
     });
-    console.log(patient);
     return res.status(200).json(patient);
   })
   .post(async (req, res) => {})
