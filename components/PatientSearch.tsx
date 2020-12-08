@@ -63,7 +63,6 @@ const PatientSearch: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       const result = await axios("/api/patient/search", patientsParam);
-      console.log(result);
       setPatients(result.data);
     };
     fetchData();

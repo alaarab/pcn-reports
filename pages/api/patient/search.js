@@ -28,6 +28,17 @@ const handler = nextConnect()
           [Op.like]: `%${req.query.patientNumber}%`,
         },
       },
+      include: [
+        {
+          model: models.Visit,
+          as: "visit",
+          include: [
+            { model: models.Charge, as: "charge" },
+            { model: models.PlanCoverage, as: "planCoverage" },
+            { model: models.Payment, as: "payment" },
+          ],
+        },
+      ],
     });
     return res.status(200).json(patients);
   });
