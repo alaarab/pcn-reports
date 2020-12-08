@@ -15,7 +15,7 @@ module.exports = {
       {
         visitNumber: "1",
         patientNumber: "1",
-ds        legacyId: "1",
+        legacyId: "1",
         visitDate: new Date(),
         createdAt: new Date(),
         updatedAt: new Date(),
