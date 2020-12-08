@@ -14,7 +14,6 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   InsurancePlan.init({
-    id: DataTypes.STRING,
     name: DataTypes.STRING,
     address: DataTypes.STRING,
     zip: DataTypes.STRING,

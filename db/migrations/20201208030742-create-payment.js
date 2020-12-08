@@ -2,10 +2,9 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('Payments', {
-      paymentId: {
+      id: {
         type: Sequelize.STRING,
         primaryKey: true,
-        unique: true,
         allowNull: false,
       },
       guarantorId: {

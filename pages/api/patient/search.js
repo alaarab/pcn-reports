@@ -9,7 +9,6 @@ const handler = nextConnect()
     const {
       query: { firstName, middleName, lastName, dob, patientId },
     } = req;
-    const { slug } = req.query;
     const patients = await models.Patient.findAll({
       where: {
         firstName: {
@@ -24,7 +23,7 @@ const handler = nextConnect()
         // dob: {
         //   [Op.like]: `%${req.query.dob}%`,
         // },
-        patientId: {
+        id: {
           [Op.like]: `%${req.query.patientId}%`,
         },
       },

@@ -12,7 +12,7 @@ const handler = nextConnect()
     const patientId = slug;
     const user = await models.Patient.findOne({
       where: {
-        patientId: patientId,
+        id: patientId,
       },
       include: [
         {

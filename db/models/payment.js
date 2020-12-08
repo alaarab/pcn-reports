@@ -17,9 +17,8 @@ module.exports = (sequelize, DataTypes) => {
   }
   Payment.init(
     {
-      id: DataTypes.STRING,
       guarantorId: DataTypes.STRING,
-      plan: DataTypes.STRING,
+      planId: DataTypes.STRING,
       postDate: DataTypes.DATE,
       referenceDate: DataTypes.DATE,
       amount: DataTypes.DECIMAL,
