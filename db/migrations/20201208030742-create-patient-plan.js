@@ -1,35 +1,33 @@
 "use strict";
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable("Visits", {
+    await queryInterface.createTable("PatientPlans", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      visitNumber: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        unique: true,
-      },
-      legacyId: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        unique: true,
-      },
-      visitDate: {
-        type: Sequelize.DATE,
-      },
       patientNumber: {
         type: Sequelize.STRING,
-        allowNull: false,
         references: {
           model: {
             tableName: "Patients",
           },
           key: "patientNumber",
         },
+      },
+      insurancePlanNumber: {
+        type: Sequelize.STRING,
+        references: {
+          model: {
+            tableName: "InsurancePlans",
+          },
+          key: "number",
+        },
+      },
+      groupNumber: {
+        type: Sequelize.STRING,
       },
       createdAt: {
         allowNull: false,
@@ -42,6 +40,6 @@ module.exports = {
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable("Visits");
+    await queryInterface.dropTable("PatientPlans");
   },
 };

@@ -2,8 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
-import useSWR from "swr";
-import { Button, Col, Form } from "react-bootstrap";
+import { Col, Form } from "react-bootstrap";
 import Link from "next/link";
 import axios from "axios";
 
@@ -118,7 +117,7 @@ const PatientSearch: React.FC = () => {
   );
 };
 
-function patientNumberFormatter(cell, row) {
+function patientNumberFormatter(cell) {
   return (
     <Link href={{ pathname: "/patient/[slug]", query: { slug: cell } }}>
       {cell}

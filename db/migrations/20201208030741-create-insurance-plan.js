@@ -1,35 +1,40 @@
 "use strict";
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable("Visits", {
+    await queryInterface.createTable("InsurancePlans", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      visitNumber: {
+      number: {
         type: Sequelize.STRING,
-        allowNull: false,
         unique: true,
       },
-      legacyId: {
+      name: {
         type: Sequelize.STRING,
-        allowNull: false,
-        unique: true,
       },
-      visitDate: {
-        type: Sequelize.DATE,
-      },
-      patientNumber: {
+      address: {
         type: Sequelize.STRING,
-        allowNull: false,
-        references: {
-          model: {
-            tableName: "Patients",
-          },
-          key: "patientNumber",
-        },
+      },
+      zip: {
+        type: Sequelize.STRING,
+      },
+      city: {
+        type: Sequelize.STRING,
+      },
+      state: {
+        type: Sequelize.STRING,
+      },
+      businessPhone: {
+        type: Sequelize.STRING,
+      },
+      writedownAdjustmentCode: {
+        type: Sequelize.STRING,
+      },
+      paymentProfileCode: {
+        type: Sequelize.STRING,
       },
       createdAt: {
         allowNull: false,
@@ -42,6 +47,6 @@ module.exports = {
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable("Visits");
+    await queryInterface.dropTable("InsurancePlans");
   },
 };

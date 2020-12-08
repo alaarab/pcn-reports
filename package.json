@@ -15,6 +15,8 @@
     "connect-session-sequelize": "^7.0.4",
     "dotenv": "^8.2.0",
     "express-session": "^1.17.1",
+    "html2canvas": "^1.0.0-rc.7",
+    "jspdf": "^2.1.1",
     "next": "10.0.3",
     "next-connect": "^0.9.1",
     "passport": "^0.4.1",
