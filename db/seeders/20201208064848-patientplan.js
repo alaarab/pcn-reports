@@ -1,4 +1,4 @@
-e"use strict";
+'use strict';
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
@@ -10,13 +10,12 @@ module.exports = {
      *   name: 'John Doe',
      *   isBetaMember: false
      * }], {});
-     */
-    await queryInterface.bulkInsert("Visits", [
+    */
+    await queryInterface.bulkInsert("PatientPlans", [
       {
-        visitNumber: "1",
         patientNumber: "1",
-ds        legacyId: "1",
-        visitDate: new Date(),
+        insurancePlanNumber: "1",
+        groupNumber: "1",
         createdAt: new Date(),
         updatedAt: new Date(),
       },
@@ -30,5 +29,6 @@ ds        legacyId: "1",
      * Example:
      * await queryInterface.bulkDelete('People', null, {});
      */
-  },
+    await queryInterface.bulkDelete("PatientPlans", null, {});
+  }
 };

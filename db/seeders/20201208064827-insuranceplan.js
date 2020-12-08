@@ -1,4 +1,4 @@
-e"use strict";
+"use strict";
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
@@ -11,12 +11,17 @@ module.exports = {
      *   isBetaMember: false
      * }], {});
      */
-    await queryInterface.bulkInsert("Visits", [
+    await queryInterface.bulkInsert("InsurancePlans", [
       {
-        visitNumber: "1",
-        patientNumber: "1",
-ds        legacyId: "1",
-        visitDate: new Date(),
+        number: "1",
+        name: "Some Name",
+        address: "2550 Earth St.",
+        zip: "91919",
+        city: "Los Angeles",
+        state: "CA",
+        businessPhone: "919-931-4125",
+        writedownAdjustmentCode: "1",
+        paymentProfileCode: "1",
         createdAt: new Date(),
         updatedAt: new Date(),
       },
@@ -30,5 +35,6 @@ ds        legacyId: "1",
      * Example:
      * await queryInterface.bulkDelete('People', null, {});
      */
+    await queryInterface.bulkDelete("InsurancePlans", null, {});
   },
 };
