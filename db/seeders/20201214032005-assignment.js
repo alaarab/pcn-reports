@@ -11,16 +11,25 @@ module.exports = {
      *   isBetaMember: false
      * }], {});
     */
-    await queryInterface.bulkInsert("PatientPlans", [
+    await queryInterface.bulkInsert("Assignments", [
       {
         id: "1",
-        patientId: "1",
-        insurancePlanId: "1",
-        groupId: "1",
+        visitId: "1",
+        chargeLine: 1,
+        activityCount: 1,
+        assingmentType: "1",
+        paymentId: "1",
+        amount: 11.11,
+        postDate: new Date(),
+        glAccountTag: "1",
+        unappliedCreditNumber: "1",
+        transferToInsuranceCreditedPlan: "1",
+        legacyId: "1",
         createdAt: new Date(),
         updatedAt: new Date(),
       },
     ]);
+
   },
 
   down: async (queryInterface, Sequelize) => {
@@ -30,6 +39,6 @@ module.exports = {
      * Example:
      * await queryInterface.bulkDelete('People', null, {});
      */
-    await queryInterface.bulkDelete("PatientPlans", null, {});
+    await queryInterface.bulkDelete("Assignments", null, {});
   }
 };

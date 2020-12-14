@@ -10,7 +10,7 @@ module.exports = {
       guarantorId: {
         type: Sequelize.STRING
       },
-      planId: {
+      insurancePlanId: {
         type: Sequelize.STRING
       },
       postDate: {

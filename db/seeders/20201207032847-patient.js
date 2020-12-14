@@ -14,6 +14,7 @@ module.exports = {
     await queryInterface.bulkInsert("Patients", [
       {
         id: "1",
+        guarantorId: "1",
         firstName: "Ala",
         middleName: "K",
         lastName: "Arab",

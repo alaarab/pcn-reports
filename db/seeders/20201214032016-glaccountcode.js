@@ -11,12 +11,11 @@ module.exports = {
      *   isBetaMember: false
      * }], {});
     */
-    await queryInterface.bulkInsert("PatientPlans", [
+    await queryInterface.bulkInsert("glAccountCodes", [
       {
         id: "1",
-        patientId: "1",
-        insurancePlanId: "1",
-        groupId: "1",
+        class: "1",
+        description: "description",
         createdAt: new Date(),
         updatedAt: new Date(),
       },
@@ -30,6 +29,6 @@ module.exports = {
      * Example:
      * await queryInterface.bulkDelete('People', null, {});
      */
-    await queryInterface.bulkDelete("PatientPlans", null, {});
+    await queryInterface.bulkDelete("glAccountCodes", null, {});
   }
 };

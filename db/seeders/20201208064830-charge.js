@@ -13,10 +13,11 @@ module.exports = {
     */
     await queryInterface.bulkInsert("Charges", [
       {
+        id: "1",
         visitId: "1",
         legacyId: "1",
         procedure: "1",
-        provider: "1",
+        providerId: "1",
         amount: 30.05,
         approvedAmount: 40.05,
         createdAt: new Date(),

@@ -11,12 +11,14 @@ module.exports = {
      *   isBetaMember: false
      * }], {});
     */
-    await queryInterface.bulkInsert("PatientPlans", [
+    await queryInterface.bulkInsert("Inpatients", [
       {
         id: "1",
-        patientId: "1",
-        insurancePlanId: "1",
-        groupId: "1",
+        visitId: "1",
+        providerId: "1",
+        diagId: "1",
+        locationId: "1",
+        legacyId: "1",
         createdAt: new Date(),
         updatedAt: new Date(),
       },
@@ -30,6 +32,6 @@ module.exports = {
      * Example:
      * await queryInterface.bulkDelete('People', null, {});
      */
-    await queryInterface.bulkDelete("PatientPlans", null, {});
+    await queryInterface.bulkDelete("Inpatients", null, {});
   }
 };

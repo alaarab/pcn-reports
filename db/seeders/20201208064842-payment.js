@@ -15,7 +15,7 @@ module.exports = {
       {
         id: "1",
         guarantorId: "1",
-        planId: "1",
+        insurancePlanId: "1",
         postDate: new Date(),
         referenceDate: new Date(),
         amount: 30.05,

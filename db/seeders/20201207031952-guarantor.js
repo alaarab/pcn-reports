@@ -11,12 +11,21 @@ module.exports = {
      *   isBetaMember: false
      * }], {});
     */
-    await queryInterface.bulkInsert("PatientPlans", [
+    await queryInterface.bulkInsert("Guarantors", [
       {
         id: "1",
-        patientId: "1",
-        insurancePlanId: "1",
-        groupId: "1",
+        ssn: "11111111-11",
+        firstName: "Ala",
+        middleName: "K",
+        lastName: "Arab",
+        sex: "M",
+        dob: new Date(),
+        address: "123 a ave.",
+        zip: "12212",
+        city: "sacramento",
+        state: "ca",
+        phone: "9584123412",
+        workPhone: "9584123412",
         createdAt: new Date(),
         updatedAt: new Date(),
       },
@@ -30,6 +39,6 @@ module.exports = {
      * Example:
      * await queryInterface.bulkDelete('People', null, {});
      */
-    await queryInterface.bulkDelete("PatientPlans", null, {});
+    await queryInterface.bulkDelete("Guarantors", null, {});
   }
 };

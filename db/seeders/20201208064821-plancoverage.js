@@ -13,12 +13,12 @@ module.exports = {
     */
     await queryInterface.bulkInsert("PlanCoverages", [
       {
+        id: "1",
         visitId: "1",
         legacyId: "1",
-        groupId: "1",
-        performingProvider: "1",
-        procedure: "1",
-        amount: 30.05,
+        memberId: "1",
+        insurancePlanId: "1",
+        status: "1",
         createdAt: new Date(),
         updatedAt: new Date(),
       },

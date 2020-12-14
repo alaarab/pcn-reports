@@ -19,10 +19,9 @@ module.exports = (sequelize, DataTypes) => {
     {
       visitId: DataTypes.STRING,
       legacyId: DataTypes.STRING,
-      groupId: DataTypes.STRING,
-      performingProvider: DataTypes.STRING,
-      procedure: DataTypes.STRING,
-      amount: DataTypes.DECIMAL,
+      memberId: DataTypes.STRING,
+      insurancePlanId: DataTypes.STRING,
+      status: DataTypes.STRING,
     },
     {
       sequelize,

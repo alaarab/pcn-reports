@@ -1,12 +1,12 @@
-'use strict';
+"use strict";
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('PlanCoverages', {
+    await queryInterface.createTable("PlanCoverages", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       visitId: {
         type: Sequelize.STRING,
@@ -18,6 +18,12 @@ module.exports = {
           key: "id",
         },
       },
+      insurancePlanId: {
+        type: Sequelize.STRING,
+      },
+      status: {
+        type: Sequelize.STRING,
+      },
       legacyId: {
         type: Sequelize.STRING,
         references: {
@@ -27,29 +33,20 @@ module.exports = {
           key: "legacyId",
         },
       },
-      groupId: {
-        type: Sequelize.STRING
-      },
-      performingProvider: {
-        type: Sequelize.STRING
-      },
-      procedure: {
-        type: Sequelize.STRING
-      },
-      amount: {
-        type: Sequelize.DECIMAL
+      memberId: {
+        type: Sequelize.STRING,
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
-      }
+        type: Sequelize.DATE,
+      },
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('PlanCoverages');
-  }
+    await queryInterface.dropTable("PlanCoverages");
+  },
 };
