@@ -29,6 +29,11 @@ module.exports = (sequelize, DataTypes) => {
         sourceKey: "legacyId",
         as: "payment",
       });
+      Visit.hasMany(models.Assignment, {
+        foreignKey: "visitId",
+        sourceKey: "id",
+        as: "assignment",
+      });
     }
   }
   Visit.init(

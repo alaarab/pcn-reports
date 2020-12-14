@@ -9,7 +9,14 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       visitId: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false,
+        references: {
+          model: {
+            tableName: "Visits",
+          },
+          key: "id",
+        },
       },
       chargeLine: {
         type: Sequelize.INTEGER

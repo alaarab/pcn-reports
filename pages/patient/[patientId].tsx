@@ -89,7 +89,7 @@ const Payment: React.FC = (props) => {
       <br />
       Guarantor Id: {props.data.guarantorId}
       <br />
-      Plan Id: {props.data.planId}
+      Plan Id: {props.data.insurancePlanId}
       <br />
       Post Date: {props.data.postDate}
       <br />
@@ -115,7 +115,7 @@ const PlanCoverage: React.FC = (props) => {
       <br />
       Group Id: {props.data.groupId}
       <br />
-      Performing Provider: {props.data.performingProvider}
+      Performing Provider: {props.data.performingProviderId}
       <br />
       Procedure: {props.data.procedure}
       <br />
