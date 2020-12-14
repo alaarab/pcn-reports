@@ -68,6 +68,9 @@ module.exports = {
       registrationDate: {
         type: Sequelize.DATE,
       },
+      class: {
+        type: Sequelize.DATE,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
