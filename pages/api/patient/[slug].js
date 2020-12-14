@@ -19,10 +19,15 @@ const handler = nextConnect()
           model: models.Visit,
           as: "visit",
           include: [
+            { model: models.Assignment, as: "assignment" },
             { model: models.Charge, as: "charge" },
             { model: models.PlanCoverage, as: "planCoverage" },
             { model: models.Payment, as: "payment" },
           ],
+        },
+        {
+          model: models.Guarantor,
+          as: "guarantor",
         },
       ],
     });

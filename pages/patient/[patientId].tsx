@@ -39,15 +39,29 @@ const Patient: React.FC = (props) => {
             {patient.middleName}
             <br />
             <h2>Guarantor Information</h2>
-            {/* Guarantor Name: {patient.guarantorLastName}, {patient.guarantorFirstName} {patient.guarantorMiddleName}<br/> */}
-            {/* Patient Address:  */}
+            Guarantor First Name: {patient.guarantor.firstName}
+            <br />
+            Guarantor Last Name: {patient.guarantor.lastName}
+            <br />
             <h2>Visits</h2>
             {patient.visit.map((visit) => (
               <Visit data={visit} key={visit.id} />
             ))}
-          </div>{" "}
+          </div>
         </>
       )}
+    </>
+  );
+};
+
+const Guarantor: React.FC = (props) => {
+  return (
+    <>
+      <h4>Guarantor First Name: </h4>
+      Guarantor First Name: {props.data.guarantor}
+      <br />
+      Charge Approved Amount: {props.data.approvedAmount}
+      <br />
     </>
   );
 };

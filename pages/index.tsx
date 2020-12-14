@@ -5,13 +5,7 @@ import Container from "react-bootstrap/Container";
 import PatientSearch from "components/PatientSearch";
 
 const App: React.FC = () => {
-  return (
-    <>
-      <Container className="p-3">
-        <PatientSearch />
-      </Container>
-    </>
-  );
+  return <PatientSearch />;
 };
 
 export default App;

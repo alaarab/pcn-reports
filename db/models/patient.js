@@ -19,6 +19,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "patientId",
         as: "patientPlan",
       });
+      Patient.belongsTo(models.Guarantor, {
+        sourceKey: "guarantorId",
+        as: "guarantor",
+      });
     }
   }
   Patient.init(
