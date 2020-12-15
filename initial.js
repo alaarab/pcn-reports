@@ -4,97 +4,96 @@ var csv = require("csv");
 var models = require("./db/models");
 var parser = csv.parse({
   columns: true,
-  relax: true,
   relax_column_count: true,
 });
 
 // GUARANTORS
 
-console.log("Beginning Guarantors...");
+// console.log("Beginning Guarantors...");
 
-var input = fs.createReadStream("csv/guarantors.csv");
-var transform = csv.transform(function (row) {
-  // since id was being difficult
-  let id = row[Object.keys(row)[0]];
+// var guarantorInput = fs.createReadStream("csv/guarantors.csv");
+// var transform = csv.transform(function (row) {
+//   // since id was being difficult
+//   let id = row[Object.keys(row)[0]];
 
-  var resultObj = {
-    id: id,
-    ssn: row["ssn"],
-    firstName: row["firstName"],
-    middleName: row["middleName"],
-    lastName: row["lastName"],
-    sex: row["sex"],
-    dob: dateParser(row["dob"]),
-    address: row["address"],
-    zip: row["zip"],
-    city: row["city"],
-    state: row["state"],
-    phone: row["phone"],
-    workPhone: row["workPhone"],
-  };
-  models.Guarantor.create(resultObj)
-    .then(function () {
-      console.log("Record created");
-    })
-    .catch(function (err) {
-      console.log("Error encountered: " + err);
-    });
-});
+//   var resultObj = {
+//     id: id,
+//     ssn: row["ssn"],
+//     firstName: row["firstName"],
+//     middleName: row["middleName"],
+//     lastName: row["lastName"],
+//     sex: row["sex"],
+//     dob: dateParser(row["dob"]),
+//     address: row["address"],
+//     zip: row["zip"],
+//     city: row["city"],
+//     state: row["state"],
+//     phone: row["phone"],
+//     workPhone: row["workPhone"],
+//   };
+//   models.Guarantor.create(resultObj)
+//     .then(function () {
+//       console.log("Record created");
+//     })
+//     .catch(function (err) {
+//       console.log("Error encountered: " + err);
+//     });
+// });
 
-input.pipe(parser).pipe(transform);
+// guarantorInput.pipe(parser).pipe(transform);
 
-console.log("Completed Guarantors.");
+// console.log("Completed Guarantors.");
 
 // PATIENTS
 
-console.log("Beginning Patients...");
+// console.log("Beginning Patients...");
 
-var input = fs.createReadStream("csv/patients.csv");
-var transform = csv.transform(function (row) {
-  // since id was being difficult
-  let guarantorId = row[Object.keys(row)[0]];
+// var patientInput = fs.createReadStream("csv/patients.csv");
+// var transform = csv.transform(function (row) {
+//   // since id was being difficult
+//   let id = row[Object.keys(row)[0]];
 
-  var resultObj = {
-    guarantorId: guarantorId,
-    id: row["patientId"],
-    ssn: row["ssn"],
-    firstName: row["firstName"],
-    middleName: row["middleName"],
-    lastName: row["lastName"],
-    sex: row["sex"],
-    dob: dateParser(row["dob"]),
-    address: row["address"],
-    zip: row["zip"],
-    city: row["city"],
-    state: row["state"],
-    phone: row["phone"],
-    workPhone: row["workPhone"],
-    lastDateOfService: row["lastDateOfService"],
-    insurance: row["insurance"],
-    balance: row["balance"],
-    unappliedInsuranceBalance: row["unappliedInsuranceBalance"],
-    registrationDate: row["registrationDate"],
-    class: row["class"],
-  };
+//   var resultObj = {
+//     id: id,
+//     guarantorId: row["guarantorId"],
+//     ssn: row["ssn"],
+//     firstName: row["firstName"],
+//     middleName: row["middleName"],
+//     lastName: row["lastName"],
+//     sex: row["sex"],
+//     dob: dateParser(row["dob"]),
+//     address: row["address"],
+//     zip: row["zip"],
+//     city: row["city"],
+//     state: row["state"],
+//     phone: row["phone"],
+//     workPhone: row["workPhone"],
+//     // lastDateOfService: dateParser(row["dob"]),
+//     // insurance: row["insurance"],
+//     // balance: row["balance"],
+//     // unappliedInsuranceBalance: row["unappliedInsuranceBalance"],
+//     // registrationDate: row["registrationDate"],
+//     // class: row["class"],
+//   };
 
-  models.Patient.create(resultObj)
-    .then(function () {
-      console.log("Record created");
-    })
-    .catch(function (err) {
-      console.log("Error encountered: " + err);
-    });
-});
+//   models.Patient.create(resultObj)
+//     .then(function () {
+//       console.log("Record created");
+//     })
+//     .catch(function (err) {
+//       console.log("Error encountered: " + err);
+//     });
+// });
 
-input.pipe(parser).pipe(transform);
+// patientInput.pipe(parser).pipe(transform);
 
-console.log("Completed Patients.");
+// console.log("Completed Patients.");
 
 // LOCATIONS
 
 // console.log("Beginning Locations...");
 
-// var input = fs.createReadStream("csv/locations.csv");
+// var locationInput = fs.createReadStream("csv/locations.csv");
 // var transform = csv.transform(function (row) {
 
 //   // since id was being difficult
@@ -120,7 +119,7 @@ console.log("Completed Patients.");
 //     });
 // });
 
-// input.pipe(parser).pipe(transform);
+// locationInput.pipe(parser).pipe(transform);
 
 // console.log("Completed Locations.");
 
@@ -128,9 +127,7 @@ console.log("Completed Patients.");
 
 console.log("Beginning glAccountCodes...");
 
-console.log("glAccountCodes");
-
-var input = fs.createReadStream("csv/glacctcode.csv");
+var glAccountCodeInput = fs.createReadStream("csv/glacctcode.csv");
 var transform = csv.transform(function (row) {
   // since id was being difficult
   let id = row[Object.keys(row)[0]];
@@ -151,30 +148,27 @@ var transform = csv.transform(function (row) {
     });
 });
 
-input.pipe(parser).pipe(transform);
+glAccountCodeInput.pipe(parser).pipe(transform);
 
 console.log("Completed glAccountCodes.");
 
-// VISITS
-// console.log("Beginning Visits...");
+// Providers
 
-// var input = fs.createReadStream("csv/visits.csv");
+// console.log("Beginning providers...");
+
+// var providerInput = fs.createReadStream("csv/providers.csv");
 // var transform = csv.transform(function (row) {
-
 //   // since id was being difficult
 //   let id = row[Object.keys(row)[0]];
 
 //   var resultObj = {
 //     id: id,
-//     patientId: row['patientId'],
-//     guarantorId: row['guarantorId'],
-//     locationId: row['locationId'],
-//     providerId: row['providerId'],
-//     claimId: row['claimId'],
-//     legacyId: row['id'],
+//     firstName: row["firstName"],
+//     lastName: row["lastName"],
 //   };
 
-//   models.Visit.create(resultObj)
+//   models.Provider
+//     .create(resultObj)
 //     .then(function () {
 //       console.log("Record created");
 //     })
@@ -183,9 +177,41 @@ console.log("Completed glAccountCodes.");
 //     });
 // });
 
-// input.pipe(parser).pipe(transform);
+// providerInput.pipe(parser).pipe(transform);
 
-// console.log("Completed Visits.");
+// console.log("Completed providers.");
+
+// VISITS
+console.log("Beginning Visits...");
+
+var visitInput = fs.createReadStream("csv/visits.csv");
+var transform = csv.transform(function (row) {
+
+  // since id was being difficult
+  let id = row[Object.keys(row)[0]];
+
+  var resultObj = {
+    id: id,
+    patientId: row['patientId'],
+    guarantorId: row['guarantorId'],
+    locationId: row['locationId'],
+    providerId: row['providerId'],
+    claimId: row['claimId'],
+    legacyId: row['id'],
+  };
+
+  models.Visit.create(resultObj)
+    .then(function () {
+      console.log("Record created");
+    })
+    .catch(function (err) {
+      console.log("Error encountered: " + err);
+    });
+});
+
+visitInput.pipe(parser).pipe(transform);
+
+console.log("Completed Visits.");
 
 function dateParser(dateStr) {
   if (!dateStr) return null;

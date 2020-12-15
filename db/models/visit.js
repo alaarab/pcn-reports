@@ -14,6 +14,21 @@ module.exports = (sequelize, DataTypes) => {
         targetKey: "id",
         as: "patient",
       });
+      Visit.belongsTo(models.Guarantor, {
+        foreignKey: "patientId",
+        targetKey: "id",
+        as: "guarantor",
+      });
+      Visit.belongsTo(models.Location, {
+        foreignKey: "locationId",
+        targetKey: "id",
+        as: "location",
+      });
+      Visit.belongsTo(models.Provider, {
+        foreignKey: "providerId",
+        targetKey: "id",
+        as: "provider",
+      });
       Visit.hasMany(models.Charge, {
         foreignKey: "visitId",
         sourceKey: "id",
@@ -38,9 +53,12 @@ module.exports = (sequelize, DataTypes) => {
   }
   Visit.init(
     {
-      visitDate: DataTypes.DATE,
       patientId: DataTypes.STRING,
       legacyId: DataTypes.STRING,
+      guarantorId: DataTypes.STRING,
+      locationId: DataTypes.STRING,
+      providerId: DataTypes.STRING,
+      claimId: DataTypes.STRING,
     },
     {
       sequelize,

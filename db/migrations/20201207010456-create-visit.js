@@ -12,9 +12,6 @@ module.exports = {
         allowNull: false,
         unique: true,
       },
-      visitDate: {
-        type: Sequelize.DATE,
-      },
       patientId: {
         type: Sequelize.STRING,
         allowNull: false,
@@ -24,6 +21,39 @@ module.exports = {
           },
           key: "id",
         },
+      },
+      guarantorId: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        references: {
+          model: {
+            tableName: "Guarantors",
+          },
+          key: "id",
+        },
+      },
+      locationId: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        references: {
+          model: {
+            tableName: "Locations",
+          },
+          key: "id",
+        },
+      },
+      providerId: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        references: {
+          model: {
+            tableName: "Locations",
+          },
+          key: "id",
+        },
+      },
+      claimId: {
+        type: Sequelize.STRING,
       },
       createdAt: {
         allowNull: false,
