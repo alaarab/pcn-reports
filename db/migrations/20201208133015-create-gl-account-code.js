@@ -4,9 +4,8 @@ module.exports = {
     await queryInterface.createTable("glAccountCodes", {
       id: {
         allowNull: false,
-        autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING,
       },
       class: {
         type: Sequelize.STRING,
