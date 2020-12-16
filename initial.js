@@ -183,35 +183,41 @@ var parser = csv.parse({
 // console.log("Completed providers.");
 
 // VISITS
-console.log("Beginning Visits...");
+// console.log("Beginning Visits...");
 
-var visitInput = fs.createReadStream("csv/visits.csv");
-var transform = csv.transform(function (row) {
+// use pgflutter for less lag
+// ./pgfutter --dbname pcn --table visits --schema public --username ala --pass Password123 csv pcn/csv/visits.csv
+// insert into "Visits" (id, "patientId", "guarantorId", "locationId", "providerId", "claimId", "createdAt", "updatedAt") select id, patientId, guarantorId, locationId, providerId, claimId, NOW(), NOW() from visits;
 
-  // since id was being difficult
-  let id = row[Object.keys(row)[0]];
 
-  var resultObj = {
-    id: id,
-    patientId: row['patientId'],
-    guarantorId: row['guarantorId'],
-    locationId: row['locationId'],
-    providerId: row['providerId'],
-    claimId: row['claimId'],
-  };
+// var visitInput = fs.createReadStream("csv/visits.csv");
+// var transform = csv.transform(function (row) {
 
-  models.Visit.create(resultObj)
-    .then(function () {
-      console.log("Record created");
-    })
-    .catch(function (err) {
-      console.log("Error encountered: " + err);
-    });
-});
+//   // since id was being difficult
+//   let id = row[Object.keys(row)[0]];
 
-visitInput.pipe(parser).pipe(transform);
+//   var resultObj = {
+//     id: id,
+//     patientId: row['patientId'],
+//     guarantorId: row['guarantorId'],
+//     locationId: row['locationId'],
+//     providerId: row['providerId'],
+//     claimId: row['claimId'],
+//   };
 
-console.log("Completed Visits.");
+//   console.log(resultObj);
+//   models.Visit.create(resultObj)
+//     .then(function () {
+//       console.log("Record created");
+//     })
+//     .catch(function (err) {
+//       console.log("Error encountered: " + err);
+//     });
+// });
+
+// visitInput.pipe(parser).pipe(transform);
+
+// console.log("Completed Visits.");
 
 function dateParser(dateStr) {
   if (!dateStr) return null;
