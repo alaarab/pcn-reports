@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Payment.belongsTo(models.Visit, {
-        foreignKey: "legacyId",
+        foreignKey: "visitId",
         as: "visit",
       });
     }
@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
       referenceDate: DataTypes.DATE,
       amount: DataTypes.DECIMAL,
       voucherId: DataTypes.STRING,
-      legacyId: DataTypes.STRING,
+      visitId: DataTypes.STRING,
     },
     {
       sequelize,

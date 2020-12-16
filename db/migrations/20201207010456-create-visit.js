@@ -5,12 +5,8 @@ module.exports = {
       id: {
         allowNull: false,
         primaryKey: true,
-        type: Sequelize.STRING,
-      },
-      legacyId: {
-        type: Sequelize.STRING,
-        allowNull: false,
         unique: true,
+        type: Sequelize.STRING,
       },
       patientId: {
         type: Sequelize.STRING,
@@ -47,7 +43,7 @@ module.exports = {
         allowNull: false,
         references: {
           model: {
-            tableName: "Locations",
+            tableName: "Providers",
           },
           key: "id",
         },

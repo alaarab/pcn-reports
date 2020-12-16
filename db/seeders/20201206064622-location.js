@@ -11,14 +11,17 @@ module.exports = {
      *   isBetaMember: false
      * }], {});
      */
-    await queryInterface.bulkInsert("Visits", [
+
+    await queryInterface.bulkInsert("Locations", [
       {
         id: "1",
-        patientId: "1",
-        guarantorId: "1",
-        locationId: "1",
-        providerId: "1",
-        claimId: "1",
+        description: "1",
+        address: "1",
+        zip: "1",
+        city: "1",
+        state: "1",
+        phoneNumber: "1",
+        npi: "1",
         createdAt: new Date(),
         updatedAt: new Date(),
       },
@@ -32,6 +35,6 @@ module.exports = {
      * Example:
      * await queryInterface.bulkDelete('People', null, {});
      */
-    await queryInterface.bulkDelete("Visits", null, {});
+    await queryInterface.bulkDelete("Locations", null, {});
   },
 };

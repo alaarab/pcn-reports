@@ -26,12 +26,6 @@ module.exports = {
       },
       legacyId: {
         type: Sequelize.STRING,
-        references: {
-          model: {
-            tableName: "Visits",
-          },
-          key: "legacyId",
-        },
       },
       memberId: {
         type: Sequelize.STRING,

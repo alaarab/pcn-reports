@@ -12,6 +12,7 @@ var parser = csv.parse({
 // console.log("Beginning Guarantors...");
 
 // var guarantorInput = fs.createReadStream("csv/guarantors.csv");
+
 // var transform = csv.transform(function (row) {
 //   // since id was being difficult
 //   let id = row[Object.keys(row)[0]];
@@ -125,32 +126,32 @@ var parser = csv.parse({
 
 // glAccount Codes
 
-console.log("Beginning glAccountCodes...");
+// console.log("Beginning glAccountCodes...");
 
-var glAccountCodeInput = fs.createReadStream("csv/glacctcode.csv");
-var transform = csv.transform(function (row) {
-  // since id was being difficult
-  let id = row[Object.keys(row)[0]];
+// var glAccountCodeInput = fs.createReadStream("csv/glacctcode.csv");
+// var transform = csv.transform(function (row) {
+//   // since id was being difficult
+//   let id = row[Object.keys(row)[0]];
 
-  var resultObj = {
-    id: id,
-    class: row["class"],
-    description: row["description"],
-  };
+//   var resultObj = {
+//     id: id,
+//     class: row["class"],
+//     description: row["description"],
+//   };
 
-  models.glAccountCode
-    .create(resultObj)
-    .then(function () {
-      console.log("Record created");
-    })
-    .catch(function (err) {
-      console.log("Error encountered: " + err);
-    });
-});
+//   models.glAccountCode
+//     .create(resultObj)
+//     .then(function () {
+//       console.log("Record created");
+//     })
+//     .catch(function (err) {
+//       console.log("Error encountered: " + err);
+//     });
+// });
 
-glAccountCodeInput.pipe(parser).pipe(transform);
+// glAccountCodeInput.pipe(parser).pipe(transform);
 
-console.log("Completed glAccountCodes.");
+// console.log("Completed glAccountCodes.");
 
 // Providers
 
@@ -197,7 +198,6 @@ var transform = csv.transform(function (row) {
     locationId: row['locationId'],
     providerId: row['providerId'],
     claimId: row['claimId'],
-    legacyId: row['id'],
   };
 
   models.Visit.create(resultObj)

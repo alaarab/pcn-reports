@@ -20,7 +20,7 @@ module.exports = {
         referenceDate: new Date(),
         amount: 30.05,
         voucherId: "1",
-        legacyId: "1",
+        visitId: "1",
         createdAt: new Date(),
         updatedAt: new Date(),
       },

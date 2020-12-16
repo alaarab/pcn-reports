@@ -25,13 +25,13 @@ module.exports = {
       voucherId: {
         type: Sequelize.STRING
       },
-      legacyId: {
+      visitId: {
         type: Sequelize.STRING,
         references: {
           model: {
             tableName: "Visits",
           },
-          key: "legacyId",
+          key: "id",
         },
       },
       createdAt: {

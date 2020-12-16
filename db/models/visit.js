@@ -40,8 +40,8 @@ module.exports = (sequelize, DataTypes) => {
         as: "planCoverage",
       });
       Visit.hasMany(models.Payment, {
-        foreignKey: "legacyId",
-        sourceKey: "legacyId",
+        foreignKey: "visitId",
+        sourceKey: "id",
         as: "payment",
       });
       Visit.hasMany(models.Assignment, {
@@ -54,7 +54,6 @@ module.exports = (sequelize, DataTypes) => {
   Visit.init(
     {
       patientId: DataTypes.STRING,
-      legacyId: DataTypes.STRING,
       guarantorId: DataTypes.STRING,
       locationId: DataTypes.STRING,
       providerId: DataTypes.STRING,
