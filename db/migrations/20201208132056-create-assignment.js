@@ -1,12 +1,12 @@
-'use strict';
+"use strict";
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('Assignments', {
+    await queryInterface.createTable("Assignments", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       visitId: {
         type: Sequelize.STRING,
@@ -19,17 +19,17 @@ module.exports = {
         },
       },
       chargeLine: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       activityCount: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       assingmentType: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       paymentId: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: true,
         references: {
           model: {
             tableName: "Payments",
@@ -38,14 +38,14 @@ module.exports = {
         },
       },
       amount: {
-        type: Sequelize.DECIMAL
+        type: Sequelize.DECIMAL,
       },
       postDate: {
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       glAccountCodeId: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: true,
         references: {
           model: {
             tableName: "glAccountCodes",
@@ -54,25 +54,25 @@ module.exports = {
         },
       },
       unappliedCreditNumber: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       transferToInsuranceCreditedPlan: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       legacyId: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
-      }
+        type: Sequelize.DATE,
+      },
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('Assignments');
-  }
+    await queryInterface.dropTable("Assignments");
+  },
 };
