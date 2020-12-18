@@ -1,11 +1,5 @@
 const { Pool } = require("pg");
 var fs = require("fs");
-var csv = require("csv");
-var parser = csv.parse({
-  columns: true,
-  relax_column_count: true,
-  delimiter: "|",
-});
 const csvParser = require("csv-parser");
 const dotenv = require("dotenv");
 
@@ -30,11 +24,12 @@ async function main() {
   });
 
   // Patients and Guarantors
-  await new Promise((resolve) => {
+  await new Promise(async (resolve) => {
     let dataPath = "csv/patient.txt";
-    fs.createReadStream(dataPath)
+    let stream = fs.createReadStream(dataPath)
       .pipe(csvParser({ separator: "|" }))
       .on("data", async (row, i) => {
+        stream.pause();
         let guarantorObj = {
           id: row["Guarantor Legacy Account Number"],
           ssn: row["Guarantor SSN"],
@@ -64,7 +59,7 @@ async function main() {
           fs.appendFile(
             "logs/log.txt",
             `${dataPath} ${err.message} on: ${JSON.stringify(
-              resultObj,
+              guarantorObj,
               null,
               2
             )}\r\n`,
@@ -105,7 +100,7 @@ async function main() {
           fs.appendFile(
             "logs/log.txt",
             `${dataPath} ${err.message} on: ${JSON.stringify(
-              resultObj,
+              patientObj,
               null,
               2
             )}\r\n`,
@@ -115,6 +110,7 @@ async function main() {
             }
           );
         }
+        stream.resume();
       })
       .on("end", async () => {
         resolve();
@@ -122,11 +118,12 @@ async function main() {
   });
 
   // Locations
-  await new Promise((resolve) => {
+  await new Promise(async (resolve) => {
     let dataPath = "csv/location.txt";
-    fs.createReadStream(dataPath)
+    let stream = fs.createReadStream(dataPath)
       .pipe(csvParser({ separator: "|" }))
       .on("data", async (row, i) => {
+        stream.pause();
         var resultObj = {
           id: row["Legacy Location Code"],
           description: row["Location Description"],
@@ -161,6 +158,7 @@ async function main() {
             }
           );
         }
+        stream.resume();
       })
       .on("end", async () => {
         resolve();
@@ -170,9 +168,10 @@ async function main() {
   // Insurance Plans
   await new Promise(async (resolve) => {
     let dataPath = "csv/insplan.txt";
-    fs.createReadStream(dataPath)
+    let stream = fs.createReadStream(dataPath)
       .pipe(csvParser({ separator: "|" }))
       .on("data", async (row, i) => {
+        stream.pause();
         var resultObj = {
           id: row["Insurance Plan Identifier"],
           name: row["Insurance Plan Name"],
@@ -209,6 +208,7 @@ async function main() {
             }
           );
         }
+        stream.resume();
       })
       .on("end", async () => {
         resolve();
@@ -216,11 +216,12 @@ async function main() {
   });
 
   // glAcctCodes
-  await new Promise((resolve) => {
+  await new Promise(async (resolve) => {
     let dataPath = "csv/glacctcd.txt";
-    fs.createReadStream(dataPath)
+    let stream = fs.createReadStream(dataPath)
       .pipe(csvParser({ separator: "|" }))
       .on("data", async (row, i) => {
+        stream.pause();
         var resultObj = {
           id: row["GL Account Tag"],
           class: row["Class"],
@@ -250,6 +251,7 @@ async function main() {
             }
           );
         }
+        stream.resume();
       })
       .on("end", async () => {
         resolve();
@@ -257,11 +259,12 @@ async function main() {
   });
 
   // Procedures
-  await new Promise((resolve) => {
+  await new Promise(async (resolve) => {
     let dataPath = "csv/proccode.txt";
-    fs.createReadStream(dataPath)
+    let stream = fs.createReadStream(dataPath)
       .pipe(csvParser({ separator: "|" }))
       .on("data", async (row, i) => {
+        stream.pause();
         var resultObj = {
           id: row["Legacy Procedure Code"],
           displayId: row["CPT Code"],
@@ -293,6 +296,7 @@ async function main() {
             }
           );
         }
+        stream.resume();
       })
       .on("end", async () => {
         resolve();
@@ -300,11 +304,12 @@ async function main() {
   });
 
   // Providers
-  await new Promise((resolve) => {
+  await new Promise(async (resolve) => {
     let dataPath = "csv/provider.txt";
-    fs.createReadStream(dataPath)
+    let stream = fs.createReadStream(dataPath)
       .pipe(csvParser({ separator: "|" }))
       .on("data", async (row, i) => {
+        stream.pause();
         var resultObj = {
           id: row["Legacy Provider Code"],
           firstName: row["First Name"],
@@ -334,6 +339,7 @@ async function main() {
             }
           );
         }
+        stream.resume();
       })
       .on("end", async () => {
         resolve();
@@ -341,11 +347,12 @@ async function main() {
   });
 
   // Patient Plans
-  await new Promise((resolve) => {
+  await new Promise(async (resolve) => {
     let dataPath = "csv/patplan.txt";
-    fs.createReadStream(dataPath)
+    let stream = fs.createReadStream(dataPath)
       .pipe(csvParser({ separator: "|" }))
       .on("data", async (row, i) => {
+        stream.pause();
         var resultObj = {
           patientId: row["Patient Legacy Account Number"],
           insurancePlanId: row["Ins Plan#"],
@@ -376,6 +383,7 @@ async function main() {
             }
           );
         }
+        stream.resume();
       })
       .on("end", async () => {
         resolve();
@@ -383,11 +391,12 @@ async function main() {
   });
 
   // Visits
-  await new Promise((resolve) => {
+  await new Promise(async (resolve) => {
     let dataPath = "csv/visit.txt";
-    fs.createReadStream(dataPath)
+    let stream = fs.createReadStream(dataPath)
       .pipe(csvParser({ separator: "|" }))
       .on("data", async (row, i) => {
+        stream.pause();
         var resultObj = {
           id: row["Visit #"],
           patientId: row["Patient #"],
@@ -420,6 +429,7 @@ async function main() {
             }
           );
         }
+        stream.resume();
       })
       .on("end", async () => {
         resolve();
@@ -427,11 +437,12 @@ async function main() {
   });
 
   // Payments
-  await new Promise((resolve) => {
+  await new Promise(async (resolve) => {
     let dataPath = "csv/payment.txt";
-    fs.createReadStream(dataPath)
+    let stream = fs.createReadStream(dataPath)
       .pipe(csvParser({ separator: "|" }))
       .on("data", async (row, i) => {
+        stream.pause();
         var resultObj = {
           id: row["Payment #"],
           guarantorId: row["Guarantor #"],
@@ -468,6 +479,7 @@ async function main() {
             }
           );
         }
+        stream.resume();
       })
       .on("end", async () => {
         resolve();
@@ -475,11 +487,12 @@ async function main() {
   });
 
   // Charges
-  await new Promise((resolve) => {
+  await new Promise(async (resolve) => {
     let dataPath = "csv/charge.txt";
-    fs.createReadStream(dataPath)
+    let stream = fs.createReadStream(dataPath)
       .pipe(csvParser({ separator: "|" }))
       .on("data", async (row, i) => {
+        stream.pause();
         var resultObj = {
           visitId: row["Visit #"],
           providerId: row["Performing Provider"],
@@ -516,6 +529,7 @@ async function main() {
             }
           );
         }
+        stream.resume();
       })
       .on("end", async () => {
         resolve();
@@ -523,11 +537,12 @@ async function main() {
   });
 
   // Assignments
-  await new Promise((resolve) => {
+  await new Promise(async (resolve) => {
     let dataPath = "csv/assign.txt";
-    fs.createReadStream(dataPath)
+    let stream = fs.createReadStream(dataPath)
       .pipe(csvParser({ separator: "|" }))
       .on("data", async (row, i) => {
+        stream.pause();
         var resultObj = {
           visitId: row["Visit #"],
           chargeLine: row["Charge Line #"],
@@ -566,6 +581,7 @@ async function main() {
             }
           );
         }
+        stream.resume();
       })
       .on("end", async () => {
         resolve();
