@@ -12,6 +12,12 @@ module.exports = {
       },
       insurancePlanId: {
         type: Sequelize.STRING,
+        references: {
+          model: {
+            tableName: "InsurancePlans",
+          },
+          key: "id",
+        },
       },
       postDate: {
         type: Sequelize.DATE,

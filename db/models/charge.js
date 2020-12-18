@@ -13,12 +13,20 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "visitId",
         as: "visit",
       });
+      Charge.belongsTo(models.procedure, {
+        foreignKey: "procedureId",
+        as: "procedure",
+      });
+      Charge.belongsTo(models.providerId, {
+        foreignKey: "providerId",
+        as: "provider",
+      });
     }
   }
   Charge.init(
     {
       visitId: DataTypes.STRING,
-      procedure: DataTypes.STRING,
+      procedureId: DataTypes.STRING,
       providerId: DataTypes.STRING,
       amount: DataTypes.DECIMAL,
       approvedAmount: DataTypes.DECIMAL,

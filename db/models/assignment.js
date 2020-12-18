@@ -13,6 +13,14 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "visitId",
         as: "visit",
       });
+      Assignment.belongsTo(models.glAccountCode, {
+        foreignKey: "glAccountCodeId",
+        as: "glAccountCode",
+      });
+      Assignment.belongsTo(models.Payment, {
+        foreignKey: "paymentId",
+        as: "payment",
+      });
     }
   }
   Assignment.init(
@@ -24,7 +32,7 @@ module.exports = (sequelize, DataTypes) => {
       paymentId: DataTypes.STRING,
       amount: DataTypes.DECIMAL,
       postDate: DataTypes.DATE,
-      glAccountTag: DataTypes.STRING,
+      glAccountCodeId: DataTypes.STRING,
       unappliedCreditNumber: DataTypes.STRING,
       transferToInsuranceCreditedPlan: DataTypes.STRING,
       legacyId: DataTypes.STRING,

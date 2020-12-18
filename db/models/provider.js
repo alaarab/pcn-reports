@@ -14,6 +14,11 @@ module.exports = (sequelize, DataTypes) => {
         targetKey: "id",
         as: "visit",
       });
+      Provider.hasMany(models.Charge, {
+        foreignKey: "providerId",
+        targetKey: "id",
+        as: "charge",
+      });
     }
   }
   Provider.init(

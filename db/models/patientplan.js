@@ -13,6 +13,12 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "patientId",
         as: "patient",
       });
+      // define association here
+      PatientPlan.belongsTo(models.InsurancePlan, {
+        foreignKey: "patientId",
+        as: "insurancePlan",
+      });
+
     }
   }
   PatientPlan.init(

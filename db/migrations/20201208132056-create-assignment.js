@@ -28,7 +28,14 @@ module.exports = {
         type: Sequelize.STRING
       },
       paymentId: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false,
+        references: {
+          model: {
+            tableName: "Payments",
+          },
+          key: "id",
+        },
       },
       amount: {
         type: Sequelize.DECIMAL
@@ -36,8 +43,15 @@ module.exports = {
       postDate: {
         type: Sequelize.DATE
       },
-      glAccountTag: {
-        type: Sequelize.STRING
+      glAccountCodeId: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        references: {
+          model: {
+            tableName: "glAccountCodes",
+          },
+          key: "id",
+        },
       },
       unappliedCreditNumber: {
         type: Sequelize.STRING

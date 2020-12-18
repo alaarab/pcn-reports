@@ -9,6 +9,11 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      InsurancePlan.hasMany(models.PatientPlan, {
+        sourceKey: "id",
+        foreignKey: "insurancePlanId",
+        as: "patientPlan",
+      });
     }
   }
   InsurancePlan.init(

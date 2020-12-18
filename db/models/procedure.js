@@ -1,27 +1,29 @@
-'use strict';
+e'use strict';
 const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class glAccountCode extends Model {
+  class Procedure extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      glAccountCode.hasMany(models.Assignment, {
-        foreignKey: "glAccountCodeId",
-        as: "assignment",
+      Procedure.hasMany(models.Charge, {
+        foreignKey: "procedureId",
+        as: "charge",
       });
     }
   };
-  glAccountCode.init({
-    class: DataTypes.STRING,
-    description: DataTypes.STRING
+  Procedure.init({
+    displayId: DataTypes.STRING,
+    description: DataTypes.STRING,
+    type: DataTypes.STRING,
+    amount: DataTypes.DECIMAL
   }, {
     sequelize,
-    modelName: 'glAccountCode',
+    modelName: 'Procedure',
   });
-  return glAccountCode;
+  return Procedure;
 };

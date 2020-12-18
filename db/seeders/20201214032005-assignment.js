@@ -21,7 +21,7 @@ module.exports = {
         paymentId: "1",
         amount: 11.11,
         postDate: new Date(),
-        glAccountTag: "1",
+        glAccountCodeId: "1",
         unappliedCreditNumber: "1",
         transferToInsuranceCreditedPlan: "1",
         legacyId: "1",

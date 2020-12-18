@@ -18,14 +18,35 @@ module.exports = {
           key: "id",
         },
       },
-      procedure: {
+      procedureId: {
         type: Sequelize.STRING,
+        allowNull: false,
+        references: {
+          model: {
+            tableName: "Procedures",
+          },
+          key: "id",
+        },
       },
       providerId: {
         type: Sequelize.STRING,
+        allowNull: false,
+        references: {
+          model: {
+            tableName: "Providers",
+          },
+          key: "id",
+        },
       },
       supervisingProvider: {
         type: Sequelize.STRING,
+        allowNull: false,
+        references: {
+          model: {
+            tableName: "Providers",
+          },
+          key: "id",
+        },
       },
       amount: {
         type: Sequelize.DECIMAL,

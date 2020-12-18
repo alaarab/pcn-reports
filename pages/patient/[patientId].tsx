@@ -35,14 +35,33 @@ const Patient: React.FC = (props) => {
           </Row>
           <div id="divToPrint">
             <h2>Patient Information</h2>
-            Patient Name: {patient.lastName}, {patient.firstName}{" "}
-            {patient.middleName}
-            <br />
-            <h2>Guarantor Information</h2>
-            Guarantor First Name: {patient.guarantor.firstName}
-            <br />
-            Guarantor Last Name: {patient.guarantor.lastName}
-            <br />
+            <Row className="mb-3 mt-3 justify-content-end">
+              <Col>
+                <div>Patient #: {patient.id}</div>
+                <div>Guarantor #: {patient.guarantor.id}</div>
+                <div>
+                  Guarantor Name: {patient.guarantor.lastName}, {patient.guarantor.firstName}{" "}
+                  {patient.guarantor.middleName}
+                </div>
+              </Col>
+              <Col>
+                <div>
+                  Patient Name: {patient.lastName}, {patient.firstName}{" "}
+                  {patient.middleName}
+                </div>
+                <div>{patient.address}</div>
+                <div>
+                  {patient.city}, {patient.state} {patient.zip}
+                </div>
+              </Col>
+              <Col>
+                <div>D.O.B: {patient.dob}</div>
+                <div>Home: {patient.phone}</div>
+                <div>Work: {patient.workPhone}</div>
+                {/* class: {patient.class} */}
+              </Col>
+            </Row>
+
             <h2>Visits</h2>
             {patient.visit.map((visit) => (
               <Visit data={visit} key={visit.id} />
@@ -50,18 +69,6 @@ const Patient: React.FC = (props) => {
           </div>
         </>
       )}
-    </>
-  );
-};
-
-const Guarantor: React.FC = (props) => {
-  return (
-    <>
-      <h4>Guarantor First Name: </h4>
-      Guarantor First Name: {props.data.guarantor}
-      <br />
-      Charge Approved Amount: {props.data.approvedAmount}
-      <br />
     </>
   );
 };
@@ -131,7 +138,7 @@ const PlanCoverage: React.FC = (props) => {
       <br />
       Performing Provider: {props.data.performingProviderId}
       <br />
-      Procedure: {props.data.procedure}
+      Procedure: {props.data.procedure.description}
       <br />
       Amount: {props.data.amount}
       <br />
