@@ -29,79 +29,79 @@ async function main() {
   });
   await client.connect();
 
-  await new Promise((resolve) => {
-    var patientInput = fs.createReadStream("csv/patient.txt");
+  // await new Promise((resolve) => {
+  //   var patientInput = fs.createReadStream("csv/patient.txt");
 
-    var transform = csv.transform(async function (row, done) {
-      let guarantorObj = {
-        id: row["Guarantor Legacy Account Number"],
-        ssn: row["Guarantor SSN"],
-        firstName: row["Guarantor First Name"],
-        middleName: row["Guarantor Middle Name"],
-        lastName: row["Guarantor Last/Company Name"],
-        sex: row["Guarantor Sex"],
-        dob: dateParser(row["Guarantor DOB"]),
-        address: row["Guarantor Address"],
-        zip: row["Guarantor Zip"],
-        city: row["Guarantor City"],
-        state: row["Guarantor State"],
-        phone: row["Guarantor Phone"],
-        workPhone: row["Guarantor Work Phone"],
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      };
+  //   var transform = csv.transform(async function (row, done) {
+  //     let guarantorObj = {
+  //       id: row["Guarantor Legacy Account Number"],
+  //       ssn: row["Guarantor SSN"],
+  //       firstName: row["Guarantor First Name"],
+  //       middleName: row["Guarantor Middle Name"],
+  //       lastName: row["Guarantor Last/Company Name"],
+  //       sex: row["Guarantor Sex"],
+  //       dob: dateParser(row["Guarantor DOB"]),
+  //       address: row["Guarantor Address"],
+  //       zip: row["Guarantor Zip"],
+  //       city: row["Guarantor City"],
+  //       state: row["Guarantor State"],
+  //       phone: row["Guarantor Phone"],
+  //       workPhone: row["Guarantor Work Phone"],
+  //       createdAt: new Date(),
+  //       updatedAt: new Date(),
+  //     };
 
-      try {
-        console.log(`Inserting Guarantor`);
-        await client.query(
-          `INSERT INTO "Guarantors"(${queryFields(
-            guarantorObj
-          )}) VALUES(${queryDollar(guarantorObj)})`,
-          Object.values(guarantorObj)
-        );
-      } catch (err) {
-        console.log(err.stack);
-      }
+  //     try {
+  //       console.log(`Inserting Guarantor`);
+  //       await client.query(
+  //         `INSERT INTO "Guarantors"(${queryFields(
+  //           guarantorObj
+  //         )}) VALUES(${queryDollar(guarantorObj)})`,
+  //         Object.values(guarantorObj)
+  //       );
+  //     } catch (err) {
+  //       console.log(err.stack);
+  //     }
 
-      let patientObj = {
-        id: row["Patient Legacy Account Number"],
-        guarantorId: row["Guarantor Legacy Account Number"],
-        ssn: row["Pt SSN"],
-        firstName: row["Pt  First Name"],
-        middleName: row["Pt Middle Name"],
-        lastName: row["Pt Last Name"],
-        sex: row["Pt Sex"],
-        dob: dateParser(row["Pt DOB"]),
-        address: row["Pt Address"],
-        zip: row["Pt Zip"],
-        city: row["Pt City"],
-        state: row["Pt State"],
-        phone: row["Pt Phone"],
-        workPhone: row["Pt Work Phone"],
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      };
+  //     let patientObj = {
+  //       id: row["Patient Legacy Account Number"],
+  //       guarantorId: row["Guarantor Legacy Account Number"],
+  //       ssn: row["Pt SSN"],
+  //       firstName: row["Pt  First Name"],
+  //       middleName: row["Pt Middle Name"],
+  //       lastName: row["Pt Last Name"],
+  //       sex: row["Pt Sex"],
+  //       dob: dateParser(row["Pt DOB"]),
+  //       address: row["Pt Address"],
+  //       zip: row["Pt Zip"],
+  //       city: row["Pt City"],
+  //       state: row["Pt State"],
+  //       phone: row["Pt Phone"],
+  //       workPhone: row["Pt Work Phone"],
+  //       createdAt: new Date(),
+  //       updatedAt: new Date(),
+  //     };
 
-      try {
-        console.log(`Inserting Patient`);
-        await client.query(
-          `INSERT INTO "Patients"(${queryFields(
-            patientObj
-          )}) VALUES(${queryDollar(patientObj)})`,
-          Object.values(patientObj)
-        );
-      } catch (err) {
-        console.log(err.stack);
-      }
+  //     try {
+  //       console.log(`Inserting Patient`);
+  //       await client.query(
+  //         `INSERT INTO "Patients"(${queryFields(
+  //           patientObj
+  //         )}) VALUES(${queryDollar(patientObj)})`,
+  //         Object.values(patientObj)
+  //       );
+  //     } catch (err) {
+  //       console.log(err.stack);
+  //     }
 
-      done(null, null);
-    });
+  //     done(null, null);
+  //   });
 
-    patientInput
-      .pipe(parser)
-      .pipe(transform)
-      .on("end", () => resolve());
-  });
+  //   patientInput
+  //     .pipe(parser)
+  //     .pipe(transform)
+  //     .on("end", () => resolve());
+  // });
 
   // await new Promise((resolve) => {
   //   var locationInput = fs.createReadStream("csv/location.txt");
@@ -181,79 +181,73 @@ async function main() {
   //     .on("end", () => resolve());
   // });
 
-  await new Promise((resolve) => {
-    var glAccountCodeInput = fs.createReadStream("csv/glacctcd.txt");
+  // await new Promise((resolve) => {
+  //   var glAccountCodeInput = fs.createReadStream("csv/glacctcd.txt");
 
-    var transform = csv.transform(async function (row, done) {
+  //   var transform = csv.transform(async function (row, done) {
 
-      var resultObj = {
-        id: row['GL Account Tag'],
-        class: row['Class'],
-        description: row['Description'],
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      };
+  //     var resultObj = {
+  //       id: row['GL Account Tag'],
+  //       class: row['Class'],
+  //       description: row['Description'],
+  //       createdAt: new Date(),
+  //       updatedAt: new Date(),
+  //     };
 
-      try {
-        console.log(`Inserting glAccountCodes`);
-        await client.query(
-          `INSERT INTO "glAccountCodes"(${queryFields(
-            resultObj
-          )}) VALUES(${queryDollar(resultObj)})`,
-          Object.values(resultObj)
-        );
-      } catch (err) {
-        console.log(err.stack);
-      }
-      done(null, null);
-    });
+  //     try {
+  //       console.log(`Inserting glAccountCodes`);
+  //       await client.query(
+  //         `INSERT INTO "glAccountCodes"(${queryFields(
+  //           resultObj
+  //         )}) VALUES(${queryDollar(resultObj)})`,
+  //         Object.values(resultObj)
+  //       );
+  //     } catch (err) {
+  //       console.log(err.stack);
+  //     }
+  //     done(null, null);
+  //   });
 
-    glAccountCodeInput
-      .pipe(parser)
-      .pipe(transform)
-      .on("end", () => resolve());
-  });
+  //   glAccountCodeInput
+  //     .pipe(parser)
+  //     .pipe(transform)
+  //     .on("end", () => resolve());
+  // });
 
-  await new Promise((resolve) => {
-    var insurancePlanInput = fs.createReadStream("csv/proccode.txt");
+  // await new Promise((resolve) => {
+  //   var insurancePlanInput = fs.createReadStream("csv/proccode.txt");
 
-    var transform = csv.transform(async function (row, done) {
+  //   var transform = csv.transform(async function (row, done) {
 
-      var resultObj = {
-        id: row['Insurance Plan Identifier'],
-        name: row['Insurance Plan Name'],
-        address: row['Insurance Plan Address'],
-        zip: row['Insurance Plan Zip'],
-        city: row['Insurance Plan City'],
-        state: row['Insurance Plan State'],
-        businessPhone: row['Ins Plan Business Phone'],
-        copayAmount: parseInt(row['Copay Amount'], 10),
-        writedownAdjustmentCode: row['Write-Down Adjustment Code'],
-        paymentProfileCode: row['Payment Profile Code'],
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      };
+  //     var resultObj = {
+  //       id: row['Legacy Procedure Code'],
+  //       displayId: row['CPT Code'],
+  //       description: row['CPT Description'],
+  //       type: row['Procedure Class Description'],
+  //       amount: row['Standard Fee'],
+  //       createdAt: new Date(),
+  //       updatedAt: new Date(),
+  //     };
 
-      try {
-        console.log(`Inserting InsurancePlans`);
-        await client.query(
-          `INSERT INTO "InsurancePlans"(${queryFields(
-            resultObj
-          )}) VALUES(${queryDollar(resultObj)})`,
-          Object.values(resultObj)
-        );
-      } catch (err) {
-        console.log(err.stack);
-      }
-      done(null, null);
-    });
+  //     try {
+  //       console.log(`Inserting Procedures`);
+  //       await client.query(
+  //         `INSERT INTO "Procedures"(${queryFields(
+  //           resultObj
+  //         )}) VALUES(${queryDollar(resultObj)})`,
+  //         Object.values(resultObj)
+  //       );
+  //     } catch (err) {
+  //       console.log(err.stack);
+  //     }
+  //     done(null, null);
+  //   });
 
-    insurancePlanInput
-      .pipe(parser)
-      .pipe(transform)
-      .on("end", () => resolve());
-  });
-
+  //   insurancePlanInput
+  //     .pipe(parser)
+  //     .pipe(transform)
+  //     .on("end", () => resolve());
+  // });
 
   // await new Promise((resolve) => {
   //   var providerInput = fs.createReadStream("csv/provider.txt");
@@ -292,7 +286,6 @@ async function main() {
   //   var patientPlanInput = fs.createReadStream("csv/patplan.txt");
 
   //   var transform = csv.transform(async function (row, done) {
-  //     // since id was being difficult
 
   //     var resultObj = {
   //       patientId: row["Patient Legacy Account Number"],
@@ -304,7 +297,7 @@ async function main() {
   //     };
 
   //     try {
-  //       console.log(`Inserting PatientPlan`);
+  //       // console.log(`Inserting PatientPlan`);
   //       await client.query(
   //         `INSERT INTO "PatientPlans"(${queryFields(resultObj)}) VALUES(${queryDollar(
   //           resultObj
@@ -328,7 +321,6 @@ async function main() {
   //   var visitInput = fs.createReadStream("csv/visit.txt");
 
   //   var transform = csv.transform(async function (row, done) {
-  //     // since id was being difficult
 
   //     var resultObj = {
   //       id: row["Visit #"],
@@ -342,7 +334,7 @@ async function main() {
   //     };
 
   //     try {
-  //       console.log(`Inserting Visit`);
+  //       // console.log(`Inserting Visit`);
   //       await client.query(
   //         `INSERT INTO "Visits"(${queryFields(resultObj)}) VALUES(${queryDollar(
   //           resultObj
@@ -366,12 +358,11 @@ async function main() {
   //   var paymentInput = fs.createReadStream("csv/payment.txt");
 
   //   var transform = csv.transform(async function (row, done) {
-  //     // since id was being difficult
 
   //     var resultObj = {
   //       id: row["Payment #"],
   //       guarantorId: row["Guarantor #"],
-  //       insurancePlanId: row["Plan / Carrier"],
+  //       insurancePlanId: !!row["Plan / Carrier"] ? row["Plan / Carrier"] : null,
   //       postDate: row["Post Date"],
   //       referenceDate: row["Reference Date"],
   //       amount: row["Amount"],
@@ -382,7 +373,6 @@ async function main() {
   //     };
 
   //     try {
-  //       console.log(`Inserting Payment`);
   //       await client.query(
   //         `INSERT INTO "Payments"(${queryFields(
   //           resultObj
@@ -391,6 +381,7 @@ async function main() {
   //       );
   //     } catch (err) {
   //       console.log(err.stack);
+  //       console.log("failed on ", resultObj);
   //     }
   //     done(null, null);
   //   });
@@ -405,16 +396,14 @@ async function main() {
   //   var chargeInput = fs.createReadStream("csv/charge.txt");
 
   //   var transform = csv.transform(async function (row, done) {
-  //     // since id was being difficult
-
   //     var resultObj = {
   //       visitId: row["Visit #"],
   //       providerId: row["Performing Provider"],
-  //       procedure: row["Procedure"],
+  //       procedureId: row["Procedure"],
   //       amount: row["Amount"],
-  //       fromServiceDate: row["From Service Date"],
-  //       toServiceDate: row["To Service Date"],
-  //       postDate: row["Post Date"],
+  //       fromServiceDate: dateParser(row["From Service Date"]),
+  //       toServiceDate: dateParser(row["To Service Date"]),
+  //       postDate: dateParser(row["Post Date"]),
   //       approvedAmount: row["Approved Amount"],
   //       legacyId: row["Legacy ID"],
   //       supervisingProvider: row["Supervising Provider"],
@@ -423,7 +412,6 @@ async function main() {
   //     };
 
   //     try {
-  //       console.log(`Inserting Charge`);
   //       await client.query(
   //         `INSERT INTO "Charges"(${queryFields(
   //           resultObj
@@ -431,7 +419,12 @@ async function main() {
   //         Object.values(resultObj)
   //       );
   //     } catch (err) {
-  //       console.log(err.stack);
+  //       // console.log(err.stack);
+
+  //       fs.appendFile("logs/log.txt", `Failed on ${JSON.stringify(resultObj, null, 2)}\r\n`, function (err) {
+  //         if (err) throw err;
+  //         console.log("Error logged.");
+  //       });
   //     }
   //     done(null, null);
   //   });
@@ -446,25 +439,24 @@ async function main() {
   //   var chargeInput = fs.createReadStream("csv/assign.txt");
 
   //   var transform = csv.transform(async function (row, done) {
-  //     // since id was being difficult
 
   //     var resultObj = {
   //       visitId: row["Visit #"],
-  //       providerId: row["Performing Provider"],
-  //       procedure: row["Procedure"],
+  //       chargeLine: row["Charge Line #"],
+  //       activityCount: row["Activity Count"],
+  //       assingmentType: row["Assignment Type"],
+  //       paymentId: row["Payment #"],
   //       amount: row["Amount"],
-  //       fromServiceDate: row["From Service Date"],
-  //       toServiceDate: row["To Service Date"],
-  //       postDate: row["Post Date"],
-  //       approvedAmount: row["Approved Amount"],
+  //       postDate: dateParser(row["Post Date"]),
+  //       glAccountCodeId: row["GL Account Tag"],
+  //       unappliedCreditNumber: row["Unapplied Credit #"],
+  //       transferToInsuranceCreditedPlan: row["Transfer To Insurance / Credited Plan"],
   //       legacyId: row["Legacy ID"],
-  //       supervisingProvider: row["Supervising Provider"],
   //       createdAt: new Date(),
   //       updatedAt: new Date(),
   //     };
 
   //     try {
-  //       console.log(`Inserting Charge`);
   //       await client.query(
   //         `INSERT INTO "Charges"(${queryFields(
   //           resultObj
@@ -473,6 +465,7 @@ async function main() {
   //       );
   //     } catch (err) {
   //       console.log(err.stack);
+  //       console.log("failed on ", resultObj);
   //     }
   //     done(null, null);
   //   });
