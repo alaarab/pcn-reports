@@ -25,9 +25,9 @@ async function main() {
 
   // Patients and Guarantors
   await new Promise(async (resolve) => {
-    console.log("Beginning Patients and Guarantors.")
+    console.log("Beginning Patients and Guarantors.");
     let dataPath = "csv/patient.txt";
-    let logFile = "logs/patient.txt"
+    let logFile = "logs/patient.txt";
     let stream = fs
       .createReadStream(dataPath)
       .pipe(csvParser({ separator: "|" }))
@@ -122,15 +122,15 @@ async function main() {
       })
       .on("end", async () => {
         resolve();
-        console.log("Completed Patients and Guarantors.")
+        console.log("Completed Patients and Guarantors.");
       });
   });
 
   // Locations
   await new Promise(async (resolve) => {
-    console.log("Beginning Locations.")
+    console.log("Beginning Locations.");
     let dataPath = "csv/location.txt";
-    let logFile = "logs/location.txt"
+    let logFile = "logs/location.txt";
     let stream = fs
       .createReadStream(dataPath)
       .pipe(csvParser({ separator: "|" }))
@@ -174,15 +174,15 @@ async function main() {
       })
       .on("end", async () => {
         resolve();
-        console.log("Completed Locations.")
+        console.log("Completed Locations.");
       });
   });
 
   // Insurance Plans
   await new Promise(async (resolve) => {
-    console.log("Beginning Insurance Plans.")
+    console.log("Beginning Insurance Plans.");
     let dataPath = "csv/insplan.txt";
-    let logFile = "logs/insplan.txt"
+    let logFile = "logs/insplan.txt";
     let stream = fs
       .createReadStream(dataPath)
       .pipe(csvParser({ separator: "|" }))
@@ -228,15 +228,15 @@ async function main() {
       })
       .on("end", async () => {
         resolve();
-        console.log("Completed Insurance Plan.")
+        console.log("Completed Insurance Plan.");
       });
   });
 
   // glAcctCodes
   await new Promise(async (resolve) => {
-    console.log("Beginning glAcctCodes.")
+    console.log("Beginning glAcctCodes.");
     let dataPath = "csv/glacctcd.txt";
-    let logFile = "logs/glacctcd.txt"
+    let logFile = "logs/glacctcd.txt";
     let stream = fs
       .createReadStream(dataPath)
       .pipe(csvParser({ separator: "|" }))
@@ -275,15 +275,15 @@ async function main() {
       })
       .on("end", async () => {
         resolve();
-        console.log("Completed glAcctCodes.")
+        console.log("Completed glAcctCodes.");
       });
   });
 
   // Procedures
   await new Promise(async (resolve) => {
-    console.log("Beginning Procedures.")
+    console.log("Beginning Procedures.");
     let dataPath = "csv/proccode.txt";
-    let logFile = "logs/proccode.txt"
+    let logFile = "logs/proccode.txt";
     let stream = fs
       .createReadStream(dataPath)
       .pipe(csvParser({ separator: "|" }))
@@ -324,15 +324,15 @@ async function main() {
       })
       .on("end", async () => {
         resolve();
-        console.log("Completed Procedures.")
+        console.log("Completed Procedures.");
       });
   });
 
   // Providers
   await new Promise(async (resolve) => {
-    console.log("Beginning Providers.")
+    console.log("Beginning Providers.");
     let dataPath = "csv/provider.txt";
-    let logFile = "logs/provider.txt"
+    let logFile = "logs/provider.txt";
     let stream = fs
       .createReadStream(dataPath)
       .pipe(csvParser({ separator: "|" }))
@@ -371,15 +371,15 @@ async function main() {
       })
       .on("end", async () => {
         resolve();
-        console.log("Completed Providers.")
+        console.log("Completed Providers.");
       });
   });
 
   // Patient Plans
   await new Promise(async (resolve) => {
-    console.log("Beginning Patient Plans.")
+    console.log("Beginning Patient Plans.");
     let dataPath = "csv/patplan.txt";
-    let logFile = "logs/patplan.txt"
+    let logFile = "logs/patplan.txt";
     let stream = fs
       .createReadStream(dataPath)
       .pipe(csvParser({ separator: "|" }))
@@ -419,15 +419,15 @@ async function main() {
       })
       .on("end", async () => {
         resolve();
-        console.log("Completed Patient Plans.")
+        console.log("Completed Patient Plans.");
       });
   });
 
   // Visits
   await new Promise(async (resolve) => {
-    console.log("Beginning Visits.")
+    console.log("Beginning Visits.");
     let dataPath = "csv/visit.txt";
-    let logFile = "logs/visit.txt"
+    let logFile = "logs/visit.txt";
     let stream = fs
       .createReadStream(dataPath)
       .pipe(csvParser({ separator: "|" }))
@@ -438,7 +438,9 @@ async function main() {
           patientId: row["Patient #"],
           guarantorId: row["Guarantor #"],
           locationId: row["Service Center"],
-          providerId: row["Billing Provider"],
+          providerId: !!row["Billing Provider"]
+            ? row["Billing Provider"]
+            : null,
           claimId: row["Claim #"],
           createdAt: new Date(),
           updatedAt: new Date(),
@@ -469,15 +471,15 @@ async function main() {
       })
       .on("end", async () => {
         resolve();
-        console.log("Completed Visits.")
+        console.log("Completed Visits.");
       });
   });
 
   // Payments
   await new Promise(async (resolve) => {
-    console.log("Beginning Payments.")
+    console.log("Beginning Payments.");
     let dataPath = "csv/payment.txt";
-    let logFile = "logs/payment.txt"
+    let logFile = "logs/payment.txt";
     let stream = fs
       .createReadStream(dataPath)
       .pipe(csvParser({ separator: "|" }))
@@ -523,15 +525,15 @@ async function main() {
       })
       .on("end", async () => {
         resolve();
-        console.log("Completed Payments.")
+        console.log("Completed Payments.");
       });
   });
 
   // Charges
   await new Promise(async (resolve) => {
-    console.log("Beginning Charges.")
+    console.log("Beginning Charges.");
     let dataPath = "csv/charge.txt";
-    let logFile = "logs/charge.txt"
+    let logFile = "logs/charge.txt";
     let stream = fs
       .createReadStream(dataPath)
       .pipe(csvParser({ separator: "|" }))
@@ -577,15 +579,15 @@ async function main() {
       })
       .on("end", async () => {
         resolve();
-        console.log("Completed Charges.")
+        console.log("Completed Charges.");
       });
   });
 
   // Assignments
   await new Promise(async (resolve) => {
-    console.log("Beginning Assignments.")
+    console.log("Beginning Assignments.");
     let dataPath = "csv/assign.txt";
-    let logFile = "logs/assign.txt"
+    let logFile = "logs/assign.txt";
     let stream = fs
       .createReadStream(dataPath)
       .pipe(csvParser({ separator: "|" }))
@@ -596,14 +598,12 @@ async function main() {
           chargeLine: row["Charge Line #"],
           activityCount: row["Activity Count"],
           assingmentType: row["Assignment Type"],
-          paymentId: !!row["Payment #"]
-          ? row["Payment #"]
-          : null,
+          paymentId: !!row["Payment #"] ? row["Payment #"] : null,
           amount: parseInt(row["Amount"]),
           postDate: dateParser(row["Post Date"]),
           glAccountCodeId: !!row["GL Account Tag"]
-          ? row["GL Account Tag"]
-          : null,
+            ? row["GL Account Tag"]
+            : null,
           unappliedCreditNumber: row["Unapplied Credit #"],
           transferToInsuranceCreditedPlan:
             row["Transfer To Insurance / Credited Plan"],
@@ -637,7 +637,7 @@ async function main() {
       })
       .on("end", async () => {
         resolve();
-        console.log("Completed Assignments.")
+        console.log("Completed Assignments.");
       });
   });
 }
