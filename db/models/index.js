@@ -77,6 +77,7 @@ const models = [
   require("./patientplan")(sequelize, Sequelize),
   require("./payment")(sequelize, Sequelize),
   require("./provider")(sequelize, Sequelize),
+  require("./procedure")(sequelize, Sequelize),
   require("./plancoverage")(sequelize, Sequelize),
   require("./insuranceplan")(sequelize, Sequelize),
   require("./guarantor")(sequelize, Sequelize),

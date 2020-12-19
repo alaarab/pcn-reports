@@ -25,8 +25,11 @@ async function main() {
 
   // Patients and Guarantors
   await new Promise(async (resolve) => {
+    console.log("Beginning Patients and Guarantors.")
     let dataPath = "csv/patient.txt";
-    let stream = fs.createReadStream(dataPath)
+    let logFile = "logs/patient.txt"
+    let stream = fs
+      .createReadStream(dataPath)
       .pipe(csvParser({ separator: "|" }))
       .on("data", async (row, i) => {
         stream.pause();
@@ -56,18 +59,23 @@ async function main() {
             Object.values(guarantorObj)
           );
         } catch (err) {
-          fs.appendFile(
-            "logs/log.txt",
-            `${dataPath} ${err.message} on: ${JSON.stringify(
-              guarantorObj,
-              null,
-              2
-            )}\r\n`,
-            function (err) {
-              if (err) throw err;
-              console.log("Error logged.");
-            }
-          );
+          if (
+            err.message !=
+            `duplicate key value violates unique constraint "Guarantors_pkey"`
+          ) {
+            fs.appendFile(
+              logFile,
+              `${dataPath} ${err.message} on: ${JSON.stringify(
+                guarantorObj,
+                null,
+                2
+              )}\r\n`,
+              function (err) {
+                if (err) throw err;
+                console.log("Error logged.");
+              }
+            );
+          }
         }
 
         let patientObj = {
@@ -98,7 +106,7 @@ async function main() {
           );
         } catch (err) {
           fs.appendFile(
-            "logs/log.txt",
+            logFile,
             `${dataPath} ${err.message} on: ${JSON.stringify(
               patientObj,
               null,
@@ -114,13 +122,17 @@ async function main() {
       })
       .on("end", async () => {
         resolve();
+        console.log("Completed Patients and Guarantors.")
       });
   });
 
   // Locations
   await new Promise(async (resolve) => {
+    console.log("Beginning Locations.")
     let dataPath = "csv/location.txt";
-    let stream = fs.createReadStream(dataPath)
+    let logFile = "logs/location.txt"
+    let stream = fs
+      .createReadStream(dataPath)
       .pipe(csvParser({ separator: "|" }))
       .on("data", async (row, i) => {
         stream.pause();
@@ -146,7 +158,7 @@ async function main() {
           );
         } catch (err) {
           fs.appendFile(
-            "logs/log.txt",
+            logFile,
             `${dataPath} ${err.message} on: ${JSON.stringify(
               resultObj,
               null,
@@ -162,13 +174,17 @@ async function main() {
       })
       .on("end", async () => {
         resolve();
+        console.log("Completed Locations.")
       });
   });
 
   // Insurance Plans
   await new Promise(async (resolve) => {
+    console.log("Beginning Insurance Plans.")
     let dataPath = "csv/insplan.txt";
-    let stream = fs.createReadStream(dataPath)
+    let logFile = "logs/insplan.txt"
+    let stream = fs
+      .createReadStream(dataPath)
       .pipe(csvParser({ separator: "|" }))
       .on("data", async (row, i) => {
         stream.pause();
@@ -196,7 +212,7 @@ async function main() {
           );
         } catch (err) {
           fs.appendFile(
-            "logs/log.txt",
+            logFile,
             `${dataPath} ${err.message} on: ${JSON.stringify(
               resultObj,
               null,
@@ -212,13 +228,17 @@ async function main() {
       })
       .on("end", async () => {
         resolve();
+        console.log("Completed Insurance Plan.")
       });
   });
 
   // glAcctCodes
   await new Promise(async (resolve) => {
+    console.log("Beginning glAcctCodes.")
     let dataPath = "csv/glacctcd.txt";
-    let stream = fs.createReadStream(dataPath)
+    let logFile = "logs/glacctcd.txt"
+    let stream = fs
+      .createReadStream(dataPath)
       .pipe(csvParser({ separator: "|" }))
       .on("data", async (row, i) => {
         stream.pause();
@@ -239,7 +259,7 @@ async function main() {
           );
         } catch (err) {
           fs.appendFile(
-            "logs/log.txt",
+            logFile,
             `${dataPath} ${err.message} on: ${JSON.stringify(
               resultObj,
               null,
@@ -255,13 +275,17 @@ async function main() {
       })
       .on("end", async () => {
         resolve();
+        console.log("Completed glAcctCodes.")
       });
   });
 
   // Procedures
   await new Promise(async (resolve) => {
+    console.log("Beginning Procedures.")
     let dataPath = "csv/proccode.txt";
-    let stream = fs.createReadStream(dataPath)
+    let logFile = "logs/proccode.txt"
+    let stream = fs
+      .createReadStream(dataPath)
       .pipe(csvParser({ separator: "|" }))
       .on("data", async (row, i) => {
         stream.pause();
@@ -270,7 +294,7 @@ async function main() {
           displayId: row["CPT Code"],
           description: row["CPT Description"],
           type: row["Procedure Class Description"],
-          amount: row["Standard Fee"],
+          amount: parseInt(row["Standard Fee"], 10),
           createdAt: new Date(),
           updatedAt: new Date(),
         };
@@ -284,7 +308,7 @@ async function main() {
           );
         } catch (err) {
           fs.appendFile(
-            "logs/log.txt",
+            logFile,
             `${dataPath} ${err.message} on: ${JSON.stringify(
               resultObj,
               null,
@@ -300,13 +324,17 @@ async function main() {
       })
       .on("end", async () => {
         resolve();
+        console.log("Completed Procedures.")
       });
   });
 
   // Providers
   await new Promise(async (resolve) => {
+    console.log("Beginning Providers.")
     let dataPath = "csv/provider.txt";
-    let stream = fs.createReadStream(dataPath)
+    let logFile = "logs/provider.txt"
+    let stream = fs
+      .createReadStream(dataPath)
       .pipe(csvParser({ separator: "|" }))
       .on("data", async (row, i) => {
         stream.pause();
@@ -327,7 +355,7 @@ async function main() {
           );
         } catch (err) {
           fs.appendFile(
-            "logs/log.txt",
+            logFile,
             `${dataPath} ${err.message} on: ${JSON.stringify(
               resultObj,
               null,
@@ -343,13 +371,17 @@ async function main() {
       })
       .on("end", async () => {
         resolve();
+        console.log("Completed Providers.")
       });
   });
 
   // Patient Plans
   await new Promise(async (resolve) => {
+    console.log("Beginning Patient Plans.")
     let dataPath = "csv/patplan.txt";
-    let stream = fs.createReadStream(dataPath)
+    let logFile = "logs/patplan.txt"
+    let stream = fs
+      .createReadStream(dataPath)
       .pipe(csvParser({ separator: "|" }))
       .on("data", async (row, i) => {
         stream.pause();
@@ -371,7 +403,7 @@ async function main() {
           );
         } catch (err) {
           fs.appendFile(
-            "logs/log.txt",
+            logFile,
             `${dataPath} ${err.message} on: ${JSON.stringify(
               resultObj,
               null,
@@ -387,13 +419,17 @@ async function main() {
       })
       .on("end", async () => {
         resolve();
+        console.log("Completed Patient Plans.")
       });
   });
 
   // Visits
   await new Promise(async (resolve) => {
+    console.log("Beginning Visits.")
     let dataPath = "csv/visit.txt";
-    let stream = fs.createReadStream(dataPath)
+    let logFile = "logs/visit.txt"
+    let stream = fs
+      .createReadStream(dataPath)
       .pipe(csvParser({ separator: "|" }))
       .on("data", async (row, i) => {
         stream.pause();
@@ -417,7 +453,7 @@ async function main() {
           );
         } catch (err) {
           fs.appendFile(
-            "logs/log.txt",
+            logFile,
             `${dataPath} ${err.message} on: ${JSON.stringify(
               resultObj,
               null,
@@ -433,13 +469,17 @@ async function main() {
       })
       .on("end", async () => {
         resolve();
+        console.log("Completed Visits.")
       });
   });
 
   // Payments
   await new Promise(async (resolve) => {
+    console.log("Beginning Payments.")
     let dataPath = "csv/payment.txt";
-    let stream = fs.createReadStream(dataPath)
+    let logFile = "logs/payment.txt"
+    let stream = fs
+      .createReadStream(dataPath)
       .pipe(csvParser({ separator: "|" }))
       .on("data", async (row, i) => {
         stream.pause();
@@ -449,9 +489,9 @@ async function main() {
           insurancePlanId: !!row["Plan / Carrier"]
             ? row["Plan / Carrier"]
             : null,
-          postDate: row["Post Date"],
-          referenceDate: row["Reference Date"],
-          amount: row["Amount"],
+          postDate: dateParser(row["Post Date"]),
+          referenceDate: dateParser(row["Reference Date"]),
+          amount: parseInt(row["Amount"]),
           voucherId: row["Voucher #"],
           visitId: row["Legacy ID"],
           createdAt: new Date(),
@@ -467,7 +507,7 @@ async function main() {
           );
         } catch (err) {
           fs.appendFile(
-            "logs/log.txt",
+            logFile,
             `${dataPath} ${err.message} on: ${JSON.stringify(
               resultObj,
               null,
@@ -483,13 +523,17 @@ async function main() {
       })
       .on("end", async () => {
         resolve();
+        console.log("Completed Payments.")
       });
   });
 
   // Charges
   await new Promise(async (resolve) => {
+    console.log("Beginning Charges.")
     let dataPath = "csv/charge.txt";
-    let stream = fs.createReadStream(dataPath)
+    let logFile = "logs/charge.txt"
+    let stream = fs
+      .createReadStream(dataPath)
       .pipe(csvParser({ separator: "|" }))
       .on("data", async (row, i) => {
         stream.pause();
@@ -497,7 +541,7 @@ async function main() {
           visitId: row["Visit #"],
           providerId: row["Performing Provider"],
           procedureId: row["Procedure"],
-          amount: row["Amount"],
+          amount: parseInt(row["Amount"]),
           fromServiceDate: dateParser(row["From Service Date"]),
           toServiceDate: dateParser(row["To Service Date"]),
           postDate: dateParser(row["Post Date"]),
@@ -517,7 +561,7 @@ async function main() {
           );
         } catch (err) {
           fs.appendFile(
-            "logs/log.txt",
+            logFile,
             `${dataPath} ${err.message} on: ${JSON.stringify(
               resultObj,
               null,
@@ -533,13 +577,17 @@ async function main() {
       })
       .on("end", async () => {
         resolve();
+        console.log("Completed Charges.")
       });
   });
 
   // Assignments
   await new Promise(async (resolve) => {
+    console.log("Beginning Assignments.")
     let dataPath = "csv/assign.txt";
-    let stream = fs.createReadStream(dataPath)
+    let logFile = "logs/assign.txt"
+    let stream = fs
+      .createReadStream(dataPath)
       .pipe(csvParser({ separator: "|" }))
       .on("data", async (row, i) => {
         stream.pause();
@@ -548,10 +596,14 @@ async function main() {
           chargeLine: row["Charge Line #"],
           activityCount: row["Activity Count"],
           assingmentType: row["Assignment Type"],
-          paymentId: row["Payment #"],
-          amount: row["Amount"],
+          paymentId: !!row["Payment #"]
+          ? row["Payment #"]
+          : null,
+          amount: parseInt(row["Amount"]),
           postDate: dateParser(row["Post Date"]),
-          glAccountCodeId: row["GL Account Tag"],
+          glAccountCodeId: !!row["GL Account Tag"]
+          ? row["GL Account Tag"]
+          : null,
           unappliedCreditNumber: row["Unapplied Credit #"],
           transferToInsuranceCreditedPlan:
             row["Transfer To Insurance / Credited Plan"],
@@ -569,7 +621,7 @@ async function main() {
           );
         } catch (err) {
           fs.appendFile(
-            "logs/log.txt",
+            logFile,
             `${dataPath} ${err.message} on: ${JSON.stringify(
               resultObj,
               null,
@@ -585,6 +637,7 @@ async function main() {
       })
       .on("end", async () => {
         resolve();
+        console.log("Completed Assignments.")
       });
   });
 }

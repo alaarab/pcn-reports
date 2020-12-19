@@ -13,11 +13,11 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "visitId",
         as: "visit",
       });
-      Charge.belongsTo(models.procedure, {
+      Charge.belongsTo(models.Procedure, {
         foreignKey: "procedureId",
         as: "procedure",
       });
-      Charge.belongsTo(models.providerId, {
+      Charge.belongsTo(models.Provider, {
         foreignKey: "providerId",
         as: "provider",
       });
