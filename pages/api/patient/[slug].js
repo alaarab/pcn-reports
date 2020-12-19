@@ -26,6 +26,11 @@ const handler = nextConnect()
           ],
         },
         {
+          model: models.PatientPlan,
+          as: "patientPlan",
+          include: [{ model: models.InsurancePlan, as: "insurancePlan" }],
+        },
+        {
           model: models.Guarantor,
           as: "guarantor",
         },
