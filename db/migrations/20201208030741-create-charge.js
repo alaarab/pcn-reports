@@ -30,7 +30,7 @@ module.exports = {
       },
       providerId: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: true,
         references: {
           model: {
             tableName: "Providers",
