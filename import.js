@@ -541,7 +541,7 @@ async function main() {
         stream.pause();
         var resultObj = {
           visitId: row["Visit #"],
-          providerId: row["Performing Provider"],
+          providerId: !!row["Performing Provider"] ? row["Performing Provider"] : null,
           procedureId: row["Procedure"],
           amount: parseFloat(row["Amount"]),
           fromServiceDate: dateParser(row["From Service Date"]),
