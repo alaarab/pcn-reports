@@ -1,32 +1,21 @@
+import Link from "next/link";
 import React, { useEffect, useMemo, useState } from "react";
-
+import { Col, Form } from "react-bootstrap";
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
-import { Col, Form } from "react-bootstrap";
-import Link from "next/link";
 import axios from "axios";
 
 const PatientSearch: React.FC = () => {
-  const [state, setState] = React.useState({
+  const [state, setState] = useState({
     id: "",
     firstName: "",
     middleName: "",
     lastName: "",
   });
-
   const [patients, setPatients] = useState([]);
-
-  let patientsParam = useMemo(
-    () => ({
-      params: {
-        id: state.id,
-        firstName: state.firstName,
-        middleName: state.middleName,
-        lastName: state.lastName,
-      },
-    }),
-    [state]
-  );
+  const [patientsCount, setPatientsCount] = useState(0);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
   const columns = [
     {
@@ -60,18 +49,41 @@ const PatientSearch: React.FC = () => {
     });
   }
 
+  const handleTableChange = (type, { page, pageSize }) => {
+    
+    const currentIndex = (page - 1) * pageSize;
+    setPage(page);
+    setPageSize(pageSize);
+    console.log(page, pageSize)
+  };
+
+  let patientsParam = useMemo(
+    () => ({
+      params: {
+        id: state.id,
+        firstName: state.firstName,
+        middleName: state.middleName,
+        lastName: state.lastName,
+        page,
+        pageSize,
+      },
+    }),
+    [state, page, pageSize]
+  );
+
   useEffect(() => {
     const fetchData = async () => {
       const result = await axios("/api/patient/search", patientsParam);
-      setPatients(result.data);
+      setPatients(result.data.rows);
+      setPatientsCount(result.data.count);
     };
     fetchData();
-  }, [state]);
+  }, [state, page, pageSize]);
 
   return (
     <>
       <Form>
-        <Form.Row className='mb-3'>
+        <Form.Row className="mb-3">
           <Col>
             <Form.Control
               placeholder="Id"
@@ -106,12 +118,16 @@ const PatientSearch: React.FC = () => {
           </Col>
         </Form.Row>
       </Form>
-      <BootstrapTable
-        keyField="id"
-        data={patients || []}
-        columns={columns}
-        pagination={paginationFactory()}
-      />
+      {patients && (
+        <RemotePagination
+          data={patients}
+          page={page}
+          pageSize={pageSize}
+          totalSize={patientsCount}
+          onTableChange={handleTableChange}
+          columns={columns}
+        />
+      )}
     </>
   );
 };
@@ -125,3 +141,23 @@ function patientIdFormatter(cell) {
 }
 
 export default PatientSearch;
+
+const RemotePagination = ({
+  data,
+  page,
+  pageSize,
+  onTableChange,
+  totalSize,
+  columns,
+}) => (
+  <div>
+    <BootstrapTable
+      remote
+      keyField="id"
+      data={data}
+      columns={columns}
+      onTableChange={onTableChange}
+      pagination={paginationFactory({ page, pageSize, totalSize })}
+    />
+  </div>
+);
