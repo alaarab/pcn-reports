@@ -7,9 +7,10 @@ const handler = nextConnect()
   .use(middleware)
   .get(async (req, res) => {
     const {
-      query: { id, firstName, middleName, lastName, dob },
+      query: { id, firstName, middleName, lastName, dob, page, pageSize },
     } = req;
-    const patients = await models.Patient.findAll({
+
+    const guarantor = await models.Guarantor.findAndCountAll({
       where: {
         id: {
           [Op.like]: `%${id}%`,
@@ -27,8 +28,10 @@ const handler = nextConnect()
         //   [Op.like]: `%${dob}%`,
         // },
       },
+      offset: page-1,
+      limit: 10,
     });
-    return res.status(200).json(patients);
+    return res.status(200).json(guarantor);
   });
 
 export default handler;
