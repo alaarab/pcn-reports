@@ -1,28 +1,10 @@
 import _ from "lodash";
 import { useContext, useEffect, useMemo, useState } from "react";
 import App from "next/app";
-import Alert from "@material-ui/lab/Alert";
-import { encodeForm, fetchJSON } from "src/assets/common";
-import Box from "@material-ui/core/Box";
 import Link from "next/link";
-import { UserContext } from "src/contexts/userContext";
-
-const useStyles = makeStyles((theme) => ({
-  centerAlignOutter: {
-    height: `100vh`,
-    alignItems: `center`,
-    display: `flex`,
-  },
-  centerAlignInner: {
-    width: `100vw`,
-    alignItems: `center`,
-    display: `flex`,
-    flexFlow: `column`,
-  },
-  panelRoot: {
-    maxWidth: `600px`,
-  },
-}));
+import { UserContext } from "contexts/userContext";
+import { Alert } from "react-bootstrap";
+import axios from "axios";
 
 function SessionActive(props) {
   const [invertalPerformCheck, setIntervalPerformCheck] = useState(null);
@@ -52,7 +34,7 @@ function LoginModal(props) {
   } = useContext(UserContext);
 
   async function performLogin(data) {
-    const res = await fetchJSON(`/api/auth/local/login`, data);
+    const res = await axios(`/api/auth/local/login`, data);
     if (res.status === 200) {
       setUser(res.json.user);
       setSessionValid(true);
@@ -78,11 +60,9 @@ function LoginModal(props) {
           src="https://www.admenergy.com/wp-content/uploads/2018/10/logo84.png"
           alt="ADM Logo"
         />
-        <Box p={2} />
         {sessionLastReason && (
           <>
             <Alert severity="error">{sessionLastReason}</Alert>
-            <Box p={2} />
           </>
         )}
 
@@ -207,7 +187,7 @@ function Session(props) {
   );
 
   async function performCheck() {
-    const reply = await fetchJSON(`/api/session/check`).then(async (res) => {
+    const reply = await axios(`/api/session/check`).then(async (res) => {
       if (!res.ok) throw new Error(`[${res.status}] ${res.json ?? res.text}`); // unsure how we should handle errors
       return res.json;
     });
