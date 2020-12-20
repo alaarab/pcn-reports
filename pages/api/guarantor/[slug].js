@@ -9,29 +9,19 @@ const handler = nextConnect()
       query: { id, name },
     } = req;
     const { slug } = req.query;
-    const patientId = slug;
-    const patient = await models.Patient.findOne({
+    const guarantorId = slug;
+    const guarantor = await models.Guarantor.findOne({
       where: {
-        id: patientId,
+        id: guarantorId,
       },
       include: [
         {
-          model: models.Visit,
-          as: "visit",
-          include: [
-            { model: models.Assignment, as: "assignment" },
-            { model: models.Charge, as: "charge" },
-            { model: models.PlanCoverage, as: "planCoverage" },
-            { model: models.Payment, as: "payment" },
-          ],
-        },
-        {
-          model: models.Guarantor,
-          as: "guarantor",
+          model: models.Patient,
+          as: "patient"
         },
       ],
     });
-    return res.status(200).json(patient);
+    return res.status(200).json(guarantor);
   })
   .post(async (req, res) => {})
   .put(async (req, res) => {})
