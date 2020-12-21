@@ -3,8 +3,9 @@ import { useContext, useEffect, useMemo, useState } from "react";
 import App from "next/app";
 import Link from "next/link";
 import { UserContext } from "contexts/userContext";
-import { Alert } from "react-bootstrap";
+import { Alert, Button, Form } from "react-bootstrap";
 import axios from "axios";
+import { useInput } from "hooks/useInput";
 
 function SessionActive(props) {
   const [invertalPerformCheck, setIntervalPerformCheck] = useState(null);
@@ -21,7 +22,6 @@ function SessionActive(props) {
 }
 
 function LoginModal(props) {
-  const classes = useStyles();
   const {
     user,
     setUser,
@@ -32,64 +32,70 @@ function LoginModal(props) {
     sessionTimeLeftMS,
     setSessionTimeLeftMS,
   } = useContext(UserContext);
+  const { value: email, bind: bindEmail, reset: resetEmail } = useInput("");
+  const {
+    value: password,
+    bind: bindPassword,
+    reset: resetPassword,
+  } = useInput("");
 
-  async function performLogin(data) {
-    const res = await axios(`/api/auth/local/login`, data);
-    if (res.status === 200) {
-      setUser(res.json.user);
-      setSessionValid(true);
-      setSessionTimeLeftMS(res.json.timeLeftMS);
-    } else {
-      setUser({});
-      setSessionValid(false);
-      setSessionLastReason("Incorrect username or password. Try again!");
-    }
-    // }
-  }
+  const handleSubmit = (evt) => {
+    evt.preventDefault();
+    performLogin();
+    resetEmail();
+    resetPassword();
+  };
 
-  async function handleSubmit(event) {
-    event.preventDefault();
-    const data = encodeForm(event.target);
-    await performLogin(data);
+  async function performLogin() {
+    axios
+      .post(`/api/auth/local/login`, { email, password })
+      .then(function (res) {
+        if (res.status === 200) {
+          setUser(res.data.user);
+          setSessionValid(true);
+          setSessionTimeLeftMS(res.data.timeLeftMS);
+        } else {
+          setUser({});
+          setSessionValid(false);
+          setSessionLastReason("Incorrect username or password. Try again!");
+        }
+      });
   }
 
   return (
-    <div className={classes.centerAlignOutter}>
-      <div className={classes.centerAlignInner}>
-        <img
-          src="https://www.admenergy.com/wp-content/uploads/2018/10/logo84.png"
-          alt="ADM Logo"
-        />
-        {sessionLastReason && (
-          <>
-            <Alert severity="error">{sessionLastReason}</Alert>
-          </>
-        )}
+    <div>
+      {sessionLastReason && (
+        <>
+          <Alert severity="error">{sessionLastReason}</Alert>
+        </>
+      )}
 
-        <Form onSubmit={handleSubmit}>
-          <Form.Group controlId="formBasicEmail">
-            <Form.Label>Email address</Form.Label>
-            <Form.Control
-              name="email"
-              type="email"
-              placeholder="Enter email"
-              required={true}
-            />
-          </Form.Group>
-          <Form.Group controlId="formBasicPassword">
-            <Form.Label>Password</Form.Label>
-            <Form.Control
-              name="password"
-              type="password"
-              placeholder="Password"
-            />
-          </Form.Group>
-          <Button variant="primary" type="submit">
-            Submit
-          </Button>
-        </Form>
+      <Form onSubmit={handleSubmit}>
+        <Form.Group controlId="formBasicEmail">
+          <Form.Label>Email address</Form.Label>
+          <Form.Control
+            name="email"
+            type="email"
+            placeholder="Enter email"
+            required={true}
+            {...bindEmail}
+          />
+        </Form.Group>
+        <Form.Group controlId="formBasicPassword">
+          <Form.Label>Password</Form.Label>
+          <Form.Control
+            name="password"
+            type="password"
+            placeholder="Password"
+            {...bindPassword}
+          />
+        </Form.Group>
+        <Button variant="primary" type="submit">
+          Submit
+        </Button>
+      </Form>
 
-        {/* <Card
+      {/* <Card
           className={classes.panelRoot}
           component="form"
           onSubmit={handleSubmit}
@@ -152,7 +158,6 @@ function LoginModal(props) {
             </Grid>
           </CardActions>
         </Card> */}
-      </div>
     </div>
   );
 }
@@ -187,12 +192,9 @@ function Session(props) {
   );
 
   async function performCheck() {
-    const reply = await axios(`/api/session/check`).then(async (res) => {
-      if (!res.ok) throw new Error(`[${res.status}] ${res.json ?? res.text}`); // unsure how we should handle errors
-      return res.json;
-    });
+    const reply = await axios(`/api/session/check`);
 
-    switch (reply.type) {
+    switch (reply.data.type) {
       case "SESSION_CHECK_DONE":
         setUser(reply.user);
         setSessionValid(reply.valid);

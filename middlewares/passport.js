@@ -1,7 +1,7 @@
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import bcrypt from "bcryptjs";
-import User from "db/models/user";
+const models = require("../db/models/index");
 
 // Configure Passport authenticated session persistence.
 //
@@ -15,12 +15,17 @@ passport.serializeUser((user, done) => {
 });
 
 passport.deserializeUser(async (req, user, done) => {
-  user = await User.findOne({
+  const newUser = await models.User.findOne({
     where: {
       id: user.id,
     },
   });
-  done(null, user);
+
+  if (newUser) {
+    done(null, user);
+  } else {
+    done(user.errors, null);
+  } 
 });
 
 // const azureStrategy = new OIDCStrategy(
@@ -63,7 +68,7 @@ passport.deserializeUser(async (req, user, done) => {
 //       let user = undefined;
 
 //       // Scenario 1: If the Azure Match exists, Login
-//       user = await User.findOneAndUpdate(
+//       user = await models.User.findOneAndUpdate(
 //         {
 //           email: profile._json.email.toLowerCase(),
 //           "third_party_auth.azure.uid": profile.oid,
@@ -77,7 +82,7 @@ passport.deserializeUser(async (req, user, done) => {
 //       if (user) return done(null, user);
 
 //       // Scenario 2: If the e-mail exists without Azure Match, Associate the account
-//       user = await User.findOneAndUpdate(
+//       user = await models.User.findOneAndUpdate(
 //         {
 //           email: profile._json.email.toLowerCase(),
 //         },
@@ -91,7 +96,7 @@ passport.deserializeUser(async (req, user, done) => {
 //       if (user) return done(null, user);
 
 //       // Scenario 3: If the e-mail doesn't exist at all, Auto-Register
-//       user = await User.insertOne({
+//       user = await models.User.insertOne({
 //         email: profile._json.email.toLowerCase(),
 //         name: profile.displayName,
 //         third_party_auth: {
@@ -112,7 +117,7 @@ passport.deserializeUser(async (req, user, done) => {
 const localStrategy = new LocalStrategy(
   { usernameField: "email" },
   (email, password, done) => {
-    User.findOne({ where: { email: email } })
+    models.User.findOne({ where: { email: email } })
       .then((user) => {
         if (!user) {
           return done(null, false, { message: "User does not exist" });
@@ -124,7 +129,7 @@ const localStrategy = new LocalStrategy(
           // bcrypt.genSalt(10, function(err, salt) {
           //     bcrypt.hash("Password123", salt, async function(err, hash) {
           //       // Scenario 2: If the e-mail exists without Azure Match, Associate the account
-          //       res = await User.findOneAndUpdate({
+          //       res = await models.User.findOneAndUpdate({
           //         email: email.toLowerCase(),
           //       }, {
           //         $set: { password: hash }

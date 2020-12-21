@@ -7,12 +7,12 @@ import Session from "components/Session";
 function MyApp({ Component, pageProps }) {
   return (
     <>
-      {/* <Session> */}
+      <Session>
         <NavBar />
         <Container className="p-3">
           <Component {...pageProps} />
         </Container>
-      {/* </Session> */}
+      </Session>
     </>
   );
 }
