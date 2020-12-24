@@ -3,7 +3,15 @@ import { useContext, useEffect, useMemo, useState } from "react";
 import App from "next/app";
 import Link from "next/link";
 import { UserContext } from "contexts/userContext";
-import { Alert, Button, Form } from "react-bootstrap";
+import {
+  Alert,
+  Button,
+  Col,
+  Container,
+  Form,
+  Jumbotron,
+  Row,
+} from "react-bootstrap";
 import axios from "axios";
 import { useInput } from "hooks/useInput";
 
@@ -55,6 +63,7 @@ function LoginModal(props) {
           setSessionValid(true);
           setSessionTimeLeftMS(res.data.timeLeftMS);
         } else {
+          console.log("NO");
           setUser({});
           setSessionValid(false);
           setSessionLastReason("Incorrect username or password. Try again!");
@@ -63,102 +72,44 @@ function LoginModal(props) {
   }
 
   return (
-    <div>
-      {sessionLastReason && (
-        <>
-          <Alert severity="error">{sessionLastReason}</Alert>
-        </>
-      )}
-
-      <Form onSubmit={handleSubmit}>
-        <Form.Group controlId="formBasicEmail">
-          <Form.Label>Email address</Form.Label>
-          <Form.Control
-            name="email"
-            type="email"
-            placeholder="Enter email"
-            required={true}
-            {...bindEmail}
-          />
-        </Form.Group>
-        <Form.Group controlId="formBasicPassword">
-          <Form.Label>Password</Form.Label>
-          <Form.Control
-            name="password"
-            type="password"
-            placeholder="Password"
-            {...bindPassword}
-          />
-        </Form.Group>
-        <Button variant="primary" type="submit">
-          Submit
-        </Button>
-      </Form>
-
-      {/* <Card
-          className={classes.panelRoot}
-          component="form"
-          onSubmit={handleSubmit}
-        >
-          <CardContent>
-            <Typography variant="h5">Staff Login</Typography>
-
-            <TextField
-              fullWidth
-              name="email"
-              label="Email"
-              type="email"
-              required={true}
-              error={false}
-              helperText=""
-              onChange={onChange}
-              margin="normal"
-              variant="outlined"
-              InputLabelProps={{ shrink: true }}
-            />
-            <TextField
-              fullWidth
-              name="password"
-              label="Password"
-              type={showPassword ? "text" : "password"}
-              required={true}
-              error={false}
-              helperText=""
-              onChange={onChange}
-              margin="normal"
-              variant="outlined"
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="Toggle password visibility"
-                      edge="end"
-                      onClick={togglePasswordVisibility}
-                    >
-                      {showPassword ? <Visibility /> : <VisibilityOff />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-              InputLabelProps={{ shrink: true }}
-            />
-          </CardContent>
-          <Divider variant="middle" />
-          <CardActions style={{ justifyContent: "center" }}>
-            <Grid container justify="center">
-              <center>
-                <Button type="submit" color="primary" variant="contained">
-                  Sign In
-                </Button>
-                <Box fontWeight="fontWeightBold">OR</Box>
-                <Link href={{ pathname: "/api/auth/azure/login" }}>
-                  <Button variant="outlined">Sign in with Microsoft</Button>
-                </Link>
-              </center>
-            </Grid>
-          </CardActions>
-        </Card> */}
-    </div>
+    <Container>
+      <Jumbotron>
+        <h1>PCN Reporting Tool</h1>
+      </Jumbotron>
+      <Row className="align-items-center">
+        <Col className="p-3">
+          {sessionLastReason && (
+            <>
+              <Alert severity="error">{sessionLastReason}</Alert>
+            </>
+          )}
+          <Form onSubmit={handleSubmit}>
+            <Form.Group controlId="formBasicEmail">
+              <Form.Label>Email address</Form.Label>
+              <Form.Control
+                name="email"
+                type="email"
+                placeholder="Enter email"
+                required={true}
+                {...bindEmail}
+              />
+            </Form.Group>
+            <Form.Group controlId="formBasicPassword">
+              <Form.Label>Password</Form.Label>
+              <Form.Control
+                name="password"
+                type="password"
+                placeholder="Password"
+                {...bindPassword}
+              />
+            </Form.Group>
+            <Button variant="primary" type="submit">
+              Submit
+            </Button>
+          </Form>
+        </Col>
+      </Row>
+    </Container>
   );
 }
 
@@ -196,10 +147,11 @@ function Session(props) {
 
     switch (reply.data.type) {
       case "SESSION_CHECK_DONE":
-        setUser(reply.user);
-        setSessionValid(reply.valid);
+        console.log(reply);
+        setUser(reply.data.user);
+        setSessionValid(reply.data.valid);
         setSessionLoading(false);
-        setSessionTimeLeftMS(reply.timeLeftMS);
+        setSessionTimeLeftMS(reply.data.timeLeftMS);
         return;
       default:
         throw new Error(`[todo] unimplemented`);
@@ -212,26 +164,7 @@ function Session(props) {
 
   return (
     <UserContext.Provider value={userProviderValue}>
-      {sessionLoading && (
-        <div
-          style={{
-            height: "100vh",
-            alignItems: "center",
-            display: "flex",
-          }}
-        >
-          <div
-            style={{
-              width: "100vw",
-              alignItems: "center",
-              display: "flex",
-              flexFlow: "column",
-            }}
-          >
-            {/* <CircularProgress /> */}
-          </div>
-        </div>
-      )}
+      {sessionLoading && <>{/* <CircularProgress /> */}</>}
       {!sessionLoading && sessionValid && (
         <SessionActive performCheck={performCheck}>
           {props.children}

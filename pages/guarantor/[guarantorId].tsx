@@ -6,7 +6,7 @@ import useSWR from "swr";
 import jsPDF from "jspdf";
 import { Col, Row } from "react-bootstrap";
 
-const Guarantor: React.FC = (props) => {
+const Guarantor: React.FC = () => {
   const router = useRouter();
   const { guarantorId } = router.query;
   const { data: guarantor } = useSWR(`/api/guarantor/${guarantorId}`);
@@ -65,7 +65,15 @@ const Guarantor: React.FC = (props) => {
   );
 };
 
-const Patient: React.FC = (props) => {
+interface PatientProps {
+  data: {
+    patientId: string;
+    firstName: string;
+    lastName: string;
+  }
+}
+
+const Patient: React.FC<PatientProps> = (props) => {
   return (
     <>
       <h4>Patient {props.data.patientId}</h4>

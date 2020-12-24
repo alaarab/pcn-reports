@@ -5,6 +5,7 @@ import useSWR from "swr";
 // import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import { Col, Row } from "react-bootstrap";
+import NavBar from "components/NavBar";
 
 const Patient: React.FC = (props) => {
   const router = useRouter();
@@ -73,13 +74,29 @@ const Patient: React.FC = (props) => {
   );
 };
 
-const Visit: React.FC = (props) => {
+interface VisitProps {
+  data: {
+    id: string;
+    locationId: string;
+    providerId: string;
+    claimId: string;
+    charge: Array<ChargeProps["data"]>;
+    assignment: Array<AssignmentProps["data"]>;
+    payment: Array<PaymentProps["data"]>;
+    // planCoverage: [object];
+  };
+}
+
+const Visit: React.FC<VisitProps> = (props) => {
   return (
     <>
-      <h4>Visit {props.data.visitId}</h4>
-      <b>locationId</b> {props.data.locationId}<br/>
-      <b>providerId</b> {props.data.providerId}<br/>
-      <b>claimId</b> {props.data.claimId}<br/>
+      <h4>Visit {props.data.id}</h4>
+      <b>locationId</b> {props.data.locationId}
+      <br />
+      <b>providerId</b> {props.data.providerId}
+      <br />
+      <b>claimId</b> {props.data.claimId}
+      <br />
       {props.data.charge.map((charge) => (
         <Charge data={charge} key={charge.legacyId} />
       ))}
@@ -89,27 +106,28 @@ const Visit: React.FC = (props) => {
       {props.data.payment.map((payment) => (
         <Payment data={payment} key={payment.id} />
       ))}
-      {props.data.planCoverage.map((planCoverage) => (
+      {/* {props.data.planCoverage.map((planCoverage) => (
         <PlanCoverage data={planCoverage} key={planCoverage.id} />
-      ))}
-      
+      ))} */}
     </>
   );
 };
 
-const Charge: React.FC = (props) => {
-  // visitId: DataTypes.STRING,
-  // procedureId: DataTypes.STRING,
-  // providerId: DataTypes.STRING,
-  // amount: DataTypes.DECIMAL,
-  // legacyId: DataTypes.STRING,
-  // supervisingProvider: DataTypes.STRING,
-  // approvedAmount: DataTypes.DECIMAL,
-  // fromServiceDate: DataTypes.DATE,
-  // toServiceDate: DataTypes.DATE,
-  // postDate: DataTypes.DATE,
-  // generalNote: DataTypes.STRING,
+interface ChargeProps {
+  data: {
+    amount: number;
+    approvedAmount: number;
+    procedureId: string;
+    providerId: string;
+    fromServiceDate: Date;
+    toServiceDate: Date;
+    postDate: Date;
+    generalNote: string;
+    legacyId: string;
+  };
+}
 
+const Charge: React.FC<ChargeProps> = (props) => {
   return (
     <>
       <h4>Charge: </h4>
@@ -131,19 +149,23 @@ const Charge: React.FC = (props) => {
   );
 };
 
-const Assignment: React.FC = (props) => {
-  // visitId
-  // chargeLine: DataTypes.INTEGER,
-  // activityCount: DataTypes.INTEGER,
-  // assingmentType: DataTypes.STRING,
-  // paymentId: DataTypes.STRING,
-  // amount: DataTypes.DECIMAL,
-  // postDate: DataTypes.DATE,
-  // glAccountCodeId: DataTypes.STRING,
-  // unappliedCreditNumber: DataTypes.STRING,
-  // transferToInsuranceCreditedPlan: DataTypes.STRING,
-  // legacyId: DataTypes.STRING,
+interface AssignmentProps {
+  data: {
+    id: string;
+    chargeLine: number;
+    activityCount: number;
+    assingmentType: string;
+    paymentId: string;
+    amount: number;
+    postDate: Date;
+    glAccountCodeId: string;
+    unappliedCreditNumber: string;
+    transferToInsuranceCreditedPlan: string;
+    legacyId: string;
+  };
+}
 
+const Assignment: React.FC<AssignmentProps> = (props) => {
   return (
     <>
       <h4>Assignment: </h4>
@@ -157,15 +179,22 @@ const Assignment: React.FC = (props) => {
   );
 };
 
-const Payment: React.FC = (props) => {
-  // guarantorId: DataTypes.STRING,
-  // insurancePlanId: DataTypes.STRING,
-  // postDate: DataTypes.DATE,
-  // referenceDate: DataTypes.DATE,
-  // amount: DataTypes.DECIMAL,
-  // voucherId: DataTypes.STRING,
-  // visitId: DataTypes.STRING,
+interface PaymentProps {
+  data: {
+    id: string;
+    guarantorId: string;
+    insurancePlanId: string;
+    postDate: Date;
+    referenceDate: Date;
+    amount: number;
+    voucherId: string;
+    visitId: string;
+    paymentId: string;
+    legacyId: string;
+  };
+}
 
+const Payment: React.FC<PaymentProps> = (props) => {
   return (
     <>
       <h4>Payment: </h4>
@@ -189,11 +218,20 @@ const Payment: React.FC = (props) => {
   );
 };
 
-const PatientPlan: React.FC = (props) => {
-  // patientId: DataTypes.STRING,
-  // insurancePlanId: DataTypes.STRING,
-  // groupId: DataTypes.STRING,
+interface PatientPlanProps {
+  data: {
+    visitId: string;
+    legacyId: string;
+    groupId: string;
+    performingProviderId: string;
+    procedure: {
+      description: string;
+    };
+    amount: number;
+  };
+}
 
+const PatientPlan: React.FC<PatientPlanProps> = (props) => {
   return (
     <>
       <h4>Plan Coverage: </h4>
@@ -213,7 +251,20 @@ const PatientPlan: React.FC = (props) => {
   );
 };
 
-// const PlanCoverage: React.FC = (props) => {
+// interface PlanCoverageProps {
+//   data: {
+//     visitId: string,
+//     legacyId: string,
+//     groupId: string,
+//     performingProviderId: string,
+//     procedure: {
+//       description: string,
+//     },
+//     amount: number,
+//   }
+// }
+
+// const PlanCoverage: React.FC<PlanCoverageProps> = (props) => {
 //   return (
 //     <>
 //       <h4>Plan Coverage: </h4>
