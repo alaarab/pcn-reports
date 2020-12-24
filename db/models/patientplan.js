@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
       });
       // define association here
       PatientPlan.belongsTo(models.InsurancePlan, {
-        foreignKey: "patientId",
+        foreignKey: "insurancePlanId",
         as: "insurancePlan",
       });
 
@@ -26,6 +26,7 @@ module.exports = (sequelize, DataTypes) => {
       patientId: DataTypes.STRING,
       insurancePlanId: DataTypes.STRING,
       groupId: DataTypes.STRING,
+      memberId: DataTypes.STRING,
     },
     {
       sequelize,

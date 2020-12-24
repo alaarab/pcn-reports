@@ -34,6 +34,7 @@ const Patient: React.FC = (props) => {
               </button>
             </Col>
           </Row>
+
           <div id="divToPrint">
             <h2>Patient Information</h2>
             <Row className="mb-3 mt-3 justify-content-end">
@@ -61,6 +62,14 @@ const Patient: React.FC = (props) => {
                 <div>Work: {patient.workPhone}</div>
                 {/* class: {patient.class} */}
               </Col>
+            </Row>
+
+            <h2>Insurance Plans</h2>
+
+            <Row className="mb-3 mt-3 justify-content-end">
+              {patient.patientPlan.map((patientPlan) => (
+                <PatientPlan data={patientPlan} key={patientPlan.id} />
+              ))}
             </Row>
 
             <h2>Visits</h2>
@@ -220,34 +229,26 @@ const Payment: React.FC<PaymentProps> = (props) => {
 
 interface PatientPlanProps {
   data: {
-    visitId: string;
-    legacyId: string;
-    groupId: string;
-    performingProviderId: string;
-    procedure: {
-      description: string;
-    };
-    amount: number;
+    id: number,
+    patientId: string,
+    insurancePlanId: string,
+    insurancePlan: {
+      name: string,
+    },
+    groupId: string,
+    memberId: string,
   };
 }
 
 const PatientPlan: React.FC<PatientPlanProps> = (props) => {
   return (
-    <>
-      <h4>Plan Coverage: </h4>
-      Visit Id: {props.data.visitId}
+    <Col>
+      Insurance Plan: {props.data.insurancePlan.name}
       <br />
-      Legacy Id: {props.data.legacyId}
+      Policy #: {props.data.memberId}
       <br />
-      Group Id: {props.data.groupId}
-      <br />
-      Performing Provider: {props.data.performingProviderId}
-      <br />
-      Procedure: {props.data.procedure.description}
-      <br />
-      Amount: {props.data.amount}
-      <br />
-    </>
+      Group #: {props.data.groupId}
+    </Col>
   );
 };
 
