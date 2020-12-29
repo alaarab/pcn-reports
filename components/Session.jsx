@@ -72,7 +72,7 @@ function LoginModal(props) {
   }
 
   return (
-    <Container>
+    <Container className="p-3">
       <Jumbotron>
         <h1>PCN Patient Lookup</h1>
       </Jumbotron>

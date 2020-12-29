@@ -123,7 +123,6 @@ const Patient: React.FC = () => {
           </Row>
 
           <div id="divToPrint">
-            <h2>Patient Information</h2>
             <Row className="mb-3 mt-3 justify-content-end">
               <Col>
                 <div>Patient #: {patient.id}</div>
@@ -150,8 +149,6 @@ const Patient: React.FC = () => {
                 <div>Class: {patient.class}</div>
               </Col>
             </Row>
-
-            <h2>Insurance Plans</h2>
 
             <Row className="mb-3 mt-3 justify-content-end">
               {patient.patientPlan.map((patientPlan) => (
@@ -233,7 +230,7 @@ const Charge: React.FC<ChargeProps> = (props) => {
         <td colSpan={2}>
           {props.data.procedureId}-{props.data.procedure.description}
         </td>
-        <td></td>
+        <td>{props.data.placeOfService}</td>
         <td></td>
         <td>{formatAmount(props.data.amount)}</td>
       </tr>

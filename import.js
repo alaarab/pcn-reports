@@ -497,6 +497,7 @@ async function main() {
           amount: parseFloat(row["Amount"]),
           voucherId: row["Voucher #"],
           visitId: row["Legacy ID"],
+          notes: row["Payment Note"],
           createdAt: new Date(),
           updatedAt: new Date(),
         };
@@ -613,7 +614,6 @@ async function main() {
           transferToInsuranceCreditedPlan:
             row["Transfer To Insurance / Credited Plan"],
           legacyId: row["Legacy ID"],
-          notes: row["Payment Note"],
           createdAt: new Date(),
           updatedAt: new Date(),
         };
