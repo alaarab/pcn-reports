@@ -64,7 +64,6 @@ function LoginModal(props) {
           setSessionValid(true);
           setSessionTimeLeftMS(res.data.timeLeftMS);
         } else {
-          console.log("NO");
           setUser({});
           setSessionValid(false);
           setSessionLastReason("Incorrect username or password. Try again!");
@@ -148,7 +147,6 @@ function Session(props) {
 
     switch (reply.data.type) {
       case "SESSION_CHECK_DONE":
-        console.log(reply);
         setUser(reply.data.user);
         setSessionValid(reply.data.valid);
         setSessionLoading(false);

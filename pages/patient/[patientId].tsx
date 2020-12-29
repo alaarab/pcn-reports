@@ -192,31 +192,33 @@ const Visit: React.FC<VisitProps> = (props) => {
     .reduce((a, b) => a + b, 0);
   return (
     <>
-      {props.data.charge.map((charge) => (
-        <Charge
-          data={charge}
-          key={charge.legacyId}
-          claimId={props.data.claimId}
-          assignment={props.data.assignment.filter(
-            (e) => e.chargeLine === charge.lineNumber
-          )}
-        />
-      ))}
-      <tr style={{ fontWeight: "bold" }}>
-        <td></td>
-        <td>Office:</td>
-        <td>{props.data.locationId}</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td>
-          {formatAmount(
-            parseFloat(chargeAmount.toString()) -
-              parseFloat(assignmentAmount.toString())
-          )}
-        </td>
-      </tr>
+      <tbody>
+        {props.data.charge.map((charge) => (
+          <Charge
+            data={charge}
+            key={charge.legacyId}
+            claimId={props.data.claimId}
+            assignment={props.data.assignment.filter(
+              (e) => e.chargeLine === charge.lineNumber
+            )}
+          />
+        ))}
+        <tr style={{ fontWeight: "bold" }}>
+          <td></td>
+          <td>Office:</td>
+          <td>{props.data.locationId}</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td>
+            {formatAmount(
+              parseFloat(chargeAmount.toString()) -
+                parseFloat(assignmentAmount.toString())
+            )}
+          </td>
+        </tr>
+      </tbody>
     </>
   );
 };
