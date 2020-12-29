@@ -132,7 +132,7 @@ const Visit: React.FC<VisitProps> = (props) => {
       ).map((assignment) => (
         <Assignment data={assignment} key={assignment.id} />
       ))}
-      <tr style={{ "font-weight": "bold" }}>
+      <tr style={{ fontWeight: "bold" }}>
         <td></td>
         <td>Office:</td>
         <td>{props.data.locationId}</td>
@@ -151,7 +151,7 @@ interface ChargeProps {
     amount: number;
     approvedAmount: number;
     procedureId: string;
-    procedure: Array<ProcedureProps["data"]>;
+    procedure: ProcedureProps["data"];
     providerId: string;
     fromServiceDate: Date;
     toServiceDate: Date;
@@ -170,7 +170,9 @@ const Charge: React.FC<ChargeProps> = (props) => {
         <td>{formatMMDDYYYY(props.data.postDate)}</td>
         <td>{props.claimId}</td>
         <td>{props.data.providerId}</td>
-        <td colSpan="2">{props.data.procedureId}-{props.data.procedure.description}</td>
+        <td colSpan={2}>
+          {props.data.procedureId}-{props.data.procedure.description}
+        </td>
         <td></td>
         <td></td>
         <td>{formatAmount(props.data.amount)}</td>
@@ -181,26 +183,26 @@ const Charge: React.FC<ChargeProps> = (props) => {
 
 interface ProcedureProps {
   data: {
-    displayId: string,
-    description: string,
-    type: string,
-    amount: number,
+    displayId: string;
+    description: string;
+    type: string;
+    amount: number;
   };
 }
 
 interface AssignmentProps {
   data: {
-    id: string,
-    chargeLine: number,
-    activityCount: number,
-    assingmentType: string,
-    payment: Array<PaymentProps["data"]>,
-    amount: number,
-    postDate: Date,
-    glAccountCodeId: string,
-    unappliedCreditNumber: string,
-    transferToInsuranceCreditedPlan: string,
-    legacyId: string,
+    id: string;
+    chargeLine: number;
+    activityCount: number;
+    assingmentType: string;
+    payment: PaymentProps["data"];
+    amount: number;
+    postDate: Date;
+    glAccountCodeId: string;
+    unappliedCreditNumber: string;
+    transferToInsuranceCreditedPlan: string;
+    legacyId: string;
   };
 }
 
@@ -215,7 +217,7 @@ const Assignment: React.FC<AssignmentProps> = (props) => {
         </td>
         <td></td>
         <td></td>
-        <td colSpan="3">
+        <td colSpan={3}>
           {props.data.glAccountCodeId == "wri" ? "Writeoff" : ""}
           {props.data.payment
             ? `PAYMENT-${formatMMDDYYYY(props.data.payment.postDate)}: ${
