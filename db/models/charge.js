@@ -30,7 +30,13 @@ module.exports = (sequelize, DataTypes) => {
       providerId: DataTypes.STRING,
       legacyId: DataTypes.STRING,
       supervisingProvider: DataTypes.STRING,
-      amount: DataTypes.DECIMAL,
+      amount: {
+        type: DataTypes.DECIMAL,
+        // get() {
+        //   const value = this.getDataValue("amount");
+        //   return value === null ? null : parseFloat(value);
+        // },
+      },
       approvedAmount: DataTypes.DECIMAL,
       placeOfService: DataTypes.STRING,
       lineNumber: DataTypes.INTEGER,

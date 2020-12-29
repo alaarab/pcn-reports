@@ -18,6 +18,7 @@ module.exports = {
         legacyId: "1",
         procedureId: "1",
         providerId: "1",
+        // diagnosis: "1",
         amount: 30.05,
         approvedAmount: 40.05,
         createdAt: new Date(),

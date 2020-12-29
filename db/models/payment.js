@@ -31,6 +31,7 @@ module.exports = (sequelize, DataTypes) => {
       postDate: DataTypes.DATE,
       referenceDate: DataTypes.DATE,
       amount: DataTypes.DECIMAL,
+      notes: DataTypes.STRING,
       voucherId: DataTypes.STRING,
       visitId: DataTypes.STRING,
     },
