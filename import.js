@@ -47,6 +47,7 @@ async function main() {
           state: row["Guarantor State"],
           phone: row["Guarantor Phone"],
           workPhone: row["Guarantor Work Phone"],
+          class: row["Patient Class"],
           createdAt: new Date(),
           updatedAt: new Date(),
         };
@@ -541,7 +542,9 @@ async function main() {
         stream.pause();
         var resultObj = {
           visitId: row["Visit #"],
-          providerId: !!row["Performing Provider"] ? row["Performing Provider"] : null,
+          providerId: !!row["Performing Provider"]
+            ? row["Performing Provider"]
+            : null,
           procedureId: row["Procedure"],
           amount: parseFloat(row["Amount"]),
           fromServiceDate: dateParser(row["From Service Date"]),
