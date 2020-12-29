@@ -9,7 +9,7 @@ import NavBar from "components/NavBar";
 import _ from "lodash";
 import { formatAmount, formatMMDDYYYY } from "assets/util";
 
-const Patient: React.FC = (props) => {
+const Patient: React.FC = () => {
   const router = useRouter();
   const { patientId } = router.query;
   const { data: patient } = useSWR(`/api/patient/${patientId}`);
@@ -31,9 +31,9 @@ const Patient: React.FC = (props) => {
         <>
           <Row className="mb-3 mt-3 justify-content-end">
             <Col className="justify-content-end">
-              <button onClick={printDocument} className="justify-content-end">
+              {/* <button onClick={printDocument} className="justify-content-end">
                 Print
-              </button>
+              </button> */}
             </Col>
           </Row>
 
@@ -62,7 +62,7 @@ const Patient: React.FC = (props) => {
                 <div>D.O.B: {patient.dob}</div>
                 <div>Home: {patient.phone}</div>
                 <div>Work: {patient.workPhone}</div>
-                {/* class: {patient.class} */}
+                <div>Class: {patient.class}</div>
               </Col>
             </Row>
 
@@ -111,10 +111,10 @@ interface VisitProps {
 
 const Visit: React.FC<VisitProps> = (props) => {
   let chargeAmount = props.data.charge
-    .map((e) => parseFloat(e.amount))
+    .map((e) => parseFloat(e.amount.toString()))
     .reduce((a, b) => a + b, 0);
   let assignmentAmount = props.data.assignment
-    .map((e) => parseFloat(e.amount))
+    .map((e) => parseFloat(e.amount.toString()))
     .reduce((a, b) => a + b, 0);
   return (
     <>
@@ -140,7 +140,12 @@ const Visit: React.FC<VisitProps> = (props) => {
         <td></td>
         <td></td>
         <td></td>
-        <td>{formatAmount(parseFloat(chargeAmount - assignmentAmount))}</td>
+        <td>
+          {formatAmount(
+            parseFloat(chargeAmount.toString()) -
+              parseFloat(assignmentAmount.toString())
+          )}
+        </td>
       </tr>
     </>
   );
