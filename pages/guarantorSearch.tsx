@@ -86,25 +86,9 @@ const GuarantorSearch: React.FC = () => {
         <Form.Row className="mb-3">
           <Col>
             <Form.Control
-              placeholder="Id"
-              name="id"
-              value={state.id}
-              onChange={handleChange}
-            />
-          </Col>
-          <Col>
-            <Form.Control
               placeholder="First name"
               name="firstName"
               value={state.firstName}
-              onChange={handleChange}
-            />
-          </Col>
-          <Col>
-            <Form.Control
-              placeholder="Middle name"
-              name="middleName"
-              value={state.middleName}
               onChange={handleChange}
             />
           </Col>

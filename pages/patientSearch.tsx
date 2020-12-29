@@ -4,6 +4,7 @@ import { Col, Form } from "react-bootstrap";
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import axios from "axios";
+import { formatMMDDYYYY } from "assets/util";
 
 const PatientSearch: React.FC = () => {
   const [state, setState] = useState({
@@ -38,6 +39,7 @@ const PatientSearch: React.FC = () => {
     {
       dataField: "dob",
       text: "Date of Birth",
+      formatter: dateFormatter,
     },
   ];
 
@@ -50,11 +52,9 @@ const PatientSearch: React.FC = () => {
   }
 
   const handleTableChange = (type, { page, pageSize }) => {
-    
     const currentIndex = (page - 1) * pageSize;
     setPage(page);
     setPageSize(pageSize);
-    console.log(page, pageSize)
   };
 
   let patientsParam = useMemo(
@@ -86,25 +86,9 @@ const PatientSearch: React.FC = () => {
         <Form.Row className="mb-3">
           <Col>
             <Form.Control
-              placeholder="Id"
-              name="id"
-              value={state.id}
-              onChange={handleChange}
-            />
-          </Col>
-          <Col>
-            <Form.Control
               placeholder="First name"
               name="firstName"
               value={state.firstName}
-              onChange={handleChange}
-            />
-          </Col>
-          <Col>
-            <Form.Control
-              placeholder="Middle name"
-              name="middleName"
-              value={state.middleName}
               onChange={handleChange}
             />
           </Col>
@@ -138,6 +122,10 @@ function patientIdFormatter(cell) {
       {cell}
     </Link>
   );
+}
+
+function dateFormatter(cell) {
+  return formatMMDDYYYY(cell);
 }
 
 export default PatientSearch;

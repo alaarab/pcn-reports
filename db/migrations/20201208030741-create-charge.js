@@ -69,6 +69,12 @@ module.exports = {
       generalNote: {
         type: Sequelize.STRING,
       },
+      placeOfService: {
+        type: Sequelize.STRING,
+      },
+      lineNumber: {
+        type: Sequelize.INTEGER,
+      },
       // diagnosis1-4?
       createdAt: {
         allowNull: false,

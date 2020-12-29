@@ -32,6 +32,8 @@ module.exports = (sequelize, DataTypes) => {
       supervisingProvider: DataTypes.STRING,
       amount: DataTypes.DECIMAL,
       approvedAmount: DataTypes.DECIMAL,
+      placeOfService: DataTypes.STRING,
+      lineNumber: DataTypes.INTEGER,
       fromServiceDate: DataTypes.DATE,
       toServiceDate: DataTypes.DATE,
       postDate: DataTypes.DATE,

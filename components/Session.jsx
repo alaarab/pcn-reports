@@ -2,7 +2,6 @@ import _ from "lodash";
 import { useContext, useEffect, useMemo, useState } from "react";
 import App from "next/app";
 import Link from "next/link";
-import { UserContext } from "contexts/userContext";
 import {
   Alert,
   Button,
@@ -14,6 +13,8 @@ import {
 } from "react-bootstrap";
 import axios from "axios";
 import { useInput } from "hooks/useInput";
+import { createContext } from "react";
+const UserContext = createContext(null);
 
 function SessionActive(props) {
   const [invertalPerformCheck, setIntervalPerformCheck] = useState(null);

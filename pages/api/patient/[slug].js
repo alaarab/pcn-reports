@@ -1,5 +1,6 @@
 import nextConnect from "next-connect";
 import middleware from "middlewares/middleware";
+import { Op } from "sequelize";
 const models = require("../../../db/models/index");
 
 const handler = nextConnect()
@@ -19,10 +20,31 @@ const handler = nextConnect()
           model: models.Visit,
           as: "visit",
           include: [
-            { model: models.Assignment, as: "assignment" },
-            { model: models.Charge, as: "charge" },
+            {
+              model: models.Assignment,
+              as: "assignment",
+              where: { amount: { [Op.gt]: 0 } },
+              order: [
+                { model: models.Assignment, as: "assignment" },
+                "chargeLine",
+                "asc",
+              ],
+              include: [
+                {
+                  model: models.Payment,
+                  as: "payment",
+                  include: [
+                    { model: models.InsurancePlan, as: "insurancePlan" },
+                  ],
+                },
+              ],
+            },
+            {
+              model: models.Charge,
+              as: "charge",
+              include: [{ model: models.Procedure, as: "procedure" }],
+            },
             { model: models.PlanCoverage, as: "planCoverage" },
-            { model: models.Payment, as: "payment" },
           ],
         },
         {

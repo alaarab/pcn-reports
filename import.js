@@ -550,6 +550,8 @@ async function main() {
           approvedAmount: row["Approved Amount"],
           legacyId: row["Legacy ID"],
           supervisingProvider: row["Supervising Provider"],
+          lineNumber: row["Line #"],
+          placeOfService: row["Place of Service"],
           createdAt: new Date(),
           updatedAt: new Date(),
         };
@@ -608,6 +610,7 @@ async function main() {
           transferToInsuranceCreditedPlan:
             row["Transfer To Insurance / Credited Plan"],
           legacyId: row["Legacy ID"],
+          notes: row["Payment Note"],
           createdAt: new Date(),
           updatedAt: new Date(),
         };

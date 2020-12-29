@@ -31,6 +31,9 @@ module.exports = {
       voucherId: {
         type: Sequelize.STRING,
       },
+      notes: {
+        type: Sequelize.STRING,
+      },
       visitId: {
         type: Sequelize.STRING,
         references: {

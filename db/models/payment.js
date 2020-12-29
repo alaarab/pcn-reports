@@ -17,6 +17,11 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "paymentId",
         as: "assignment",
       });
+      Payment.belongsTo(models.InsurancePlan, {
+        foreignKey: "insurancePlanId",
+        as: "insurancePlan",
+      });
+
     }
   }
   Payment.init(

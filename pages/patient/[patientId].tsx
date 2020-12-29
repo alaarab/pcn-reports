@@ -4,8 +4,10 @@ import { useRouter } from "next/router";
 import useSWR from "swr";
 // import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
-import { Col, Row } from "react-bootstrap";
+import { Col, Row, Table } from "react-bootstrap";
 import NavBar from "components/NavBar";
+import _ from "lodash";
+import { formatAmount, formatMMDDYYYY } from "assets/util";
 
 const Patient: React.FC = (props) => {
   const router = useRouter();
@@ -72,10 +74,23 @@ const Patient: React.FC = (props) => {
               ))}
             </Row>
 
-            <h2>Visits</h2>
-            {patient.visit.map((visit) => (
-              <Visit data={visit} key={visit.id} />
-            ))}
+            <Table size="sm">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Bill #</th>
+                  <th>Dr.</th>
+                  <th>CPT/Procedure</th>
+                  <th>Check #:Plan</th>
+                  <th>POS</th>
+                  <th>Notes</th>
+                  <th>Charge</th>
+                </tr>
+              </thead>
+              {patient.visit.map((visit) => (
+                <Visit data={visit} key={visit.id} />
+              ))}
+            </Table>
           </div>
         </>
       )}
@@ -91,33 +106,42 @@ interface VisitProps {
     claimId: string;
     charge: Array<ChargeProps["data"]>;
     assignment: Array<AssignmentProps["data"]>;
-    payment: Array<PaymentProps["data"]>;
-    // planCoverage: [object];
   };
 }
 
 const Visit: React.FC<VisitProps> = (props) => {
+  let chargeAmount = props.data.charge
+    .map((e) => parseFloat(e.amount))
+    .reduce((a, b) => a + b, 0);
+  let assignmentAmount = props.data.assignment
+    .map((e) => parseFloat(e.amount))
+    .reduce((a, b) => a + b, 0);
   return (
     <>
-      <h4>Visit {props.data.id}</h4>
-      <b>locationId</b> {props.data.locationId}
-      <br />
-      <b>providerId</b> {props.data.providerId}
-      <br />
-      <b>claimId</b> {props.data.claimId}
-      <br />
       {props.data.charge.map((charge) => (
-        <Charge data={charge} key={charge.legacyId} />
+        <Charge
+          data={charge}
+          key={charge.legacyId}
+          claimId={props.data.claimId}
+        />
       ))}
-      {props.data.assignment.map((assignment) => (
+      {_.orderBy(
+        props.data.assignment,
+        ["chargeLine", "glAccountCodeId"],
+        ["asc", "desc"]
+      ).map((assignment) => (
         <Assignment data={assignment} key={assignment.id} />
       ))}
-      {props.data.payment.map((payment) => (
-        <Payment data={payment} key={payment.id} />
-      ))}
-      {/* {props.data.planCoverage.map((planCoverage) => (
-        <PlanCoverage data={planCoverage} key={planCoverage.id} />
-      ))} */}
+      <tr style={{ "font-weight": "bold" }}>
+        <td></td>
+        <td>Office:</td>
+        <td>{props.data.locationId}</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>{formatAmount(parseFloat(chargeAmount - assignmentAmount))}</td>
+      </tr>
     </>
   );
 };
@@ -127,63 +151,81 @@ interface ChargeProps {
     amount: number;
     approvedAmount: number;
     procedureId: string;
+    procedure: Array<ProcedureProps["data"]>;
     providerId: string;
     fromServiceDate: Date;
     toServiceDate: Date;
+    placeOfService: string;
     postDate: Date;
     generalNote: string;
     legacyId: string;
   };
+  claimId: string;
 }
 
 const Charge: React.FC<ChargeProps> = (props) => {
   return (
     <>
-      <h4>Charge: </h4>
-      Charge Amount: {props.data.amount}
-      <br />
-      Charge Approved Amount: {props.data.approvedAmount}
-      <br />
-      Charge Procedure: {props.data.procedureId}
-      <br />
-      Charge Provider: {props.data.providerId}
-      <br />
-      Charge fromServiceDate: {props.data.fromServiceDate}
-      <br />
-      Charge toServiceDate: {props.data.toServiceDate}
-      <br />
-      Charge postDate: {props.data.postDate}
-      <br />
+      <tr>
+        <td>{formatMMDDYYYY(props.data.postDate)}</td>
+        <td>{props.claimId}</td>
+        <td>{props.data.providerId}</td>
+        <td colSpan="2">{props.data.procedureId}-{props.data.procedure.description}</td>
+        <td></td>
+        <td></td>
+        <td>{formatAmount(props.data.amount)}</td>
+      </tr>
     </>
   );
 };
 
+interface ProcedureProps {
+  data: {
+    displayId: string,
+    description: string,
+    type: string,
+    amount: number,
+  };
+}
+
 interface AssignmentProps {
   data: {
-    id: string;
-    chargeLine: number;
-    activityCount: number;
-    assingmentType: string;
-    paymentId: string;
-    amount: number;
-    postDate: Date;
-    glAccountCodeId: string;
-    unappliedCreditNumber: string;
-    transferToInsuranceCreditedPlan: string;
-    legacyId: string;
+    id: string,
+    chargeLine: number,
+    activityCount: number,
+    assingmentType: string,
+    payment: Array<PaymentProps["data"]>,
+    amount: number,
+    postDate: Date,
+    glAccountCodeId: string,
+    unappliedCreditNumber: string,
+    transferToInsuranceCreditedPlan: string,
+    legacyId: string,
   };
 }
 
 const Assignment: React.FC<AssignmentProps> = (props) => {
   return (
     <>
-      <h4>Assignment: </h4>
-      Assignment Amount: {props.data.amount}
-      <br />
-      Assignment Post Date: {props.data.postDate}
-      <br />
-      GL Account Code: {props.data.glAccountCodeId}
-      <br />
+      <tr>
+        <td>
+          {props.data.payment?.referenceDate
+            ? formatMMDDYYYY(props.data.payment?.referenceDate)
+            : ""}
+        </td>
+        <td></td>
+        <td></td>
+        <td colSpan="3">
+          {props.data.glAccountCodeId == "wri" ? "Writeoff" : ""}
+          {props.data.payment
+            ? `PAYMENT-${formatMMDDYYYY(props.data.payment.postDate)}: ${
+                props.data.payment.insurancePlan?.name
+              }`
+            : ""}
+        </td>
+        <td>{props.data.payment ? props.data.payment.notes : ""}</td>
+        <td>{formatAmount(props.data.amount)}-</td>
+      </tr>
     </>
   );
 };
@@ -193,50 +235,28 @@ interface PaymentProps {
     id: string;
     guarantorId: string;
     insurancePlanId: string;
+    insurancePlan: {
+      name: string;
+    };
     postDate: Date;
     referenceDate: Date;
     amount: number;
     voucherId: string;
+    notes: string;
     visitId: string;
-    paymentId: string;
-    legacyId: string;
   };
 }
 
-const Payment: React.FC<PaymentProps> = (props) => {
-  return (
-    <>
-      <h4>Payment: </h4>
-      Payment Id: {props.data.paymentId}
-      <br />
-      Guarantor Id: {props.data.guarantorId}
-      <br />
-      Plan Id: {props.data.insurancePlanId}
-      <br />
-      Post Date: {props.data.postDate}
-      <br />
-      Reference Date: {props.data.referenceDate}
-      <br />
-      Amount: {props.data.amount}
-      <br />
-      Voucher Id: {props.data.voucherId}
-      <br />
-      Legacy Id: {props.data.legacyId}
-      <br />
-    </>
-  );
-};
-
 interface PatientPlanProps {
   data: {
-    id: number,
-    patientId: string,
-    insurancePlanId: string,
+    id: number;
+    patientId: string;
+    insurancePlanId: string;
     insurancePlan: {
-      name: string,
-    },
-    groupId: string,
-    memberId: string,
+      name: string;
+    };
+    groupId: string;
+    memberId: string;
   };
 }
 
@@ -251,38 +271,5 @@ const PatientPlan: React.FC<PatientPlanProps> = (props) => {
     </Col>
   );
 };
-
-// interface PlanCoverageProps {
-//   data: {
-//     visitId: string,
-//     legacyId: string,
-//     groupId: string,
-//     performingProviderId: string,
-//     procedure: {
-//       description: string,
-//     },
-//     amount: number,
-//   }
-// }
-
-// const PlanCoverage: React.FC<PlanCoverageProps> = (props) => {
-//   return (
-//     <>
-//       <h4>Plan Coverage: </h4>
-//       Visit Id: {props.data.visitId}
-//       <br />
-//       Legacy Id: {props.data.legacyId}
-//       <br />
-//       Group Id: {props.data.groupId}
-//       <br />
-//       Performing Provider: {props.data.performingProviderId}
-//       <br />
-//       Procedure: {props.data.procedure.description}
-//       <br />
-//       Amount: {props.data.amount}
-//       <br />
-//     </>
-//   );
-// };
 
 export default Patient;
