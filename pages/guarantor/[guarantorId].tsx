@@ -69,7 +69,6 @@ const Guarantor: React.FC = () => {
 interface PatientProps {
   data: {
     id: string;
-    patientId: string;
     firstName: string;
     lastName: string;
   };
