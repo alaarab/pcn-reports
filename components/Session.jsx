@@ -75,7 +75,7 @@ function LoginModal(props) {
   return (
     <Container>
       <Jumbotron>
-        <h1>PCN Reporting Tool</h1>
+        <h1>PCN Patient Lookup</h1>
       </Jumbotron>
       <Row className="align-items-center">
         <Col className="p-3">

@@ -6,7 +6,7 @@ const NavBar: React.FC = () => {
   return (
     <Navbar bg="light" expand="lg">
       <Link href="/">
-        <Navbar.Brand>PCN Reporting Tool</Navbar.Brand>
+        <Navbar.Brand>PCN Patient Lookup</Navbar.Brand>
       </Link>
       <Nav className="mr-auto">
         <Link href="/patientSearch" passHref>
