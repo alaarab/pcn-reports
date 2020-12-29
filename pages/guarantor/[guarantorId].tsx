@@ -5,6 +5,7 @@ import useSWR from "swr";
 // import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import { Col, Row } from "react-bootstrap";
+import Link from "next/link";
 
 const Guarantor: React.FC = () => {
   const router = useRouter();
@@ -67,20 +68,22 @@ const Guarantor: React.FC = () => {
 
 interface PatientProps {
   data: {
+    id: string;
     patientId: string;
     firstName: string;
     lastName: string;
-  }
+  };
 }
 
 const Patient: React.FC<PatientProps> = (props) => {
   return (
-    <>
-      <h4>Patient {props.data.patientId}</h4>
-      <b>Patient Name:</b> {props.data.firstName}{" "}
-      {props.data.lastName}
-      <br />
-    </>
+    <p>
+      <Link
+        href={{ pathname: "/patient/[slug]", query: { slug: props.data.id } }}
+      >
+        {props.data.firstName + " " + props.data.lastName}
+      </Link>
+    </p>
   );
 };
 
