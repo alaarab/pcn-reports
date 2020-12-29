@@ -16,7 +16,7 @@ const PatientSearch: React.FC = () => {
   const [patients, setPatients] = useState([]);
   const [patientsCount, setPatientsCount] = useState(0);
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [sizePerPage, setSizePerPage] = useState(10);
 
   const columns = [
     {
@@ -51,10 +51,10 @@ const PatientSearch: React.FC = () => {
     });
   }
 
-  const handleTableChange = (type, { page, pageSize }) => {
-    const currentIndex = (page - 1) * pageSize;
+  const handleTableChange = (type, { page, sizePerPage }) => {
+    const currentIndex = (page - 1) * sizePerPage;
     setPage(page);
-    setPageSize(pageSize);
+    setSizePerPage(sizePerPage);
   };
 
   let patientsParam = useMemo(
@@ -65,10 +65,10 @@ const PatientSearch: React.FC = () => {
         middleName: state.middleName,
         lastName: state.lastName,
         page,
-        pageSize,
+        sizePerPage,
       },
     }),
-    [state, page, pageSize]
+    [state, page, sizePerPage]
   );
 
   useEffect(() => {
@@ -78,7 +78,7 @@ const PatientSearch: React.FC = () => {
       setPatientsCount(result.data.count);
     };
     fetchData();
-  }, [state, page, pageSize]);
+  }, [state, page, sizePerPage]);
 
   return (
     <>
@@ -106,7 +106,7 @@ const PatientSearch: React.FC = () => {
         <RemotePagination
           data={patients}
           page={page}
-          pageSize={pageSize}
+          sizePerPage={sizePerPage}
           totalSize={patientsCount}
           onTableChange={handleTableChange}
           columns={columns}
@@ -133,7 +133,7 @@ export default PatientSearch;
 const RemotePagination = ({
   data,
   page,
-  pageSize,
+  sizePerPage,
   onTableChange,
   totalSize,
   columns,
@@ -145,7 +145,11 @@ const RemotePagination = ({
       data={data}
       columns={columns}
       onTableChange={onTableChange}
-      pagination={paginationFactory({ page, pageSize, totalSize })}
+      pagination={paginationFactory({
+        page,
+        sizePerPage, 
+        totalSize,
+      })}
     />
   </div>
 );

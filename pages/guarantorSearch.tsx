@@ -15,7 +15,7 @@ const GuarantorSearch: React.FC = () => {
   const [guarantors, setGuarantors] = useState([]);
   const [guarantorsCount, setGuarantorsCount] = useState(0);
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [sizePerPage, setSizePerPage] = useState(10);
 
   const columns = [
     {
@@ -49,12 +49,9 @@ const GuarantorSearch: React.FC = () => {
     });
   }
 
-  const handleTableChange = (type, { page, pageSize }) => {
-    
-    const currentIndex = (page - 1) * pageSize;
+  const handleTableChange = (type, { page, sizePerPage }) => {
     setPage(page);
-    setPageSize(pageSize);
-    console.log(page, pageSize)
+    setSizePerPage(sizePerPage);
   };
 
   let guarantorsParam = useMemo(
@@ -65,10 +62,10 @@ const GuarantorSearch: React.FC = () => {
         middleName: state.middleName,
         lastName: state.lastName,
         page,
-        pageSize,
+        sizePerPage,
       },
     }),
-    [state, page, pageSize]
+    [state, page, sizePerPage]
   );
 
   useEffect(() => {
@@ -78,7 +75,7 @@ const GuarantorSearch: React.FC = () => {
       setGuarantorsCount(result.data.count);
     };
     fetchData();
-  }, [state, page, pageSize]);
+  }, [state, page, sizePerPage]);
 
   return (
     <>
@@ -106,7 +103,7 @@ const GuarantorSearch: React.FC = () => {
         <RemotePagination
           data={guarantors}
           page={page}
-          pageSize={pageSize}
+          sizePerPage={sizePerPage}
           totalSize={guarantorsCount}
           onTableChange={handleTableChange}
           columns={columns}
@@ -129,7 +126,7 @@ export default GuarantorSearch;
 const RemotePagination = ({
   data,
   page,
-  pageSize,
+  sizePerPage,
   onTableChange,
   totalSize,
   columns,
@@ -141,7 +138,7 @@ const RemotePagination = ({
       data={data}
       columns={columns}
       onTableChange={onTableChange}
-      pagination={paginationFactory({ page, pageSize, totalSize })}
+      pagination={paginationFactory({ page, sizePerPage, totalSize })}
     />
   </div>
 );

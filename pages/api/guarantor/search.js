@@ -7,29 +7,20 @@ const handler = nextConnect()
   .use(middleware)
   .get(async (req, res) => {
     const {
-      query: { id, firstName, middleName, lastName, dob, page, pageSize },
+      query: { firstName, lastName, page, sizePerPage },
     } = req;
 
     const guarantor = await models.Guarantor.findAndCountAll({
       where: {
-        id: {
-          [Op.iLike]: `%${id}%`,
-        },
         firstName: {
           [Op.iLike]: `%${firstName}%`,
-        },
-        middleName: {
-          [Op.iLike]: `%${middleName}%`,
         },
         lastName: {
           [Op.iLike]: `%${lastName}%`,
         },
-        // dob: {
-        //   [Op.like]: `%${dob}%`,
-        // },
       },
-      offset: page - 1,
-      limit: 10,
+      offset: (page - 1) * sizePerPage,
+      limit: sizePerPage,
     });
     return res.status(200).json(guarantor);
   });
