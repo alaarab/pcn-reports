@@ -47,7 +47,6 @@ async function main() {
           state: row["Guarantor State"],
           phone: row["Guarantor Phone"],
           workPhone: row["Guarantor Work Phone"],
-          class: row["Patient Class"],
           createdAt: new Date(),
           updatedAt: new Date(),
         };
@@ -94,6 +93,7 @@ async function main() {
           state: row["Pt State"],
           phone: row["Pt Phone"],
           workPhone: row["Pt Work Phone"],
+          class: row["Patient Class"],
           createdAt: new Date(),
           updatedAt: new Date(),
         };
