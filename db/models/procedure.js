@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Procedure extends Model {
     /**
@@ -15,15 +13,24 @@ module.exports = (sequelize, DataTypes) => {
         as: "charge",
       });
     }
-  };
-  Procedure.init({
-    displayId: DataTypes.STRING,
-    description: DataTypes.STRING,
-    type: DataTypes.STRING,
-    amount: DataTypes.DECIMAL
-  }, {
-    sequelize,
-    modelName: 'Procedure',
-  });
+  }
+  Procedure.init(
+    {
+      displayId: DataTypes.STRING,
+      description: DataTypes.STRING,
+      type: DataTypes.STRING,
+      amount: {
+        type: DataTypes.DECIMAL,
+        get() {
+          const value = this.getDataValue("amount");
+          return value === null ? null : parseFloat(value);
+        },
+      },
+    },
+    {
+      sequelize,
+      modelName: "Procedure",
+    }
+  );
   return Procedure;
 };

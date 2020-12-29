@@ -21,7 +21,6 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "insurancePlanId",
         as: "insurancePlan",
       });
-
     }
   }
   Payment.init(
@@ -30,7 +29,13 @@ module.exports = (sequelize, DataTypes) => {
       insurancePlanId: DataTypes.STRING,
       postDate: DataTypes.DATE,
       referenceDate: DataTypes.DATE,
-      amount: DataTypes.DECIMAL,
+      amount: {
+        type: DataTypes.DECIMAL,
+        get() {
+          const value = this.getDataValue("amount");
+          return value === null ? null : parseFloat(value);
+        },
+      },
       notes: DataTypes.STRING,
       voucherId: DataTypes.STRING,
       visitId: DataTypes.STRING,

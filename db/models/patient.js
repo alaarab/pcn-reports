@@ -39,9 +39,27 @@ module.exports = (sequelize, DataTypes) => {
       state: DataTypes.STRING,
       phone: DataTypes.STRING,
       workPhone: DataTypes.STRING,
-      insurance: DataTypes.DECIMAL,
-      balance: DataTypes.DECIMAL,
-      unappliedInsuranceBalance: DataTypes.DECIMAL,
+      insurance: {
+        type: DataTypes.DECIMAL,
+        get() {
+          const value = this.getDataValue("insurance");
+          return value === null ? null : parseFloat(value);
+        },
+      },
+      balance: {
+        type: DataTypes.DECIMAL,
+        get() {
+          const value = this.getDataValue("balance");
+          return value === null ? null : parseFloat(value);
+        },
+      },
+      unappliedInsuranceBalance: {
+        type: DataTypes.DECIMAL,
+        get() {
+          const value = this.getDataValue("unappliedInsuranceBalance");
+          return value === null ? null : parseFloat(value);
+        },
+      },
       registrationDate: DataTypes.DATE,
       class: DataTypes.STRING,
     },

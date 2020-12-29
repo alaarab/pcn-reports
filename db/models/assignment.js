@@ -30,7 +30,13 @@ module.exports = (sequelize, DataTypes) => {
       activityCount: DataTypes.INTEGER,
       assingmentType: DataTypes.STRING,
       paymentId: DataTypes.STRING,
-      amount: DataTypes.DECIMAL,
+      amount: {
+        type: DataTypes.DECIMAL,
+        get() {
+          const value = this.getDataValue("amount");
+          return value === null ? null : parseFloat(value);
+        },
+      },
       postDate: DataTypes.DATE,
       glAccountCodeId: DataTypes.STRING,
       unappliedCreditNumber: DataTypes.STRING,

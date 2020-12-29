@@ -182,10 +182,10 @@ const Patient: React.FC = () => {
 
 const Visit: React.FC<VisitProps> = (props) => {
   let chargeAmount = props.data.charge
-    .map((e) => parseFloat(e.amount.toString()))
+    .map((e) => e.amount)
     .reduce((a, b) => a + b, 0);
   let assignmentAmount = props.data.assignment
-    .map((e) => parseFloat(e.amount.toString()))
+    .map((e) => e.amount)
     .reduce((a, b) => a + b, 0);
   return (
     <>
@@ -208,12 +208,7 @@ const Visit: React.FC<VisitProps> = (props) => {
           <td></td>
           <td></td>
           <td></td>
-          <td>
-            {formatAmount(
-              parseFloat(chargeAmount.toString()) -
-                parseFloat(assignmentAmount.toString())
-            )}
-          </td>
+          <td>{formatAmount(chargeAmount - assignmentAmount)}</td>
         </tr>
       </tbody>
     </>

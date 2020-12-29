@@ -32,12 +32,18 @@ module.exports = (sequelize, DataTypes) => {
       supervisingProvider: DataTypes.STRING,
       amount: {
         type: DataTypes.DECIMAL,
-        // get() {
-        //   const value = this.getDataValue("amount");
-        //   return value === null ? null : parseFloat(value);
-        // },
+        get() {
+          const value = this.getDataValue("amount");
+          return value === null ? null : parseFloat(value);
+        },
       },
-      approvedAmount: DataTypes.DECIMAL,
+      approvedAmount: {
+        type: DataTypes.DECIMAL,
+        get() {
+          const value = this.getDataValue("approvedAmount");
+          return value === null ? null : parseFloat(value);
+        },
+      },
       placeOfService: DataTypes.STRING,
       lineNumber: DataTypes.INTEGER,
       fromServiceDate: DataTypes.DATE,
