@@ -42,6 +42,7 @@ interface VisitProps {
     claimId: string;
     charge: Array<ChargeProps["data"]>;
     assignment: Array<AssignmentProps["data"]>;
+    inpatient: Array<InpatientProps["data"]>;
   };
 }
 
@@ -91,6 +92,29 @@ interface PatientPlanProps {
     };
     groupId: string;
     memberId: string;
+  };
+}
+
+interface InpatientProps {
+  data: {
+    id: number;
+    visitId: string;
+    providerId: string;
+    diagId: {
+      name: string;
+    };
+    diagnosis: DiagCodeProps["data"];
+    locationId: string;
+    legacyId: string;
+  };
+  visit: VisitProps["data"];
+}
+
+interface DiagCodeProps {
+  data: {
+    id: string;
+    legacyId: string;
+    description: string;
   };
 }
 
@@ -182,12 +206,6 @@ const Patient: React.FC = () => {
 };
 
 const Visit: React.FC<VisitProps> = (props) => {
-  let chargeAmount = props.data.charge
-    .map((e) => e.amount)
-    .reduce((a, b) => a + b, 0);
-  let assignmentAmount = props.data.assignment
-    .map((e) => e.amount)
-    .reduce((a, b) => a + b, 0);
   return (
     <>
       <tbody>
@@ -201,16 +219,9 @@ const Visit: React.FC<VisitProps> = (props) => {
             )}
           />
         ))}
-        <tr style={{ fontWeight: "bold" }}>
-          <td></td>
-          <td>Office:</td>
-          <td>{props.data.locationId}</td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td>{formatAmount(chargeAmount - assignmentAmount)}</td>
-        </tr>
+        {props.data.inpatient.map((inpatient) => (
+          <Inpatient data={inpatient} key={inpatient.id} visit={props.data} />
+        ))}
       </tbody>
     </>
   );
@@ -260,6 +271,32 @@ const Assignment: React.FC<AssignmentProps> = (props) => {
         </td>
         <td>{props.data.payment ? props.data.payment.notes : ""}</td>
         <td>{formatAmount(props.data.amount)}-</td>
+      </tr>
+    </>
+  );
+};
+
+const Inpatient: React.FC<InpatientProps> = (props) => {
+  let chargeAmount = props.visit.charge
+    .map((e) => e.amount)
+    .reduce((a, b) => a + b, 0);
+  let assignmentAmount = props.visit.assignment
+    .map((e) => e.amount)
+    .reduce((a, b) => a + b, 0);
+
+  return (
+    <>
+      <tr style={{ fontWeight: "bold" }}>
+        <td></td>
+        <td>Office:</td>
+        <td>{props.data.locationId}</td>
+        <td>
+          {props.data.diagnosis.id}-{props.data.diagnosis.description}
+        </td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>{formatAmount(chargeAmount - assignmentAmount)}</td>
       </tr>
     </>
   );
