@@ -23,7 +23,7 @@ const handler = nextConnect()
             {
               model: models.Assignment,
               as: "assignment",
-              // where: { amount: { [Op.gt]: 0 } },
+              where: { amount: { [Op.gt]: 0 } },
               order: [
                 { model: models.Assignment, as: "assignment" },
                 "chargeLine",

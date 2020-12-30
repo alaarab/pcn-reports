@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import useSWR from "swr";
 // import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
-import { Col, Row } from "react-bootstrap";
+import { Col, Row, Spinner } from "react-bootstrap";
 import Link from "next/link";
 
 const Guarantor: React.FC = () => {
@@ -62,6 +62,7 @@ const Guarantor: React.FC = () => {
           </div>
         </>
       )}
+      {!guarantor && <Spinner animation="grow" />}
     </>
   );
 };

@@ -10,15 +10,43 @@ module.exports = {
       },
       visitId: {
         type: Sequelize.STRING,
+        allowNull: false,
+        references: {
+          model: {
+            tableName: "Visits",
+          },
+          key: "id",
+        },
       },
       providerId: {
         type: Sequelize.STRING,
+        allowNull: true,
+        references: {
+          model: {
+            tableName: "Providers",
+          },
+          key: "id",
+        },
       },
       diagId: {
         type: Sequelize.STRING,
+        allowNull: false,
+        references: {
+          model: {
+            tableName: "DiagCodes",
+          },
+          key: "id",
+        },
       },
       locationId: {
         type: Sequelize.STRING,
+        allowNull: false,
+        references: {
+          model: {
+            tableName: "Locations",
+          },
+          key: "id",
+        },
       },
       legacyId: {
         type: Sequelize.STRING,

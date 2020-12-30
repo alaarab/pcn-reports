@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import useSWR from "swr";
 // import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
-import { Col, Row, Table } from "react-bootstrap";
+import { Col, Row, Spinner, Table } from "react-bootstrap";
 import NavBar from "components/NavBar";
 import _ from "lodash";
 import { formatAmount, formatMMDDYYYY } from "assets/util";
@@ -176,6 +176,7 @@ const Patient: React.FC = () => {
           </div>
         </>
       )}
+      {!patient && <Spinner animation="grow" />}
     </>
   );
 };
