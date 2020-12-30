@@ -26,13 +26,30 @@ async function main() {
   // Patients and Guarantors
   await new Promise(async (resolve) => {
     console.log("Beginning Patients and Guarantors.");
+    let numConcurrent = 0;
+    const maxConcurrent = 10;
+    let paused = false;
     let dataPath = "csv/patient.txt";
     let logFile = "logs/patient.txt";
     let stream = fs
       .createReadStream(dataPath)
       .pipe(csvParser({ separator: "|" }))
       .on("data", async (row, i) => {
-        stream.pause();
+        function checkResume() {
+          --numConcurrent;
+          if (paused && numConcurrent < maxConcurrent) {
+            // restart the stream, there's room for more
+            paused = false;
+            stream.resume();
+          }
+        }
+        ++numConcurrent;
+
+        if (numConcurrent >= maxConcurrent) {
+          // pause the stream because we have max number of operations going
+          stream.pause();
+          paused = true;
+        }
         let guarantorObj = {
           id: row["Guarantor Legacy Account Number"],
           ssn: row["Guarantor SSN"],
@@ -47,6 +64,26 @@ async function main() {
           state: row["Guarantor State"],
           phone: row["Guarantor Phone"],
           workPhone: row["Guarantor Work Phone"],
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        };
+
+        let patientObj = {
+          id: row["Patient Legacy Account Number"],
+          guarantorId: row["Guarantor Legacy Account Number"],
+          ssn: row["Pt SSN"],
+          firstName: row["Pt  First Name"],
+          middleName: row["Pt Middle Name"],
+          lastName: row["Pt Last Name"],
+          sex: row["Pt Sex"],
+          dob: dateParser(row["Pt DOB"]),
+          address: row["Pt Address"],
+          zip: row["Pt Zip"],
+          city: row["Pt City"],
+          state: row["Pt State"],
+          phone: row["Pt Phone"],
+          workPhone: row["Pt Work Phone"],
+          class: row["Patient Class"],
           createdAt: new Date(),
           updatedAt: new Date(),
         };
@@ -78,26 +115,6 @@ async function main() {
           }
         }
 
-        let patientObj = {
-          id: row["Patient Legacy Account Number"],
-          guarantorId: row["Guarantor Legacy Account Number"],
-          ssn: row["Pt SSN"],
-          firstName: row["Pt  First Name"],
-          middleName: row["Pt Middle Name"],
-          lastName: row["Pt Last Name"],
-          sex: row["Pt Sex"],
-          dob: dateParser(row["Pt DOB"]),
-          address: row["Pt Address"],
-          zip: row["Pt Zip"],
-          city: row["Pt City"],
-          state: row["Pt State"],
-          phone: row["Pt Phone"],
-          workPhone: row["Pt Work Phone"],
-          class: row["Patient Class"],
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        };
-
         try {
           await pool.query(
             `INSERT INTO "Patients"(${queryFields(
@@ -119,7 +136,7 @@ async function main() {
             }
           );
         }
-        stream.resume();
+        checkResume();
       })
       .on("end", async () => {
         resolve();
@@ -130,13 +147,30 @@ async function main() {
   // Diagnosis Codes
   await new Promise(async (resolve) => {
     console.log("Beginning Diagnosis Codes.");
+    let numConcurrent = 0;
+    const maxConcurrent = 10;
+    let paused = false;
     let dataPath = "csv/diagcode.txt";
     let logFile = "logs/diagcode.txt";
     let stream = fs
       .createReadStream(dataPath)
       .pipe(csvParser({ separator: "|" }))
       .on("data", async (row, i) => {
-        stream.pause();
+        function checkResume() {
+          --numConcurrent;
+          if (paused && numConcurrent < maxConcurrent) {
+            // restart the stream, there's room for more
+            paused = false;
+            stream.resume();
+          }
+        }
+        ++numConcurrent;
+
+        if (numConcurrent >= maxConcurrent) {
+          // pause the stream because we have max number of operations going
+          stream.pause();
+          paused = true;
+        }
         var resultObj = {
           id: row["Legacy Diagnosis Code"],
           legacyId: row["ICD-9 Code"],
@@ -165,7 +199,7 @@ async function main() {
             }
           );
         }
-        stream.resume();
+        checkResume();
       })
       .on("end", async () => {
         resolve();
@@ -176,13 +210,30 @@ async function main() {
   // Locations
   await new Promise(async (resolve) => {
     console.log("Beginning Locations.");
+    let numConcurrent = 0;
+    const maxConcurrent = 10;
+    let paused = false;
     let dataPath = "csv/location.txt";
     let logFile = "logs/location.txt";
     let stream = fs
       .createReadStream(dataPath)
       .pipe(csvParser({ separator: "|" }))
       .on("data", async (row, i) => {
-        stream.pause();
+        function checkResume() {
+          --numConcurrent;
+          if (paused && numConcurrent < maxConcurrent) {
+            // restart the stream, there's room for more
+            paused = false;
+            stream.resume();
+          }
+        }
+        ++numConcurrent;
+
+        if (numConcurrent >= maxConcurrent) {
+          // pause the stream because we have max number of operations going
+          stream.pause();
+          paused = true;
+        }
         var resultObj = {
           id: row["Legacy Location Code"],
           description: row["Location Description"],
@@ -217,7 +268,7 @@ async function main() {
             }
           );
         }
-        stream.resume();
+        checkResume();
       })
       .on("end", async () => {
         resolve();
@@ -228,13 +279,30 @@ async function main() {
   // Insurance Plans
   await new Promise(async (resolve) => {
     console.log("Beginning Insurance Plans.");
+    let numConcurrent = 0;
+    const maxConcurrent = 10;
+    let paused = false;
     let dataPath = "csv/insplan.txt";
     let logFile = "logs/insplan.txt";
     let stream = fs
       .createReadStream(dataPath)
       .pipe(csvParser({ separator: "|" }))
       .on("data", async (row, i) => {
-        stream.pause();
+        function checkResume() {
+          --numConcurrent;
+          if (paused && numConcurrent < maxConcurrent) {
+            // restart the stream, there's room for more
+            paused = false;
+            stream.resume();
+          }
+        }
+        ++numConcurrent;
+
+        if (numConcurrent >= maxConcurrent) {
+          // pause the stream because we have max number of operations going
+          stream.pause();
+          paused = true;
+        }
         var resultObj = {
           id: row["Insurance Plan Identifier"],
           name: row["Insurance Plan Name"],
@@ -271,7 +339,7 @@ async function main() {
             }
           );
         }
-        stream.resume();
+        checkResume();
       })
       .on("end", async () => {
         resolve();
@@ -282,13 +350,30 @@ async function main() {
   // glAcctCodes
   await new Promise(async (resolve) => {
     console.log("Beginning glAcctCodes.");
+    let numConcurrent = 0;
+    const maxConcurrent = 10;
+    let paused = false;
     let dataPath = "csv/glacctcd.txt";
     let logFile = "logs/glacctcd.txt";
     let stream = fs
       .createReadStream(dataPath)
       .pipe(csvParser({ separator: "|" }))
       .on("data", async (row, i) => {
-        stream.pause();
+        function checkResume() {
+          --numConcurrent;
+          if (paused && numConcurrent < maxConcurrent) {
+            // restart the stream, there's room for more
+            paused = false;
+            stream.resume();
+          }
+        }
+        ++numConcurrent;
+
+        if (numConcurrent >= maxConcurrent) {
+          // pause the stream because we have max number of operations going
+          stream.pause();
+          paused = true;
+        }
         var resultObj = {
           id: row["GL Account Tag"],
           class: row["Class"],
@@ -318,7 +403,7 @@ async function main() {
             }
           );
         }
-        stream.resume();
+        checkResume();
       })
       .on("end", async () => {
         resolve();
@@ -329,13 +414,30 @@ async function main() {
   // Procedures
   await new Promise(async (resolve) => {
     console.log("Beginning Procedures.");
+    let numConcurrent = 0;
+    const maxConcurrent = 10;
+    let paused = false;
     let dataPath = "csv/proccode.txt";
     let logFile = "logs/proccode.txt";
     let stream = fs
       .createReadStream(dataPath)
       .pipe(csvParser({ separator: "|" }))
       .on("data", async (row, i) => {
-        stream.pause();
+        function checkResume() {
+          --numConcurrent;
+          if (paused && numConcurrent < maxConcurrent) {
+            // restart the stream, there's room for more
+            paused = false;
+            stream.resume();
+          }
+        }
+        ++numConcurrent;
+
+        if (numConcurrent >= maxConcurrent) {
+          // pause the stream because we have max number of operations going
+          stream.pause();
+          paused = true;
+        }
         var resultObj = {
           id: row["Legacy Procedure Code"],
           displayId: row["CPT Code"],
@@ -367,7 +469,7 @@ async function main() {
             }
           );
         }
-        stream.resume();
+        checkResume();
       })
       .on("end", async () => {
         resolve();
@@ -378,13 +480,30 @@ async function main() {
   // Providers
   await new Promise(async (resolve) => {
     console.log("Beginning Providers.");
+    let numConcurrent = 0;
+    const maxConcurrent = 10;
+    let paused = false;
     let dataPath = "csv/provider.txt";
     let logFile = "logs/provider.txt";
     let stream = fs
       .createReadStream(dataPath)
       .pipe(csvParser({ separator: "|" }))
       .on("data", async (row, i) => {
-        stream.pause();
+        function checkResume() {
+          --numConcurrent;
+          if (paused && numConcurrent < maxConcurrent) {
+            // restart the stream, there's room for more
+            paused = false;
+            stream.resume();
+          }
+        }
+        ++numConcurrent;
+
+        if (numConcurrent >= maxConcurrent) {
+          // pause the stream because we have max number of operations going
+          stream.pause();
+          paused = true;
+        }
         var resultObj = {
           id: row["Legacy Provider Code"],
           firstName: row["First Name"],
@@ -414,7 +533,7 @@ async function main() {
             }
           );
         }
-        stream.resume();
+        checkResume();
       })
       .on("end", async () => {
         resolve();
@@ -425,13 +544,30 @@ async function main() {
   // Patient Plans
   await new Promise(async (resolve) => {
     console.log("Beginning Patient Plans.");
+    let numConcurrent = 0;
+    const maxConcurrent = 10;
+    let paused = false;
     let dataPath = "csv/patplan.txt";
     let logFile = "logs/patplan.txt";
     let stream = fs
       .createReadStream(dataPath)
       .pipe(csvParser({ separator: "|" }))
       .on("data", async (row, i) => {
-        stream.pause();
+        function checkResume() {
+          --numConcurrent;
+          if (paused && numConcurrent < maxConcurrent) {
+            // restart the stream, there's room for more
+            paused = false;
+            stream.resume();
+          }
+        }
+        ++numConcurrent;
+
+        if (numConcurrent >= maxConcurrent) {
+          // pause the stream because we have max number of operations going
+          stream.pause();
+          paused = true;
+        }
         var resultObj = {
           patientId: row["Patient Legacy Account Number"],
           insurancePlanId: row["Ins Plan#"],
@@ -462,7 +598,7 @@ async function main() {
             }
           );
         }
-        stream.resume();
+        checkResume();
       })
       .on("end", async () => {
         resolve();
@@ -473,13 +609,30 @@ async function main() {
   // Visits
   await new Promise(async (resolve) => {
     console.log("Beginning Visits.");
+    let numConcurrent = 0;
+    const maxConcurrent = 10;
+    let paused = false;
     let dataPath = "csv/visit.txt";
     let logFile = "logs/visit.txt";
     let stream = fs
       .createReadStream(dataPath)
       .pipe(csvParser({ separator: "|" }))
       .on("data", async (row, i) => {
-        stream.pause();
+        function checkResume() {
+          --numConcurrent;
+          if (paused && numConcurrent < maxConcurrent) {
+            // restart the stream, there's room for more
+            paused = false;
+            stream.resume();
+          }
+        }
+        ++numConcurrent;
+
+        if (numConcurrent >= maxConcurrent) {
+          // pause the stream because we have max number of operations going
+          stream.pause();
+          paused = true;
+        }
         var resultObj = {
           id: row["Visit #"],
           patientId: row["Patient #"],
@@ -514,7 +667,7 @@ async function main() {
             }
           );
         }
-        stream.resume();
+        checkResume();
       })
       .on("end", async () => {
         resolve();
@@ -522,65 +675,33 @@ async function main() {
       });
   });
 
-  // Inpatients
-  // await new Promise(async (resolve) => {
-  //   console.log("Beginning Inpatients.");
-  //   let dataPath = "csv/inpatient.txt";
-  //   let logFile = "logs/inpatient.txt";
-  //   let stream = fs
-  //     .createReadStream(dataPath)
-  //     .pipe(csvParser({ separator: "|" }))
-  //     .on("data", async (row, i) => {
-  //       stream.pause();
-  //       var resultObj = {
-  //         visitId: row["Inpatient Visit #"],
-  //         providerId: row["Provider Code"],
-  //         diagId: row["Diagnosis"],
-  //         locationId: row["Service Center"],
-  //         legacyId: row["Legacy ID"],
-  //         createdAt: new Date(),
-  //         updatedAt: new Date(),
-  //       };
-
-  //       try {
-  //         await pool.query(
-  //           `INSERT INTO "Inpatients"(${queryFields(
-  //             resultObj
-  //           )}) VALUES(${queryDollar(resultObj)})`,
-  //           Object.values(resultObj)
-  //         );
-  //       } catch (err) {
-  //         fs.appendFile(
-  //           logFile,
-  //           `${dataPath} ${err.message} on: ${JSON.stringify(
-  //             resultObj,
-  //             null,
-  //             2
-  //           )}\r\n`,
-  //           function (err) {
-  //             if (err) throw err;
-  //             console.log("Error logged.");
-  //           }
-  //         );
-  //       }
-  //       stream.resume();
-  //     })
-  //     .on("end", async () => {
-  //       resolve();
-  //       console.log("Completed Inpatients.");
-  //     });
-  // });
-
   // Payments
   await new Promise(async (resolve) => {
     console.log("Beginning Payments.");
+    let numConcurrent = 0;
+    const maxConcurrent = 10;
+    let paused = false;
     let dataPath = "csv/payment.txt";
     let logFile = "logs/payment.txt";
     let stream = fs
       .createReadStream(dataPath)
       .pipe(csvParser({ separator: "|" }))
       .on("data", async (row, i) => {
-        stream.pause();
+        function checkResume() {
+          --numConcurrent;
+          if (paused && numConcurrent < maxConcurrent) {
+            // restart the stream, there's room for more
+            paused = false;
+            stream.resume();
+          }
+        }
+        ++numConcurrent;
+
+        if (numConcurrent >= maxConcurrent) {
+          // pause the stream because we have max number of operations going
+          stream.pause();
+          paused = true;
+        }
         var resultObj = {
           id: row["Payment #"],
           guarantorId: row["Guarantor #"],
@@ -618,7 +739,7 @@ async function main() {
             }
           );
         }
-        stream.resume();
+        checkResume();
       })
       .on("end", async () => {
         resolve();
@@ -629,13 +750,30 @@ async function main() {
   // Charges
   await new Promise(async (resolve) => {
     console.log("Beginning Charges.");
+    let numConcurrent = 0;
+    const maxConcurrent = 10;
+    let paused = false;
     let dataPath = "csv/charge.txt";
     let logFile = "logs/charge.txt";
     let stream = fs
       .createReadStream(dataPath)
       .pipe(csvParser({ separator: "|" }))
       .on("data", async (row, i) => {
-        stream.pause();
+        function checkResume() {
+          --numConcurrent;
+          if (paused && numConcurrent < maxConcurrent) {
+            // restart the stream, there's room for more
+            paused = false;
+            stream.resume();
+          }
+        }
+        ++numConcurrent;
+
+        if (numConcurrent >= maxConcurrent) {
+          // pause the stream because we have max number of operations going
+          stream.pause();
+          paused = true;
+        }
         var resultObj = {
           visitId: row["Visit #"],
           providerId: !!row["Performing Provider"]
@@ -677,7 +815,7 @@ async function main() {
             }
           );
         }
-        stream.resume();
+        checkResume();
       })
       .on("end", async () => {
         resolve();
@@ -688,13 +826,30 @@ async function main() {
   // Assignments
   await new Promise(async (resolve) => {
     console.log("Beginning Assignments.");
+    let numConcurrent = 0;
+    const maxConcurrent = 10;
+    let paused = false;
     let dataPath = "csv/assign.txt";
     let logFile = "logs/assign.txt";
     let stream = fs
       .createReadStream(dataPath)
       .pipe(csvParser({ separator: "|" }))
       .on("data", async (row, i) => {
-        stream.pause();
+        function checkResume() {
+          --numConcurrent;
+          if (paused && numConcurrent < maxConcurrent) {
+            // restart the stream, there's room for more
+            paused = false;
+            stream.resume();
+          }
+        }
+        ++numConcurrent;
+
+        if (numConcurrent >= maxConcurrent) {
+          // pause the stream because we have max number of operations going
+          stream.pause();
+          paused = true;
+        }
         var resultObj = {
           visitId: row["Visit #"],
           chargeLine: row["Charge Line #"],
@@ -735,7 +890,7 @@ async function main() {
             }
           );
         }
-        stream.resume();
+        checkResume();
       })
       .on("end", async () => {
         resolve();
