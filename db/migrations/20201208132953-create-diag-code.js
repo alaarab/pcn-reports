@@ -4,9 +4,8 @@ module.exports = {
     await queryInterface.createTable("DiagCodes", {
       id: {
         allowNull: false,
-        autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING,
       },
       legacyId: {
         type: Sequelize.STRING,
