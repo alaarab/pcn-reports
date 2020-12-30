@@ -27,7 +27,7 @@ async function main() {
   await new Promise(async (resolve) => {
     console.log("Beginning Patients and Guarantors.");
     let numConcurrent = 0;
-    const maxConcurrent = 10;
+    const maxConcurrent = 30;
     let paused = false;
     let dataPath = "csv/patient.txt";
     let logFile = "logs/patient.txt";
@@ -148,7 +148,7 @@ async function main() {
   await new Promise(async (resolve) => {
     console.log("Beginning Diagnosis Codes.");
     let numConcurrent = 0;
-    const maxConcurrent = 10;
+    const maxConcurrent = 30;
     let paused = false;
     let dataPath = "csv/diagcode.txt";
     let logFile = "logs/diagcode.txt";
@@ -211,7 +211,7 @@ async function main() {
   await new Promise(async (resolve) => {
     console.log("Beginning Locations.");
     let numConcurrent = 0;
-    const maxConcurrent = 10;
+    const maxConcurrent = 30;
     let paused = false;
     let dataPath = "csv/location.txt";
     let logFile = "logs/location.txt";
@@ -280,7 +280,7 @@ async function main() {
   await new Promise(async (resolve) => {
     console.log("Beginning Insurance Plans.");
     let numConcurrent = 0;
-    const maxConcurrent = 10;
+    const maxConcurrent = 30;
     let paused = false;
     let dataPath = "csv/insplan.txt";
     let logFile = "logs/insplan.txt";
@@ -351,7 +351,7 @@ async function main() {
   await new Promise(async (resolve) => {
     console.log("Beginning glAcctCodes.");
     let numConcurrent = 0;
-    const maxConcurrent = 10;
+    const maxConcurrent = 30;
     let paused = false;
     let dataPath = "csv/glacctcd.txt";
     let logFile = "logs/glacctcd.txt";
@@ -415,7 +415,7 @@ async function main() {
   await new Promise(async (resolve) => {
     console.log("Beginning Procedures.");
     let numConcurrent = 0;
-    const maxConcurrent = 10;
+    const maxConcurrent = 30;
     let paused = false;
     let dataPath = "csv/proccode.txt";
     let logFile = "logs/proccode.txt";
@@ -481,7 +481,7 @@ async function main() {
   await new Promise(async (resolve) => {
     console.log("Beginning Providers.");
     let numConcurrent = 0;
-    const maxConcurrent = 10;
+    const maxConcurrent = 30;
     let paused = false;
     let dataPath = "csv/provider.txt";
     let logFile = "logs/provider.txt";
@@ -545,7 +545,7 @@ async function main() {
   await new Promise(async (resolve) => {
     console.log("Beginning Patient Plans.");
     let numConcurrent = 0;
-    const maxConcurrent = 10;
+    const maxConcurrent = 30;
     let paused = false;
     let dataPath = "csv/patplan.txt";
     let logFile = "logs/patplan.txt";
@@ -610,7 +610,7 @@ async function main() {
   await new Promise(async (resolve) => {
     console.log("Beginning Visits.");
     let numConcurrent = 0;
-    const maxConcurrent = 10;
+    const maxConcurrent = 30;
     let paused = false;
     let dataPath = "csv/visit.txt";
     let logFile = "logs/visit.txt";
@@ -679,7 +679,7 @@ async function main() {
   await new Promise(async (resolve) => {
     console.log("Beginning Payments.");
     let numConcurrent = 0;
-    const maxConcurrent = 10;
+    const maxConcurrent = 30;
     let paused = false;
     let dataPath = "csv/payment.txt";
     let logFile = "logs/payment.txt";
@@ -751,7 +751,7 @@ async function main() {
   await new Promise(async (resolve) => {
     console.log("Beginning Charges.");
     let numConcurrent = 0;
-    const maxConcurrent = 10;
+    const maxConcurrent = 30;
     let paused = false;
     let dataPath = "csv/charge.txt";
     let logFile = "logs/charge.txt";
@@ -827,7 +827,7 @@ async function main() {
   await new Promise(async (resolve) => {
     console.log("Beginning Assignments.");
     let numConcurrent = 0;
-    const maxConcurrent = 10;
+    const maxConcurrent = 30;
     let paused = false;
     let dataPath = "csv/assign.txt";
     let logFile = "logs/assign.txt";
