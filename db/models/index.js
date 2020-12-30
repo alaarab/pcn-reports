@@ -83,6 +83,8 @@ const models = [
   require("./guarantor")(sequelize, Sequelize),
   require("./location")(sequelize, Sequelize),
   require("./glaccountcode")(sequelize, Sequelize),
+  require("./diagcode")(sequelize, Sequelize),
+  require("./inpatient")(sequelize, Sequelize),
 ];
 models.forEach((model) => {
   db[model.name] = model;

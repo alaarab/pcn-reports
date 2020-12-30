@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
         targetKey: "id",
         as: "location",
       });
-      Inpatient.belongsTo(models.diagCode, {
+      Inpatient.belongsTo(models.DiagCode, {
         foreignKey: "diagId",
         targetKey: "id",
         as: "diagCode",
