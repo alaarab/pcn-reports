@@ -651,7 +651,7 @@ async function main() {
           supervisingProvider: row["Supervising Provider"],
           lineNumber: row["Line #"],
           placeOfService: row["Place of Service"],
-          diagId: row["Diagnosis 1"],
+          diagId: !!row["Diagnosis 1"] ? row["Diagnosis 1"] : null,
           createdAt: new Date(),
           updatedAt: new Date(),
         };

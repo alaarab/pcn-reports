@@ -77,7 +77,7 @@ module.exports = {
       },
       diagId: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: true,
         references: {
           model: {
             tableName: "DiagCodes",
