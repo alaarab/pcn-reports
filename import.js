@@ -523,54 +523,53 @@ async function main() {
   });
 
   // Inpatients
-  await new Promise(async (resolve) => {
-    console.log("Beginning Inpatients.");
-    let dataPath = "csv/inpatient.txt";
-    let logFile = "logs/inpatient.txt";
-    let stream = fs
-      .createReadStream(dataPath)
-      .pipe(csvParser({ separator: "|" }))
-      .on("data", async (row, i) => {
-        stream.pause();
-        var resultObj = {
-          visitId: row["Inpatient Visit #"],
-          providerId: row["Provider Code"],
-          diagId: row["Diagnosis"],
-          locationId: row["Service Center"],
-          legacyId: row["Legacy ID"],
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        };
+  // await new Promise(async (resolve) => {
+  //   console.log("Beginning Inpatients.");
+  //   let dataPath = "csv/inpatient.txt";
+  //   let logFile = "logs/inpatient.txt";
+  //   let stream = fs
+  //     .createReadStream(dataPath)
+  //     .pipe(csvParser({ separator: "|" }))
+  //     .on("data", async (row, i) => {
+  //       stream.pause();
+  //       var resultObj = {
+  //         visitId: row["Inpatient Visit #"],
+  //         providerId: row["Provider Code"],
+  //         diagId: row["Diagnosis"],
+  //         locationId: row["Service Center"],
+  //         legacyId: row["Legacy ID"],
+  //         createdAt: new Date(),
+  //         updatedAt: new Date(),
+  //       };
 
-        try {
-          await pool.query(
-            `INSERT INTO "Inpatients"(${queryFields(
-              resultObj
-            )}) VALUES(${queryDollar(resultObj)})`,
-            Object.values(resultObj)
-          );
-        } catch (err) {
-          fs.appendFile(
-            logFile,
-            `${dataPath} ${err.message} on: ${JSON.stringify(
-              resultObj,
-              null,
-              2
-            )}\r\n`,
-            function (err) {
-              if (err) throw err;
-              console.log("Error logged.");
-            }
-          );
-        }
-        stream.resume();
-      })
-      .on("end", async () => {
-        resolve();
-        console.log("Completed Inpatients.");
-      });
-  });
-
+  //       try {
+  //         await pool.query(
+  //           `INSERT INTO "Inpatients"(${queryFields(
+  //             resultObj
+  //           )}) VALUES(${queryDollar(resultObj)})`,
+  //           Object.values(resultObj)
+  //         );
+  //       } catch (err) {
+  //         fs.appendFile(
+  //           logFile,
+  //           `${dataPath} ${err.message} on: ${JSON.stringify(
+  //             resultObj,
+  //             null,
+  //             2
+  //           )}\r\n`,
+  //           function (err) {
+  //             if (err) throw err;
+  //             console.log("Error logged.");
+  //           }
+  //         );
+  //       }
+  //       stream.resume();
+  //     })
+  //     .on("end", async () => {
+  //       resolve();
+  //       console.log("Completed Inpatients.");
+  //     });
+  // });
 
   // Payments
   await new Promise(async (resolve) => {
@@ -652,6 +651,7 @@ async function main() {
           supervisingProvider: row["Supervising Provider"],
           lineNumber: row["Line #"],
           placeOfService: row["Place of Service"],
+          diagId: row["Diagnosis 1"],
           createdAt: new Date(),
           updatedAt: new Date(),
         };

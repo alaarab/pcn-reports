@@ -21,6 +21,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "providerId",
         as: "provider",
       });
+      Charge.belongsTo(models.DiagCode, {
+        foreignKey: "diagId",
+        as: "diagCode",
+      });
     }
   }
   Charge.init(
@@ -48,6 +52,7 @@ module.exports = (sequelize, DataTypes) => {
       lineNumber: DataTypes.INTEGER,
       fromServiceDate: DataTypes.DATE,
       toServiceDate: DataTypes.DATE,
+      diagId: DataTypes.STRING,
       postDate: DataTypes.DATE,
       generalNote: DataTypes.STRING,
     },

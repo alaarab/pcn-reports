@@ -75,16 +75,16 @@ module.exports = {
       lineNumber: {
         type: Sequelize.INTEGER,
       },
-      // diagnosis: {
-      //   type: Sequelize.STRING,
-      //   allowNull: false,
-      //   references: {
-      //     model: {
-      //       tableName: "DiagCodes",
-      //     },
-      //     key: "id",
-      //   },
-      // },
+      diagId: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        references: {
+          model: {
+            tableName: "DiagCodes",
+          },
+          key: "id",
+        },
+      },
       // diagnosis1-4?
       createdAt: {
         allowNull: false,

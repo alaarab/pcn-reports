@@ -9,10 +9,10 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      DiagCode.hasMany(models.Inpatient, {
+      DiagCode.hasMany(models.Charge, {
         foreignKey: "diagId",
         targetKey: "id",
-        as: "inpatient",
+        as: "charge",
       });
     }
   }

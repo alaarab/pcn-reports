@@ -30,13 +30,6 @@ module.exports = {
       },
       diagId: {
         type: Sequelize.STRING,
-        allowNull: false,
-        references: {
-          model: {
-            tableName: "DiagCodes",
-          },
-          key: "id",
-        },
       },
       locationId: {
         type: Sequelize.STRING,

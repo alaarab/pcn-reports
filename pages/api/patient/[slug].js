@@ -45,6 +45,16 @@ const handler = nextConnect()
               include: [{ model: models.Procedure, as: "procedure" }],
             },
             { model: models.PlanCoverage, as: "planCoverage" },
+            {
+              model: models.Inpatient,
+              as: "inpatient",
+              include: [
+                {
+                  model: models.DiagCode,
+                  as: "diagCode",
+                },
+              ],
+            },
           ],
         },
         {
