@@ -40,7 +40,7 @@ module.exports = {
       },
       supervisingProvider: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: true,
         references: {
           model: {
             tableName: "Providers",
@@ -85,7 +85,6 @@ module.exports = {
           key: "id",
         },
       },
-      // diagnosis1-4?
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

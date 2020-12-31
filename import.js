@@ -786,7 +786,9 @@ async function main() {
           postDate: dateParser(row["Post Date"]),
           approvedAmount: row["Approved Amount"],
           legacyId: row["Legacy ID"],
-          supervisingProvider: row["Supervising Provider"],
+          supervisingProvider: !!row["Supervising Provider"]
+            ? row["Supervising Provider"]
+            : null,
           lineNumber: row["Line #"],
           placeOfService: row["Place of Service"],
           diagId: !!row["Diagnosis 1"] ? row["Diagnosis 1"] : null,
