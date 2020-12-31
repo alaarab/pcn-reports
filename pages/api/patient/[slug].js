@@ -48,6 +48,7 @@ const handler = nextConnect()
                 {
                   model: models.DiagCode,
                   as: "diagCode",
+                  include: [{ model: models.DiagCode, as: "diagCodeLegacy" }],
                 },
               ],
             },

@@ -173,7 +173,7 @@ async function main() {
         }
         var resultObj = {
           id: row["Legacy Diagnosis Code"],
-          legacyId: row["ICD-9 Code"],
+          legacyId: row["ICD-9 Code"].split(" ")[0],
           description: row["ICD-9 Description"],
           createdAt: new Date(),
           updatedAt: new Date(),

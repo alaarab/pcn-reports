@@ -101,6 +101,15 @@ interface DiagCodeProps {
     id: string;
     legacyId: string;
     description: string;
+    diagCodeLegacy: DiagCodeLegacyProps["data"];
+  };
+}
+
+interface DiagCodeLegacyProps {
+  data: {
+    id: string;
+    legacyId: string;
+    description: string;
   };
 }
 
@@ -217,8 +226,8 @@ const Visit: React.FC<VisitProps> = (props) => {
         <td>Office:</td>
         <td>{props.data.locationId}</td>
         <td>
-          {props.data.charge[0].diagCode.id}-
-          {props.data.charge[0].diagCode.description}
+          {props.data.charge[0].diagCode.diagCodeLegacy.id}-
+          {props.data.charge[0].diagCode.diagCodeLegacy.description}
         </td>
         <td></td>
         <td></td>

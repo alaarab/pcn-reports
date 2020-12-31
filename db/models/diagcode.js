@@ -14,6 +14,11 @@ module.exports = (sequelize, DataTypes) => {
         targetKey: "id",
         as: "charge",
       });
+      DiagCode.belongsTo(models.DiagCode, {
+        foreignKey: "legacyId",
+        targetKey: "id",
+        as: "diagCodeLegacy",
+      });
     }
   }
   DiagCode.init(
