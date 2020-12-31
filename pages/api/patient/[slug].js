@@ -42,19 +42,15 @@ const handler = nextConnect()
             {
               model: models.Charge,
               as: "charge",
-              include: [{ model: models.Procedure, as: "procedure" }],
-            },
-            { model: models.PlanCoverage, as: "planCoverage" },
-            {
-              model: models.Inpatient,
-              as: "inpatient",
               include: [
+                { model: models.Procedure, as: "procedure" },
                 {
                   model: models.DiagCode,
                   as: "diagCode",
                 },
               ],
             },
+            { model: models.PlanCoverage, as: "planCoverage" },
           ],
         },
         {
