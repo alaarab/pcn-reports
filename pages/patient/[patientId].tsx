@@ -226,8 +226,8 @@ const Visit: React.FC<VisitProps> = (props) => {
         <td>Office:</td>
         <td>{props.data.locationId}</td>
         <td>
-          {props.data.charge[0].diagCode.diagCodeLegacy.id}-
-          {props.data.charge[0].diagCode.diagCodeLegacy.description}
+          {props.data.charge[0]?.diagCode?.diagCodeLegacy?.id}-
+          {props.data.charge[0]?.diagCode?.diagCodeLegacy?.description}
         </td>
         <td></td>
         <td></td>

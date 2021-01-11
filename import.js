@@ -477,6 +477,72 @@ async function main() {
       });
   });
 
+  // Macro Procedures
+  await new Promise(async (resolve) => {
+    console.log("Beginning Macro Procedures.");
+    let numConcurrent = 0;
+    const maxConcurrent = 30;
+    let paused = false;
+    let dataPath = "csv/macro.txt";
+    let logFile = "logs/macro.txt";
+    let stream = fs
+      .createReadStream(dataPath)
+      .pipe(csvParser({ separator: "|" }))
+      .on("data", async (row, i) => {
+        function checkResume() {
+          --numConcurrent;
+          if (paused && numConcurrent < maxConcurrent) {
+            // restart the stream, there's room for more
+            paused = false;
+            stream.resume();
+          }
+        }
+        ++numConcurrent;
+
+        if (numConcurrent >= maxConcurrent) {
+          // pause the stream because we have max number of operations going
+          stream.pause();
+          paused = true;
+        }
+        var resultObj = {
+          id: row["Macro Code"],
+          displayId: row["Macro Code"],
+          description: row["Description"],
+          type: row["Description"],
+          amount: 0,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        };
+
+        try {
+          await pool.query(
+            `INSERT INTO "Procedures"(${queryFields(
+              resultObj
+            )}) VALUES(${queryDollar(resultObj)})`,
+            Object.values(resultObj)
+          );
+        } catch (err) {
+          fs.appendFile(
+            logFile,
+            `${dataPath} ${err.message} on: ${JSON.stringify(
+              resultObj,
+              null,
+              2
+            )}\r\n`,
+            function (err) {
+              if (err) throw err;
+              console.log("Error logged.");
+            }
+          );
+        }
+        checkResume();
+      })
+      .on("end", async () => {
+        resolve();
+        console.log("Completed Macro Procedures.");
+      });
+  });
+
   // Providers
   await new Promise(async (resolve) => {
     console.log("Beginning Providers.");
