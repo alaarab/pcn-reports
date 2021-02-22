@@ -20,7 +20,7 @@ module.exports = {
         username: "johndoe1",
         firstName: "John",
         lastName: "Doe 1",
-        email: "nazee@gspalovekids.com",
+        email: "john@doe.com",
         password:
           "$2y$10$mj1OMFvVmGAR4gEEXZGtA.R5wYWBZTis72hSXzpxEs.QoXT3ifKSq", // password
         active: true,
