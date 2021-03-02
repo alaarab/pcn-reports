@@ -4,10 +4,12 @@ import { useRouter } from "next/router";
 import useSWR from "swr";
 // import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
-import { Col, Row, Spinner, Table } from "react-bootstrap";
+import { Button, Col, Form, Row, Spinner, Table } from "react-bootstrap";
 import NavBar from "components/NavBar";
 import _ from "lodash";
+import { useInput } from "hooks/useInput";
 import { formatAmount, formatMMDDYYYY } from "assets/util";
+import Link from "next/link";
 
 interface ProcedureProps {
   data: {
@@ -43,6 +45,22 @@ interface VisitProps {
     charge: Array<ChargeProps["data"]>;
     assignment: Array<AssignmentProps["data"]>;
   };
+}
+
+interface CorrectionProps {
+  patientMutate: any;
+  data: {
+    id: number;
+    patientId: string;
+    amount: number;
+    date: string;
+    notes: string;
+  };
+}
+
+interface NewCorrectionProps {
+  patientId: string;
+  patientMutate: any;
 }
 
 interface ChargeProps {
@@ -113,86 +131,125 @@ interface DiagCodeLegacyProps {
   };
 }
 
+export function patientAmount(patient) {
+  let visitTotal = patient.visit
+    .map((visit) => {
+      let chargeAmount = visit.charge
+        .map((e) => e.amount)
+        .reduce((a, b) => a + b, 0);
+      let assignmentAmount = visit.assignment
+        .map((e) => e.amount)
+        .reduce((a, b) => a + b, 0);
+      let visitAmount = chargeAmount.toFixed(2) - assignmentAmount.toFixed(2);
+      return visitAmount;
+    })
+    .reduce((a, b) => a + b, 0);
+  let correctionTotal = patient.correction
+    .map((correction) => parseFloat(correction.amount))
+    .reduce((a, b) => a + b, 0)
+    .toFixed(2);
+  return visitTotal + correctionTotal;
+}
+
 const Patient: React.FC = () => {
   const router = useRouter();
   const { patientId } = router.query;
-  const { data: patient } = useSWR(`/api/patient/${patientId}`);
-
-  function printDocument() {
-    const input = document.getElementById("divToPrint");
-    // html2canvas(input).then((canvas) => {
-    //   const imgData = canvas.toDataURL("image/png");
-    //   const pdf = new jsPDF("p", "mm", [297, 210]);
-    //   pdf.addImage(imgData, "PNG", 10, 10);
-    //   // pdf.output('dataurlnewwindow');
-    //   pdf.save("download.pdf");
-    // });
-  }
+  const { data: patient, mutate: patientMutate } = useSWR(
+    `/api/patient/${patientId}`
+  );
 
   return (
     <>
       {patient && (
         <>
           <Row className="mb-3 mt-3 justify-content-end">
-            <Col className="justify-content-end">
-              {/* <button onClick={printDocument} className="justify-content-end">
-                Print
-              </button> */}
+            <Col>
+              <div>Patient #: {patient.id}</div>
+              <div>
+                Guarantor #:{" "}
+                <Link
+                  href={{
+                    pathname: "/guarantor/[slug]",
+                    query: { slug: patient.guarantor.id },
+                  }}
+                >
+                  {patient.guarantor.id}
+                </Link>
+              </div>
+              <div>
+                Guarantor Name: {patient.guarantor.lastName},{" "}
+                {patient.guarantor.firstName} {patient.guarantor.middleName}
+              </div>
+            </Col>
+            <Col>
+              <div>
+                Patient Name: {patient.lastName}, {patient.firstName}{" "}
+                {patient.middleName}
+              </div>
+              <div>{patient.address}</div>
+              <div>
+                {patient.city}, {patient.state} {patient.zip}
+              </div>
+            </Col>
+            <Col>
+              <div>D.O.B: {formatMMDDYYYY(patient.dob)}</div>
+              <div>Home: {patient.phone}</div>
+              <div>Work: {patient.workPhone}</div>
+              <div>Class: {patient.class}</div>
             </Col>
           </Row>
 
-          <div id="divToPrint">
-            <Row className="mb-3 mt-3 justify-content-end">
-              <Col>
-                <div>Patient #: {patient.id}</div>
-                <div>Guarantor #: {patient.guarantor.id}</div>
-                <div>
-                  Guarantor Name: {patient.guarantor.lastName},{" "}
-                  {patient.guarantor.firstName} {patient.guarantor.middleName}
-                </div>
-              </Col>
-              <Col>
-                <div>
-                  Patient Name: {patient.lastName}, {patient.firstName}{" "}
-                  {patient.middleName}
-                </div>
-                <div>{patient.address}</div>
-                <div>
-                  {patient.city}, {patient.state} {patient.zip}
-                </div>
-              </Col>
-              <Col>
-                <div>D.O.B: {formatMMDDYYYY(patient.dob)}</div>
-                <div>Home: {patient.phone}</div>
-                <div>Work: {patient.workPhone}</div>
-                <div>Class: {patient.class}</div>
-              </Col>
-            </Row>
+          <Row className="mb-3 mt-3 justify-content-end">
+            {patient.patientPlan.map((patientPlan) => (
+              <PatientPlan data={patientPlan} key={patientPlan.id} />
+            ))}
+          </Row>
 
-            <Row className="mb-3 mt-3 justify-content-end">
-              {patient.patientPlan.map((patientPlan) => (
-                <PatientPlan data={patientPlan} key={patientPlan.id} />
-              ))}
-            </Row>
+          <Row className="mb-3 mt-3 justify-content-end">
+            <Col>Patient Total: {formatAmount(patientAmount(patient))}</Col>
+          </Row>
 
-            <Table size="sm">
-              <thead>
-                <tr>
-                  <th>Date</th>
-                  <th>Bill #</th>
-                  <th>Dr.</th>
-                  <th>CPT/Procedure</th>
-                  <th>Check #:Plan</th>
-                  <th>POS</th>
-                  <th>Notes</th>
-                  <th>Charge</th>
-                </tr>
-              </thead>
-              {patient.visit.map((visit) => (
-                <Visit data={visit} key={visit.id} />
+          <h6>Visits</h6>
+          <Table size="sm">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Bill #</th>
+                <th>Dr.</th>
+                <th>CPT/Procedure</th>
+                <th>Check #:Plan</th>
+                <th>POS</th>
+                <th>Notes</th>
+                <th>Charge</th>
+              </tr>
+            </thead>
+            {patient.visit.map((visit) => (
+              <Visit data={visit} key={visit.id} />
+            ))}
+          </Table>
+
+          <h6>Corrections</h6>
+          <Table size="sm">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Notes</th>
+                <th>Amount</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {patient.correction.map((correction) => (
+                <Correction
+                  data={correction}
+                  key={correction.id}
+                  patientMutate={patientMutate}
+                />
               ))}
-            </Table>
-          </div>
+            </tbody>
+          </Table>
+          <h6>Add Correction</h6>
+          <NewCorrection patientId={patient.id} patientMutate={patientMutate} />
         </>
       )}
       {!patient && <Spinner animation="grow" />}
@@ -207,6 +264,7 @@ const Visit: React.FC<VisitProps> = (props) => {
   let assignmentAmount = props.data.assignment
     .map((e) => e.amount)
     .reduce((a, b) => a + b, 0);
+  let visitAmount = chargeAmount - assignmentAmount;
   return (
     <>
       <tbody>
@@ -221,19 +279,21 @@ const Visit: React.FC<VisitProps> = (props) => {
           />
         ))}
       </tbody>
-      <tr style={{ fontWeight: "bold" }}>
-        <td></td>
-        <td>Office:</td>
-        <td>{props.data.locationId}</td>
-        <td>
-          {props.data.charge[0]?.diagCode?.diagCodeLegacy?.id}-
-          {props.data.charge[0]?.diagCode?.diagCodeLegacy?.description}
-        </td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td>{formatAmount(chargeAmount - assignmentAmount)}</td>
-      </tr>
+      <tfoot>
+        <tr style={{ fontWeight: "bold" }}>
+          <td></td>
+          <td>Office:</td>
+          <td>{props.data.locationId}</td>
+          <td>
+            {props.data.charge[0]?.diagCode?.diagCodeLegacy?.id}-
+            {props.data.charge[0]?.diagCode?.diagCodeLegacy?.description}
+          </td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td>{formatAmount(visitAmount)}</td>
+        </tr>
+      </tfoot>
     </>
   );
 };
@@ -296,6 +356,112 @@ const PatientPlan: React.FC<PatientPlanProps> = (props) => {
       <br />
       Group #: {props.data.groupId}
     </Col>
+  );
+};
+
+const Correction: React.FC<CorrectionProps> = (props) => {
+  const [message, setMessage] = useState("");
+
+  async function performDestroy() {
+    let confirm = window.confirm(
+      "Are you sure you want to delete this correction? This action cannot be reversed."
+    );
+
+    if (confirm) {
+      Axios.post(`/api/patient/removeCorrection`, {
+        correctionId: props.data.id,
+      }).then(function (res) {
+        if (res.status === 200) {
+          props.patientMutate();
+        } else {
+          setMessage("Try again!");
+        }
+      });
+    }
+  }
+
+  return (
+    <>
+      <tr>
+        <td>{formatMMDDYYYY(props.data.date)}</td>
+        <td>{props.data.notes}</td>
+        <td>{formatAmount(props.data.amount)}</td>
+        <td>
+          <Button variant="danger" onClick={performDestroy}>
+            Delete
+          </Button>
+        </td>
+      </tr>
+    </>
+  );
+};
+
+const NewCorrection: React.FC<NewCorrectionProps> = (props) => {
+  const { value: date, bind: bindDate, reset: resetDate } = useInput("");
+  const { value: amount, bind: bindAmount, reset: resetAmount } = useInput("");
+  const { value: notes, bind: bindNotes, reset: resetNotes } = useInput("");
+  const [message, setMessage] = useState("");
+
+  const handleSubmit = (evt) => {
+    evt.preventDefault();
+    performCreate();
+    resetDate();
+    resetAmount();
+    resetNotes();
+  };
+
+  async function performCreate() {
+    Axios.post(`/api/patient/addCorrection`, {
+      patientId: props.patientId,
+      date,
+      amount,
+      notes,
+    }).then(function (res) {
+      if (res.status === 200) {
+        props.patientMutate();
+      } else {
+        setMessage("Try again!");
+      }
+    });
+  }
+
+  return (
+    <>
+      <Form onSubmit={handleSubmit}>
+        <Form.Group controlId="formBasicDate">
+          <Form.Label>Date</Form.Label>
+          <Form.Control
+            name="date"
+            type="date"
+            placeholder="Enter date"
+            required={true}
+            {...bindDate}
+          />
+        </Form.Group>
+        <Form.Group controlId="formBasicAmount">
+          <Form.Label>Amount</Form.Label>
+          <Form.Control
+            name="amount"
+            type="amount"
+            placeholder="Amount"
+            {...bindAmount}
+          />
+        </Form.Group>
+        <Form.Group controlId="formBasicNotes">
+          <Form.Label>Notes</Form.Label>
+          <Form.Control
+            name="notes"
+            type="notes"
+            placeholder="Notes"
+            {...bindNotes}
+          />
+        </Form.Group>
+        <Button variant="primary" type="submit">
+          Submit
+        </Button>
+      </Form>
+      {message}
+    </>
   );
 };
 

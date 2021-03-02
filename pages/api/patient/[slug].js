@@ -56,6 +56,10 @@ const handler = nextConnect()
           ],
         },
         {
+          model: models.Correction,
+          as: "correction",
+        },
+        {
           model: models.PatientPlan,
           as: "patientPlan",
           include: [{ model: models.InsurancePlan, as: "insurancePlan" }],

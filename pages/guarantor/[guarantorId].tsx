@@ -6,6 +6,8 @@ import useSWR from "swr";
 import jsPDF from "jspdf";
 import { Col, Row, Spinner } from "react-bootstrap";
 import Link from "next/link";
+import { patientAmount } from "pages/patient/[patientId]";
+import { formatAmount } from "assets/util";
 
 const Guarantor: React.FC = () => {
   const router = useRouter();
@@ -23,43 +25,44 @@ const Guarantor: React.FC = () => {
     // });
   }
 
+  function guarantorAmount(guarantor) {
+    return guarantor.patient
+      .map((patient) => patientAmount(patient))
+      .reduce((a, b) => a + b, 0);
+  }
+
   return (
     <>
       {guarantor && (
         <>
+          <h2>Guarantor Information</h2>
           <Row className="mb-3 mt-3 justify-content-end">
-            <Col className="justify-content-end">
-              <button onClick={printDocument} className="justify-content-end">
-                Print
-              </button>
+            <Col>
+              <div>Guarantor #: {guarantor.id}</div>
+              <div>
+                Guarantor Name: {guarantor.lastName}, {guarantor.firstName}{" "}
+                {guarantor.middleName}
+              </div>
+              <div>{guarantor.address}</div>
+              <div>
+                {guarantor.city}, {guarantor.state} {guarantor.zip}
+              </div>
+            </Col>
+            <Col>
+              <div>D.O.B: {guarantor.dob}</div>
+              <div>Home: {guarantor.phone}</div>
+              <div>Work: {guarantor.workPhone}</div>
             </Col>
           </Row>
-          <div id="divToPrint">
-            <h2>Guarantor Information</h2>
-            <Row className="mb-3 mt-3 justify-content-end">
-              <Col>
-                <div>Guarantor #: {guarantor.id}</div>
-                <div>
-                  Guarantor Name: {guarantor.lastName}, {guarantor.firstName}{" "}
-                  {guarantor.middleName}
-                </div>
-                <div>{guarantor.address}</div>
-                <div>
-                  {guarantor.city}, {guarantor.state} {guarantor.zip}
-                </div>
-              </Col>
-              <Col>
-                <div>D.O.B: {guarantor.dob}</div>
-                <div>Home: {guarantor.phone}</div>
-                <div>Work: {guarantor.workPhone}</div>
-              </Col>
-            </Row>
 
-            <h2>Patients</h2>
-            {guarantor.patient.map((patient) => (
-              <Patient data={patient} key={patient.id} />
-            ))}
-          </div>
+          <Row className="mb-3 mt-3 justify-content-end">
+            <Col>Guarantor Total: {formatAmount(guarantorAmount(guarantor))}</Col>
+          </Row>
+
+          <h2>Patients</h2>
+          {guarantor.patient.map((patient) => (
+            <Patient data={patient} key={patient.id} />
+          ))}
         </>
       )}
       {!guarantor && <Spinner animation="grow" />}

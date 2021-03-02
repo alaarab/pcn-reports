@@ -14,6 +14,11 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "patientId",
         as: "visit",
       });
+      Patient.hasMany(models.Correction, {
+        sourceKey: "id",
+        foreignKey: "patientId",
+        as: "correction",
+      });
       Patient.hasMany(models.PatientPlan, {
         sourceKey: "id",
         foreignKey: "patientId",
