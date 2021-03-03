@@ -1,9 +1,6 @@
-import Axios from "axios";
-import React, { useState } from "react";
+import React from "react";
 import { useRouter } from "next/router";
 import useSWR from "swr";
-// import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
 import { Col, Row, Spinner } from "react-bootstrap";
 import Link from "next/link";
 import { patientAmount } from "pages/patient/[patientId]";
@@ -13,17 +10,6 @@ const Guarantor: React.FC = () => {
   const router = useRouter();
   const { guarantorId } = router.query;
   const { data: guarantor } = useSWR(`/api/guarantor/${guarantorId}`);
-
-  function printDocument() {
-    const input = document.getElementById("divToPrint");
-    // html2canvas(input).then((canvas) => {
-    //   const imgData = canvas.toDataURL("image/png");
-    //   const pdf = new jsPDF("p", "mm", [297, 210]);
-    //   pdf.addImage(imgData, "PNG", 10, 10);
-    //   // pdf.output('dataurlnewwindow');
-    //   pdf.save("download.pdf");
-    // });
-  }
 
   function guarantorAmount(guarantor) {
     return guarantor.patient

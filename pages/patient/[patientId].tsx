@@ -2,8 +2,6 @@ import Axios from "axios";
 import React, { useState } from "react";
 import { useRouter } from "next/router";
 import useSWR from "swr";
-// import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
 import {
   Button,
   Col,
@@ -13,12 +11,10 @@ import {
   Spinner,
   Table,
 } from "react-bootstrap";
-import NavBar from "components/NavBar";
 import _ from "lodash";
 import { useInput } from "hooks/useInput";
 import { formatAmount, formatMMDDYYYY } from "assets/util";
 import Link from "next/link";
-import html2canvas from "html2canvas";
 
 interface ProcedureProps {
   data: {
@@ -165,16 +161,6 @@ const Patient: React.FC = () => {
   const { data: patient, mutate: patientMutate } = useSWR(
     `/api/patient/${patientId}`
   );
-  function printDocument() {
-    const input = document.getElementById("divToPrint");
-    html2canvas(input).then((canvas) => {
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF();
-      pdf.addImage(imgData, "JPEG", 0, 0);
-      // pdf.output('dataurlnewwindow');
-      pdf.save("download.pdf");
-    });
-  }
 
   return (
     <>
