@@ -4,12 +4,21 @@ import { useRouter } from "next/router";
 import useSWR from "swr";
 // import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
-import { Button, Col, Form, Row, Spinner, Table } from "react-bootstrap";
+import {
+  Button,
+  Col,
+  Form,
+  InputGroup,
+  Row,
+  Spinner,
+  Table,
+} from "react-bootstrap";
 import NavBar from "components/NavBar";
 import _ from "lodash";
 import { useInput } from "hooks/useInput";
 import { formatAmount, formatMMDDYYYY } from "assets/util";
 import Link from "next/link";
+import html2canvas from "html2canvas";
 
 interface ProcedureProps {
   data: {
@@ -146,9 +155,8 @@ export function patientAmount(patient) {
     .reduce((a, b) => a + b, 0);
   let correctionTotal = patient.correction
     .map((correction) => parseFloat(correction.amount))
-    .reduce((a, b) => a + b, 0)
-    .toFixed(2);
-  return visitTotal + correctionTotal;
+    .reduce((a, b) => a + b, 0);
+  return visitTotal - correctionTotal;
 }
 
 const Patient: React.FC = () => {
@@ -157,99 +165,126 @@ const Patient: React.FC = () => {
   const { data: patient, mutate: patientMutate } = useSWR(
     `/api/patient/${patientId}`
   );
+  function printDocument() {
+    const input = document.getElementById("divToPrint");
+    html2canvas(input).then((canvas) => {
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF();
+      pdf.addImage(imgData, "JPEG", 0, 0);
+      // pdf.output('dataurlnewwindow');
+      pdf.save("download.pdf");
+    });
+  }
 
   return (
     <>
       {patient && (
         <>
-          <Row className="mb-3 mt-3 justify-content-end">
-            <Col>
-              <div>Patient #: {patient.id}</div>
-              <div>
-                Guarantor #:{" "}
-                <Link
-                  href={{
-                    pathname: "/guarantor/[slug]",
-                    query: { slug: patient.guarantor.id },
-                  }}
-                >
-                  {patient.guarantor.id}
-                </Link>
-              </div>
-              <div>
-                Guarantor Name: {patient.guarantor.lastName},{" "}
-                {patient.guarantor.firstName} {patient.guarantor.middleName}
-              </div>
-            </Col>
-            <Col>
-              <div>
-                Patient Name: {patient.lastName}, {patient.firstName}{" "}
-                {patient.middleName}
-              </div>
-              <div>{patient.address}</div>
-              <div>
-                {patient.city}, {patient.state} {patient.zip}
-              </div>
-            </Col>
-            <Col>
-              <div>D.O.B: {formatMMDDYYYY(patient.dob)}</div>
-              <div>Home: {patient.phone}</div>
-              <div>Work: {patient.workPhone}</div>
-              <div>Class: {patient.class}</div>
-            </Col>
-          </Row>
+          <div>
+            <Row className="mb-3 mt-3 justify-content-end">
+              <Col>
+                <div>Patient #: {patient.id}</div>
+                <div>
+                  Guarantor #:{" "}
+                  <Link
+                    href={{
+                      pathname: "/guarantor/[slug]",
+                      query: { slug: patient.guarantor.id },
+                    }}
+                  >
+                    {patient.guarantor.id}
+                  </Link>
+                </div>
+                <div>
+                  Guarantor Name: {patient.guarantor.lastName},{" "}
+                  {patient.guarantor.firstName} {patient.guarantor.middleName}
+                </div>
+              </Col>
+              <Col>
+                <div>
+                  Patient Name: {patient.lastName}, {patient.firstName}{" "}
+                  {patient.middleName}
+                </div>
+                <div>{patient.address}</div>
+                <div>
+                  {patient.city}, {patient.state} {patient.zip}
+                </div>
+              </Col>
+              <Col>
+                <div>D.O.B: {formatMMDDYYYY(patient.dob)}</div>
+                <div>Home: {patient.phone}</div>
+                <div>Work: {patient.workPhone}</div>
+                <div>Class: {patient.class}</div>
+              </Col>
+            </Row>
 
-          <Row className="mb-3 mt-3 justify-content-end">
-            {patient.patientPlan.map((patientPlan) => (
-              <PatientPlan data={patientPlan} key={patientPlan.id} />
-            ))}
-          </Row>
-
-          <Row className="mb-3 mt-3 justify-content-end">
-            <Col>Patient Total: {formatAmount(patientAmount(patient))}</Col>
-          </Row>
-
-          <h6>Visits</h6>
-          <Table size="sm">
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Bill #</th>
-                <th>Dr.</th>
-                <th>CPT/Procedure</th>
-                <th>Check #:Plan</th>
-                <th>POS</th>
-                <th>Notes</th>
-                <th>Charge</th>
-              </tr>
-            </thead>
-            {patient.visit.map((visit) => (
-              <Visit data={visit} key={visit.id} />
-            ))}
-          </Table>
-
-          <h6>Corrections</h6>
-          <Table size="sm">
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Notes</th>
-                <th>Amount</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {patient.correction.map((correction) => (
-                <Correction
-                  data={correction}
-                  key={correction.id}
-                  patientMutate={patientMutate}
-                />
+            <Row className="mb-3 mt-3 justify-content-end">
+              {patient.patientPlan.map((patientPlan) => (
+                <PatientPlan data={patientPlan} key={patientPlan.id} />
               ))}
-            </tbody>
-          </Table>
-          <h6>Add Correction</h6>
-          <NewCorrection patientId={patient.id} patientMutate={patientMutate} />
+            </Row>
+
+            <Row className="mb-3 mt-3 justify-content-end">
+              <Col>Patient Total: {formatAmount(patientAmount(patient))}</Col>
+            </Row>
+
+            <h6>Visits</h6>
+            <Table size="sm">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Bill #</th>
+                  <th>Dr.</th>
+                  <th>CPT/Procedure</th>
+                  <th>Check #:Plan</th>
+                  <th>POS</th>
+                  <th>Notes</th>
+                  <th>
+                    <div className="float-right">Charge</div>
+                  </th>
+                  <th className="no-print"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {patient.visit.map((visit) => (
+                  <Visit data={visit} key={visit.id} />
+                ))}
+                {patient.correction.map((correction) => (
+                  <Correction
+                    data={correction}
+                    key={correction.id}
+                    patientMutate={patientMutate}
+                  />
+                ))}
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td>
+                    <b>TOTAL:</b>
+                  </td>
+                  <td>
+                    <div className="float-right">
+                      <b>{formatAmount(patientAmount(patient))}</b>
+                    </div>
+                  </td>
+                  <td className="no-print"></td>
+                </tr>
+              </tfoot>
+            </Table>
+
+            <div className="no-print">
+              <NewCorrection
+                patientId={patient.id}
+                patientMutate={patientMutate}
+              />
+            </div>
+          </div>
         </>
       )}
       {!patient && <Spinner animation="grow" />}
@@ -267,33 +302,32 @@ const Visit: React.FC<VisitProps> = (props) => {
   let visitAmount = chargeAmount - assignmentAmount;
   return (
     <>
-      <tbody>
-        {props.data.charge.map((charge) => (
-          <Charge
-            data={charge}
-            key={charge.legacyId}
-            claimId={props.data.claimId}
-            assignment={props.data.assignment.filter(
-              (e) => e.chargeLine === charge.lineNumber
-            )}
-          />
-        ))}
-      </tbody>
-      <tfoot>
-        <tr style={{ fontWeight: "bold" }}>
-          <td></td>
-          <td>Office:</td>
-          <td>{props.data.locationId}</td>
-          <td>
-            {props.data.charge[0]?.diagCode?.diagCodeLegacy?.id}-
-            {props.data.charge[0]?.diagCode?.diagCodeLegacy?.description}
-          </td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td>{formatAmount(visitAmount)}</td>
-        </tr>
-      </tfoot>
+      {props.data.charge.map((charge) => (
+        <Charge
+          data={charge}
+          key={charge.legacyId}
+          claimId={props.data.claimId}
+          assignment={props.data.assignment.filter(
+            (e) => e.chargeLine === charge.lineNumber
+          )}
+        />
+      ))}
+      <tr style={{ fontWeight: "bold" }}>
+        <td></td>
+        <td>Office:</td>
+        <td>{props.data.locationId}</td>
+        <td>
+          {props.data.charge[0]?.diagCode?.diagCodeLegacy?.id}-
+          {props.data.charge[0]?.diagCode?.diagCodeLegacy?.description}
+        </td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>
+          <div className="float-right">{formatAmount(visitAmount)}</div>
+        </td>
+        <td className="no-print"></td>
+      </tr>
     </>
   );
 };
@@ -310,7 +344,10 @@ const Charge: React.FC<ChargeProps> = (props) => {
         </td>
         <td>{props.data.placeOfService}</td>
         <td></td>
-        <td>{formatAmount(props.data.amount)}</td>
+        <td>
+          <div className="float-right">{formatAmount(props.data.amount)}</div>
+        </td>
+        <td></td>
       </tr>
       {_.orderBy(props.assignment, "glAccountCodeId", "desc").map(
         (assignment) => (
@@ -341,7 +378,12 @@ const Assignment: React.FC<AssignmentProps> = (props) => {
             : ""}
         </td>
         <td>{props.data.payment ? props.data.payment.notes : ""}</td>
-        <td>{formatAmount(props.data.amount)}-</td>
+        <td>
+          <div className="float-right">
+            {formatAmount(props.data.amount * -1)}
+          </div>
+        </td>
+        <td className="no-print"></td>
       </tr>
     </>
   );
@@ -384,10 +426,19 @@ const Correction: React.FC<CorrectionProps> = (props) => {
     <>
       <tr>
         <td>{formatMMDDYYYY(props.data.date)}</td>
+        <td></td>
+        <td></td>
+        <td>Correction Payment</td>
+        <td></td>
+        <td></td>
         <td>{props.data.notes}</td>
-        <td>{formatAmount(props.data.amount)}</td>
         <td>
-          <Button variant="danger" onClick={performDestroy}>
+          <div className="float-right">
+            {formatAmount(props.data.amount * -1)}
+          </div>
+        </td>
+        <td className="no-print">
+          <Button variant="danger" onClick={performDestroy} size="sm">
             Delete
           </Button>
         </td>
@@ -427,38 +478,53 @@ const NewCorrection: React.FC<NewCorrectionProps> = (props) => {
 
   return (
     <>
+      <h6>Add Correction Payment</h6>
       <Form onSubmit={handleSubmit}>
-        <Form.Group controlId="formBasicDate">
-          <Form.Label>Date</Form.Label>
-          <Form.Control
-            name="date"
-            type="date"
-            placeholder="Enter date"
-            required={true}
-            {...bindDate}
-          />
-        </Form.Group>
-        <Form.Group controlId="formBasicAmount">
-          <Form.Label>Amount</Form.Label>
-          <Form.Control
-            name="amount"
-            type="amount"
-            placeholder="Amount"
-            {...bindAmount}
-          />
-        </Form.Group>
-        <Form.Group controlId="formBasicNotes">
-          <Form.Label>Notes</Form.Label>
-          <Form.Control
-            name="notes"
-            type="notes"
-            placeholder="Notes"
-            {...bindNotes}
-          />
-        </Form.Group>
-        <Button variant="primary" type="submit">
-          Submit
-        </Button>
+        <Form.Row>
+          <Col>
+            {" "}
+            <Form.Group controlId="formBasicDate">
+              <Form.Control
+                name="date"
+                type="date"
+                placeholder="Enter date"
+                required={true}
+                {...bindDate}
+              />
+            </Form.Group>
+          </Col>
+          <Col>
+            {" "}
+            <Form.Group controlId="formBasicAmount">
+              <InputGroup className="mb-2 mr-sm-2">
+                <InputGroup.Prepend>
+                  <InputGroup.Text>$</InputGroup.Text>
+                </InputGroup.Prepend>
+                <Form.Control
+                  name="amount"
+                  type="amount"
+                  placeholder="Amount"
+                  {...bindAmount}
+                />
+              </InputGroup>
+            </Form.Group>
+          </Col>
+          <Col>
+            <Form.Group controlId="formBasicNotes">
+              <Form.Control
+                name="notes"
+                type="notes"
+                placeholder="Notes"
+                {...bindNotes}
+              />
+            </Form.Group>
+          </Col>
+          <Col>
+            <Button variant="primary" type="submit">
+              Submit
+            </Button>
+          </Col>
+        </Form.Row>
       </Form>
       {message}
     </>

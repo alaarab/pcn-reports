@@ -56,7 +56,9 @@ const Guarantor: React.FC = () => {
           </Row>
 
           <Row className="mb-3 mt-3 justify-content-end">
-            <Col>Guarantor Total: {formatAmount(guarantorAmount(guarantor))}</Col>
+            <Col>
+              Guarantor Total: {formatAmount(guarantorAmount(guarantor))}
+            </Col>
           </Row>
 
           <h2>Patients</h2>
@@ -85,7 +87,8 @@ const Patient: React.FC<PatientProps> = (props) => {
         href={{ pathname: "/patient/[slug]", query: { slug: props.data.id } }}
       >
         {props.data.firstName + " " + props.data.lastName}
-      </Link>
+      </Link>{" "}
+      - {formatAmount(patientAmount(props.data))}
     </p>
   );
 };
