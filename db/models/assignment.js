@@ -28,7 +28,7 @@ module.exports = (sequelize, DataTypes) => {
       visitId: DataTypes.STRING,
       chargeLine: DataTypes.INTEGER,
       activityCount: DataTypes.INTEGER,
-      assingmentType: DataTypes.STRING,
+      assignmentType: DataTypes.STRING,
       paymentId: DataTypes.STRING,
       amount: {
         type: DataTypes.DECIMAL,

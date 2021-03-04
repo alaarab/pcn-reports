@@ -30,7 +30,7 @@ interface AssignmentProps {
     id: string;
     chargeLine: number;
     activityCount: number;
-    assingmentType: string;
+    assignmentType: string;
     payment: PaymentProps["data"];
     amount: number;
     postDate: Date;
