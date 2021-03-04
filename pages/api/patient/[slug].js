@@ -24,7 +24,10 @@ const handler = nextConnect()
               model: models.Assignment,
               as: "assignment",
               required: false,
-              where: { amount: { [Op.gt]: 0 } },
+              where: {
+                amount: { [Op.gt]: 0 },
+                assignmentType: { [Op.in]: ["P", "T", "A"] },
+              },
               order: [
                 { model: models.Assignment, as: "assignment" },
                 "chargeLine",
