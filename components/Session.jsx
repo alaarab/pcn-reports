@@ -48,12 +48,12 @@ function LoginModal(props) {
     reset: resetPassword,
   } = useInput("");
 
-  const handleSubmit = (evt) => {
+  async function handleSubmit(evt) {
     evt.preventDefault();
-    performLogin();
+    await performLogin();
     resetEmail();
     resetPassword();
-  };
+  }
 
   async function performLogin() {
     axios
@@ -68,6 +68,11 @@ function LoginModal(props) {
           setSessionValid(false);
           setSessionLastReason("Incorrect username or password. Try again!");
         }
+      })
+      .catch((error) => {
+        setUser({});
+        setSessionValid(false);
+        setSessionLastReason("Incorrect username or password. Try again!");
       });
   }
 
@@ -78,11 +83,6 @@ function LoginModal(props) {
       </Jumbotron>
       <Row className="align-items-center">
         <Col className="p-3">
-          {sessionLastReason && (
-            <>
-              <Alert severity="error">{sessionLastReason}</Alert>
-            </>
-          )}
           <Form onSubmit={handleSubmit}>
             <Form.Group controlId="formBasicEmail">
               <Form.Label>Email address</Form.Label>
@@ -109,6 +109,11 @@ function LoginModal(props) {
           </Form>
         </Col>
       </Row>
+      {sessionLastReason && (
+        <>
+          <Alert variant="danger">{sessionLastReason}</Alert>
+        </>
+      )}
     </Container>
   );
 }
