@@ -1,10 +1,9 @@
 import Link from "next/link";
 import React, { useEffect, useMemo, useState } from "react";
-import { Col, Form } from "react-bootstrap";
-import BootstrapTable from "react-bootstrap-table-next";
-import paginationFactory from "react-bootstrap-table2-paginator";
+import { Col, Form, Row } from "react-bootstrap";
 import axios from "axios";
 import { formatMMDDYYYY } from "assets/util";
+import BootstrapTable from "components/BootstrapTable";
 
 const PatientSearch: React.FC = () => {
   const [state, setState] = useState({
@@ -18,30 +17,31 @@ const PatientSearch: React.FC = () => {
   const [page, setPage] = useState(1);
   const [sizePerPage, setSizePerPage] = useState(10);
 
+
   const columns = [
     {
       dataField: "id",
-      text: "Id",
+      label: "Id",
       formatter: patientIdFormatter,
     },
     {
       dataField: "firstName",
-      text: "First Name",
+      label: "First Name",
     },
     {
       dataField: "middleName",
-      text: "Middle Name",
+      label: "Middle Name",
     },
     {
       dataField: "lastName",
-      text: "Last Name",
+      label: "Last Name",
     },
     {
       dataField: "dob",
-      text: "Date of Birth",
+      label: "Date of Birth",
       formatter: dateFormatter,
     },
-  ];
+  ];  
 
   function handleChange(evt) {
     const value = evt.target.value;
@@ -83,7 +83,7 @@ const PatientSearch: React.FC = () => {
   return (
     <>
       <Form>
-        <Form.Row className="mb-3">
+        <Row className="mb-3">
           <Col>
             <Form.Control
               placeholder="First name"
@@ -100,16 +100,17 @@ const PatientSearch: React.FC = () => {
               onChange={handleChange}
             />
           </Col>
-        </Form.Row>
+        </Row>
       </Form>
       {patients && (
-        <RemotePagination
+        <BootstrapTable
+          keyField="id"
           data={patients}
-          page={page}
+          columns={columns}
+          onTableChange={handleTableChange}
+          currentPage={page}
           sizePerPage={sizePerPage}
           totalSize={patientsCount}
-          onTableChange={handleTableChange}
-          columns={columns}
         />
       )}
     </>
@@ -129,27 +130,3 @@ function dateFormatter(cell) {
 }
 
 export default PatientSearch;
-
-const RemotePagination = ({
-  data,
-  page,
-  sizePerPage,
-  onTableChange,
-  totalSize,
-  columns,
-}) => (
-  <div>
-    <BootstrapTable
-      remote
-      keyField="id"
-      data={data}
-      columns={columns}
-      onTableChange={onTableChange}
-      pagination={paginationFactory({
-        page,
-        sizePerPage, 
-        totalSize,
-      })}
-    />
-  </div>
-);

@@ -1,7 +1,11 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": false,
@@ -14,11 +18,25 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "paths": {
-      "middlewares": ["middlewares/"],
-      "db": ["db/"]
+      "middlewares": [
+        "middlewares/"
+      ],
+      "db": [
+        "db/"
+      ]
     },
     "baseUrl": "." // This must be specified if "paths" is.
+    ,
+    "incremental": true
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx"],
-  "exclude": ["node_modules"]
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.js",
+    "**/*.jsx"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }

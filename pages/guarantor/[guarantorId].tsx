@@ -9,7 +9,9 @@ import { formatAmount } from "assets/util";
 const Guarantor: React.FC = () => {
   const router = useRouter();
   const { guarantorId } = router.query;
-  const { data: guarantor } = useSWR(`/api/guarantor/${guarantorId}`);
+
+  const fetcher = (url) => fetch(url).then((res) => res.json());
+  const { data: guarantor } = useSWR(`/api/guarantor/${guarantorId}`, fetcher);
 
   function guarantorAmount(guarantor) {
     return guarantor.patient

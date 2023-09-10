@@ -5,10 +5,10 @@ import Link from "next/link";
 import {
   Alert,
   Button,
+  Card,
   Col,
   Container,
   Form,
-  Jumbotron,
   Row,
 } from "react-bootstrap";
 import axios from "axios";
@@ -68,14 +68,19 @@ function LoginModal(props) {
           setSessionValid(false);
           setSessionLastReason("Incorrect username or password. Try again!");
         }
+      })
+      .catch(function (error) {
+        if (error.response) {
+          setSessionLastReason("Error: " + error.response.data);
+        } else {
+          setSessionLastReason("Unknown error occurred");
+        }
       });
   }
 
   return (
     <Container className="p-3">
-      <Jumbotron>
-        <h1>PCN Patient Lookup</h1>
-      </Jumbotron>
+      <Jumbotron />
       <Row className="align-items-center">
         <Col className="p-3">
           {sessionLastReason && (
@@ -175,3 +180,11 @@ function Session(props) {
 }
 
 export default Session;
+
+const Jumbotron = () => {
+  return (
+    <div className="bg-light p-5 rounded-lg m-3">
+      <h1 className="display-4">PCN Lookup Tool</h1>
+    </div>
+  );
+};

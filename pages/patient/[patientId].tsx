@@ -30,7 +30,7 @@ interface AssignmentProps {
     id: string;
     chargeLine: number;
     activityCount: number;
-    assingmentType: string;
+    assignmentType: string;
     payment: PaymentProps["data"];
     amount: number;
     postDate: Date;
@@ -158,8 +158,11 @@ export function patientAmount(patient) {
 const Patient: React.FC = () => {
   const router = useRouter();
   const { patientId } = router.query;
+
+  const fetcher = (url) => fetch(url).then((res) => res.json());
   const { data: patient, mutate: patientMutate } = useSWR(
-    `/api/patient/${patientId}`
+    `/api/patient/${patientId}`,
+    fetcher
   );
 
   return (
@@ -466,7 +469,7 @@ const NewCorrection: React.FC<NewCorrectionProps> = (props) => {
     <>
       <h6>Add Correction Payment</h6>
       <Form onSubmit={handleSubmit}>
-        <Form.Row>
+        <Row>
           <Col>
             {" "}
             <Form.Group controlId="formBasicDate">
@@ -483,9 +486,7 @@ const NewCorrection: React.FC<NewCorrectionProps> = (props) => {
             {" "}
             <Form.Group controlId="formBasicAmount">
               <InputGroup className="mb-2 mr-sm-2">
-                <InputGroup.Prepend>
-                  <InputGroup.Text>$</InputGroup.Text>
-                </InputGroup.Prepend>
+                <InputGroup.Text>$</InputGroup.Text>
                 <Form.Control
                   name="amount"
                   type="amount"
@@ -510,7 +511,7 @@ const NewCorrection: React.FC<NewCorrectionProps> = (props) => {
               Submit
             </Button>
           </Col>
-        </Form.Row>
+        </Row>
       </Form>
       {message}
     </>

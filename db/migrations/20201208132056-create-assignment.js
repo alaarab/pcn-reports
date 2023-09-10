@@ -24,7 +24,7 @@ module.exports = {
       activityCount: {
         type: Sequelize.INTEGER,
       },
-      assingmentType: {
+      assignmentType: {
         type: Sequelize.STRING,
       },
       paymentId: {

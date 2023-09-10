@@ -922,7 +922,7 @@ async function main() {
           visitId: row["Visit #"],
           chargeLine: row["Charge Line #"],
           activityCount: row["Activity Count"],
-          assingmentType: row["Assignment Type"],
+          assignmentType: row["Assignment Type"],
           paymentId: !!row["Payment #"] ? row["Payment #"] : null,
           amount: parseFloat(row["Amount"]),
           postDate: dateParser(row["Post Date"]),
