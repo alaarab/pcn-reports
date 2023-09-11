@@ -2,7 +2,10 @@ import Link from "next/link";
 import React, { useEffect, useMemo, useState } from "react";
 import { Col, Form, Row } from "react-bootstrap";
 import axios from "axios";
-import BootstrapTable from "components/BootstrapTable";
+import BootstrapTable, {
+  dateFormatter,
+  guarantorIdFormatter,
+} from "components/BootstrapTable";
 
 const GuarantorSearch: React.FC = () => {
   const [state, setState] = useState({
@@ -37,6 +40,7 @@ const GuarantorSearch: React.FC = () => {
     {
       dataField: "dob",
       label: "Date of Birth",
+      dateFormatter: dateFormatter,
     },
   ];
 
@@ -112,13 +116,5 @@ const GuarantorSearch: React.FC = () => {
     </>
   );
 };
-
-function guarantorIdFormatter(cell) {
-  return (
-    <Link href={{ pathname: "/guarantor/[slug]", query: { slug: cell } }}>
-      {cell}
-    </Link>
-  );
-}
 
 export default GuarantorSearch;

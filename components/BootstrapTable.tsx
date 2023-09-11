@@ -1,17 +1,22 @@
+import { formatMMDDYYYY } from "assets/util";
+import Link from "next/link";
 import React, { useEffect } from "react";
 import { Table, Pagination, Dropdown, Row, Col } from "react-bootstrap";
 
 interface Column {
   dataField: string;
   label: string;
-  formatter?: (cell: number | string, row: any) => JSX.Element;
+  formatter?: (cell: number | string, row: any) => React.ReactElement | string;
 }
 
 interface BootstrapTableProps {
   keyField: string;
   data: any[];
   columns: Column[];
-  onTableChange: (type: string, { page, sizePerPage }: { page: number, sizePerPage: number }) => void;
+  onTableChange: (
+    type: string,
+    { page, sizePerPage }: { page: number; sizePerPage: number }
+  ) => void;
   currentPage: number;
   sizePerPage: number;
   totalSize: number;
@@ -55,7 +60,9 @@ const BootstrapTable: React.FC<BootstrapTableProps> = ({
             <tr key={row[keyField]}>
               {columns.map((col, colIdx) => (
                 <td key={colIdx}>
-                  {col.formatter ? col.formatter(row[col.dataField], row) : row[col.dataField]}
+                  {col.formatter
+                    ? col.formatter(row[col.dataField], row)
+                    : row[col.dataField]}
                 </td>
               ))}
             </tr>
@@ -63,33 +70,38 @@ const BootstrapTable: React.FC<BootstrapTableProps> = ({
         </tbody>
       </Table>
       <Row>
-      <Col>
-        <Pagination>
-          <Pagination.Item onClick={() => handlePageChange(1)}>
-            {"<<"}
-          </Pagination.Item>
-          <Pagination.Prev onClick={() => handlePageChange(Math.max(currentPage - 1, 1))} />
+        <Col>
+          <Pagination>
+            <Pagination.Item onClick={() => handlePageChange(1)}>
+              {"<<"}
+            </Pagination.Item>
+            <Pagination.Prev
+              onClick={() => handlePageChange(Math.max(currentPage - 1, 1))}
+            />
 
-          {Array.from({ length: 10 }, (_, i) => currentPage + i - 4).map((page) => (
-            (page > 0 && page <= totalPages) ? (
-              <Pagination.Item
-                key={page}
-                active={page === currentPage}
-                onClick={() => handlePageChange(page)}
-              >
-                {page}
-              </Pagination.Item>
-            ) : null
-          ))}
+            {Array.from({ length: 10 }, (_, i) => currentPage + i - 4).map(
+              (page) =>
+                page > 0 && page <= totalPages ? (
+                  <Pagination.Item
+                    key={page}
+                    active={page === currentPage}
+                    onClick={() => handlePageChange(page)}
+                  >
+                    {page}
+                  </Pagination.Item>
+                ) : null
+            )}
 
-          <Pagination.Next onClick={() => handlePageChange(Math.min(currentPage + 1, totalPages))} />
-          <Pagination.Item onClick={() => handlePageChange(totalPages)}>
-            {">>"}
-          </Pagination.Item>
-        </Pagination>
-      </Col>
-
-
+            <Pagination.Next
+              onClick={() =>
+                handlePageChange(Math.min(currentPage + 1, totalPages))
+              }
+            />
+            <Pagination.Item onClick={() => handlePageChange(totalPages)}>
+              {">>"}
+            </Pagination.Item>
+          </Pagination>
+        </Col>
 
         <Col className="d-flex justify-content-end">
           <Dropdown
@@ -99,9 +111,9 @@ const BootstrapTable: React.FC<BootstrapTableProps> = ({
               Rows per page: {sizePerPage}
             </Dropdown.Toggle>
             <Dropdown.Menu>
-              <Dropdown.Item eventKey="5">5</Dropdown.Item>
               <Dropdown.Item eventKey="10">10</Dropdown.Item>
-              <Dropdown.Item eventKey="20">20</Dropdown.Item>
+              <Dropdown.Item eventKey="25">25</Dropdown.Item>
+              <Dropdown.Item eventKey="100">100</Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
         </Col>
@@ -111,3 +123,23 @@ const BootstrapTable: React.FC<BootstrapTableProps> = ({
 };
 
 export default BootstrapTable;
+
+export function guarantorIdFormatter(cell: any): React.ReactElement {
+  return (
+    <Link href={{ pathname: "/guarantor/[slug]", query: { slug: cell } }}>
+      {cell}
+    </Link>
+  );
+}
+
+export function patientIdFormatter(cell: any): React.ReactElement {
+  return (
+    <Link href={{ pathname: "/patient/[slug]", query: { slug: cell } }}>
+      {cell}
+    </Link>
+  );
+}
+
+export function dateFormatter(cell: any): string {
+  return formatMMDDYYYY(cell);
+}

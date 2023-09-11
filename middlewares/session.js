@@ -1,10 +1,8 @@
 var Sequelize = require("sequelize");
-require('dotenv').config()
+require("dotenv").config();
 var session = require("express-session");
 
-const SequelizeStore = require("connect-session-sequelize")(
-  session.Store
-);
+const SequelizeStore = require("connect-session-sequelize")(session.Store);
 
 var sequelize = new Sequelize(
   process.env.DB_NAME,

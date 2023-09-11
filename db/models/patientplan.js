@@ -18,7 +18,6 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "insurancePlanId",
         as: "insurancePlan",
       });
-
     }
   }
   PatientPlan.init(

@@ -3,7 +3,10 @@ import React, { useEffect, useMemo, useState } from "react";
 import { Col, Form, Row } from "react-bootstrap";
 import axios from "axios";
 import { formatMMDDYYYY } from "assets/util";
-import BootstrapTable from "components/BootstrapTable";
+import BootstrapTable, {
+  dateFormatter,
+  patientIdFormatter,
+} from "components/BootstrapTable";
 
 const PatientSearch: React.FC = () => {
   const [state, setState] = useState({
@@ -16,7 +19,6 @@ const PatientSearch: React.FC = () => {
   const [patientsCount, setPatientsCount] = useState(0);
   const [page, setPage] = useState(1);
   const [sizePerPage, setSizePerPage] = useState(10);
-
 
   const columns = [
     {
@@ -41,7 +43,7 @@ const PatientSearch: React.FC = () => {
       label: "Date of Birth",
       formatter: dateFormatter,
     },
-  ];  
+  ];
 
   function handleChange(evt) {
     const value = evt.target.value;
@@ -116,17 +118,5 @@ const PatientSearch: React.FC = () => {
     </>
   );
 };
-
-function patientIdFormatter(cell) {
-  return (
-    <Link href={{ pathname: "/patient/[slug]", query: { slug: cell } }}>
-      {cell}
-    </Link>
-  );
-}
-
-function dateFormatter(cell) {
-  return formatMMDDYYYY(cell);
-}
 
 export default PatientSearch;

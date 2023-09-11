@@ -7,7 +7,7 @@ handler.use(middleware);
 
 handler.get((req, res) => {
   req.logOut();
-  res.redirect('/');
+  res.redirect("/");
 });
 
 export default handler;

@@ -3,9 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "cross-env NODE_ENV=development node server.js",
+    "dev": "next dev",
     "build": "next build",
-    "start": "cross-env NODE_ENV=production node server.js"
+    "start": "next start",
+    "lint": "next lint"
   },
   "license": "UNLICENSED",
   "dependencies": {
@@ -13,8 +14,6 @@
     "bcryptjs": "^2.4.3",
     "bootstrap": "^5.3.1",
     "connect-session-sequelize": "^7.0.4",
-    "cross-env": "^7.0.3",
-    "csv-parser": "^3.0.0",
     "dotenv": "^8.2.0",
     "express-session": "^1.17.1",
     "next": "^13.4.9",

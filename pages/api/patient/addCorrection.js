@@ -10,7 +10,12 @@ const handler = nextConnect()
       body: { patientId, date, amount, notes },
     } = req;
 
-    const correction = await models.Correction.create({ patientId, date, amount, notes });
+    const correction = await models.Correction.create({
+      patientId,
+      date,
+      amount,
+      notes,
+    });
 
     return res.status(200).json(correction);
   });

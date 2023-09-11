@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class glAccountCode extends Model {
     /**
@@ -15,13 +13,16 @@ module.exports = (sequelize, DataTypes) => {
         as: "assignment",
       });
     }
-  };
-  glAccountCode.init({
-    class: DataTypes.STRING,
-    description: DataTypes.STRING
-  }, {
-    sequelize,
-    modelName: 'glAccountCode',
-  });
+  }
+  glAccountCode.init(
+    {
+      class: DataTypes.STRING,
+      description: DataTypes.STRING,
+    },
+    {
+      sequelize,
+      modelName: "glAccountCode",
+    }
+  );
   return glAccountCode;
 };

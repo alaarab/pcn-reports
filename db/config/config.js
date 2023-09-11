@@ -1,20 +1,20 @@
-require('dotenv').config()
+require("dotenv").config();
 
-'use strict';
+("use strict");
 module.exports = {
   development: {
     username: process.env.DB_USER,
     password: process.env.DB_PASS,
     database: process.env.DB_NAME,
     host: process.env.DB_HOST,
-    dialect: 'postgres',
+    dialect: "postgres",
   },
   test: {
     username: process.env.DB_USER,
     password: process.env.DB_PASS,
     database: process.env.DB_NAME,
     host: process.env.DB_HOST,
-    dialect: 'mysql',
+    dialect: "mysql",
     logging: false,
   },
   production: {
@@ -22,9 +22,9 @@ module.exports = {
     password: process.env.DB_PASS,
     database: process.env.DB_NAME,
     host: process.env.DB_HOST,
-    dialect: 'postgres',
-    dialectOptions: {
-      ssl: true,
-    },
+    dialect: "postgres",
+    // dialectOptions: {
+    //   ssl: true,
+    // },
   },
 };

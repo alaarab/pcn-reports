@@ -4,9 +4,6 @@ import passport from "./passport";
 
 const middleware = nextConnect();
 
-middleware
-  .use(session)
-  .use(passport.initialize())
-  .use(passport.session())
+middleware.use(session).use(passport.initialize()).use(passport.session());
 
 export default middleware;

@@ -10,7 +10,9 @@ const handler = nextConnect()
       body: { correctionId },
     } = req;
 
-    const correction = await models.Correction.destroy({ where: { id: correctionId } });
+    const correction = await models.Correction.destroy({
+      where: { id: correctionId },
+    });
 
     return res.status(200).json(correction);
   });

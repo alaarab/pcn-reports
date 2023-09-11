@@ -25,7 +25,7 @@ passport.deserializeUser(async (req, user, done) => {
     done(null, user);
   } else {
     done(user.errors, null);
-  } 
+  }
 });
 
 // const azureStrategy = new OIDCStrategy(
