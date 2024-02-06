@@ -35,6 +35,9 @@ const Guarantor: React.FC = () => {
               <div>
                 {guarantor.city}, {guarantor.state} {guarantor.zip}
               </div>
+              <div>
+                Practice: {guarantor.practice?.name}
+              </div>
             </Col>
             <Col>
               <div>D.O.B: {guarantor.dob}</div>

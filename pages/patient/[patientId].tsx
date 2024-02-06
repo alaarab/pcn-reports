@@ -188,6 +188,9 @@ const Patient: React.FC = () => {
                   Guarantor Name: {patient.guarantor.lastName},{" "}
                   {patient.guarantor.firstName} {patient.guarantor.middleName}
                 </div>
+                <div>
+                  Practice: {patient.practice?.name}
+                </div>
               </Col>
               <Col>
                 <div>

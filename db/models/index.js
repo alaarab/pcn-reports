@@ -71,6 +71,7 @@ if (config.use_env_variable) {
 const models = [
   require("./user")(sequelize, Sequelize),
   require("./assignment")(sequelize, Sequelize),
+  require("./practice")(sequelize, Sequelize),
   require("./patient")(sequelize, Sequelize),
   require("./visit")(sequelize, Sequelize),
   require("./charge")(sequelize, Sequelize),

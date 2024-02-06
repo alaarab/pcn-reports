@@ -78,6 +78,10 @@ const handler = createRouter()
             },
           ],
         },
+        {
+          model: models.Practice,
+          as: "practice",
+        }
       ],
     });
     return res.status(200).json(guarantor);

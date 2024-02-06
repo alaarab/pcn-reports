@@ -19,6 +19,9 @@ const handler = createRouter()
           [Op.iLike]: `%${lastName}%`,
         },
       },
+      include: {
+        model: models.Practice, as: "practice",
+      },
       offset: (page - 1) * sizePerPage,
       limit: sizePerPage,
     });

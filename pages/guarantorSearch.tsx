@@ -42,6 +42,11 @@ const GuarantorSearch: React.FC = () => {
       label: "Date of Birth",
       dateFormatter: dateFormatter,
     },
+    {
+      dataField: "practice.name",
+      label: "Practice Name",
+      formatter: (cell, row) => row.practice ? row.practice.name : 'N/A',
+    }
   ];
 
   function handleChange(evt) {

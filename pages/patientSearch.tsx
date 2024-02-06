@@ -43,6 +43,11 @@ const PatientSearch: React.FC = () => {
       label: "Date of Birth",
       formatter: dateFormatter,
     },
+    {
+      dataField: "practice.name",
+      label: "Practice Name",
+      formatter: (cell, row) => row.practice ? row.practice.name : 'N/A',
+    }
   ];
 
   function handleChange(evt) {

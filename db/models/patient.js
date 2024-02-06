@@ -26,12 +26,13 @@ module.exports = (sequelize, DataTypes) => {
       });
       Patient.belongsTo(models.Guarantor, {
         sourceKey: "guarantorId",
+        // targetKey: "id",
         as: "guarantor",
       });
-      // Patient.belongsTo(models.Practice, {
-      //   sourceKey: "practiceId",
-      //   as: "practice",
-      // });
+      Patient.belongsTo(models.Practice, {
+        foreignKey: 'practiceId',
+        as: 'practice',
+      });
     }
   }
   Patient.init(
@@ -48,6 +49,7 @@ module.exports = (sequelize, DataTypes) => {
       state: DataTypes.STRING,
       phone: DataTypes.STRING,
       workPhone: DataTypes.STRING,
+      practiceId: DataTypes.INTEGER,
       insurance: {
         type: DataTypes.DECIMAL,
         get() {

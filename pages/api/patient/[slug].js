@@ -72,6 +72,9 @@ const handler = createRouter()
           model: models.Guarantor,
           as: "guarantor",
         },
+        {
+          model: models.Practice, as: "practice",
+        }
       ],
     });
     return res.status(200).json(patient);

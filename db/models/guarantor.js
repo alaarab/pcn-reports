@@ -12,11 +12,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "guarantorId",
         as: "patient",
       });
-      // Guarantor.belongsTo(models.Practice, {
-      //   sourceKey: "practiceId",
-      //   as: "practice",
-      // });
-      // define association here
+      Guarantor.belongsTo(models.Practice, {
+        foreignKey: 'practiceId',
+        as: 'practice',
+      });
     }
   }
   Guarantor.init(
@@ -33,6 +32,7 @@ module.exports = (sequelize, DataTypes) => {
       state: DataTypes.STRING,
       phone: DataTypes.STRING,
       workPhone: DataTypes.STRING,
+      practiceId: DataTypes.INTEGER,
     },
     {
       sequelize,
