@@ -1,7 +1,7 @@
-import nextConnect from "next-connect";
+import { createRouter } from "next-connect";
 const models = require("../../../db/models/index");
 
-const handler = nextConnect()
+const handler = createRouter()
   .get(async (req, res) => {
     const {
       query: { id, name },
@@ -15,8 +15,13 @@ const handler = nextConnect()
     });
     return res.status(200).json(visit);
   })
-  .post(async (req, res) => {})
-  .put(async (req, res) => {})
-  .patch(async (req, res) => {});
+  .post(async (req, res) => { })
+  .put(async (req, res) => { })
+  .patch(async (req, res) => { });
 
-export default handler;
+export default handler.handler({
+  onError: (err, req, res) => {
+    console.error(err.stack);
+    res.status(err.statusCode || 500).end(err.message);
+  },
+});

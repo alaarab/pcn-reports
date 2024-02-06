@@ -1,7 +1,8 @@
-import nextConnect from "next-connect";
+
+import { createRouter } from "next-connect";
 import middleware from "middlewares/middleware";
 
-const handler = nextConnect();
+const handler = createRouter();
 
 handler.use(middleware);
 
@@ -10,4 +11,9 @@ handler.get((req, res) => {
   res.redirect("/");
 });
 
-export default handler;
+export default handler.handler({
+  onError: (err, req, res) => {
+    console.error(err.stack);
+    res.status(err.statusCode || 500).end(err.message);
+  },
+})

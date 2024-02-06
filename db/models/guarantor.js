@@ -12,6 +12,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "guarantorId",
         as: "patient",
       });
+      // Guarantor.belongsTo(models.Practice, {
+      //   sourceKey: "practiceId",
+      //   as: "practice",
+      // });
       // define association here
     }
   }

@@ -1,8 +1,7 @@
-import nextConnect from "next-connect";
 import middleware from "middlewares/middleware";
+import { createRouter } from "next-connect";
+const handler = createRouter();
 import passport from "middlewares/passport";
-
-const handler = nextConnect();
 
 handler.use(middleware);
 
@@ -15,4 +14,9 @@ handler.post(passport.authenticate("local"), (req, res) => {
   });
 });
 
-export default handler;
+export default handler.handler({
+  onError: (err, req, res) => {
+    console.error(err.stack);
+    res.status(err.statusCode || 500).end(err.message);
+  },
+});

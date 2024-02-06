@@ -1,9 +1,10 @@
-import nextConnect from "next-connect";
+
+import { createRouter } from "next-connect";
 import middleware from "middlewares/middleware";
 import { Op } from "sequelize";
 const models = require("../../../db/models/index");
 
-const handler = nextConnect()
+const handler = createRouter()
   .use(middleware)
   .get(async (req, res) => {
     const {
@@ -81,8 +82,13 @@ const handler = nextConnect()
     });
     return res.status(200).json(guarantor);
   })
-  .post(async (req, res) => {})
-  .put(async (req, res) => {})
-  .patch(async (req, res) => {});
+  .post(async (req, res) => { })
+  .put(async (req, res) => { })
+  .patch(async (req, res) => { });
 
-export default handler;
+export default handler.handler({
+  onError: (err, req, res) => {
+    console.error(err.stack);
+    res.status(err.statusCode || 500).end(err.message);
+  },
+});

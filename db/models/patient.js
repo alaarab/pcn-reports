@@ -28,6 +28,10 @@ module.exports = (sequelize, DataTypes) => {
         sourceKey: "guarantorId",
         as: "guarantor",
       });
+      // Patient.belongsTo(models.Practice, {
+      //   sourceKey: "practiceId",
+      //   as: "practice",
+      // });
     }
   }
   Patient.init(
