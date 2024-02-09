@@ -5,17 +5,29 @@ module.exports = {
     // Insert practices
     const [pcn, nextGen] = await queryInterface.bulkInsert('Practices', [
       { name: 'PCN', createdAt: new Date(), updatedAt: new Date() },
-      { name: 'NextGen', createdAt: new Date(), updatedAt: new Date() }
+      { name: 'NextGen', createdAt: new Date(), updatedAt: new Date() },
     ], { returning: true });
 
     // Update patients and guarantors to use the PCN practice
     await queryInterface.bulkUpdate('Patients', { practiceId: pcn.id }, {});
     await queryInterface.bulkUpdate('Guarantors', { practiceId: pcn.id }, {});
+
+    // Insert locations
+    const [na] = await queryInterface.bulkInsert('Locations', [
+      { id: 'na', description: 'N/A', createdAt: new Date(), updatedAt: new Date() },
+    ], { returning: true });
+
+    // Create a procedure Misc
+    const [misc] = await queryInterface.bulkInsert('Procedures', [
+      { id: 'misc', description: 'misc', displayId: 'misc', createdAt: new Date(), updatedAt: new Date() },
+    ], { returning: true });
+
   },
 
   async down(queryInterface, Sequelize) {
     // In the down method, you can optionally remove the inserted practices
     // and revert changes made to the patients and guarantors
     await queryInterface.bulkDelete('Practices', { name: ['PCN', 'NextGen'] }, {});
+    await queryInterface.bulkDelete('Locations', { id: 'na' }, {});
   }
 };

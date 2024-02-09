@@ -14,11 +14,22 @@ const PatientSearch: React.FC = () => {
     firstName: "",
     middleName: "",
     lastName: "",
+    practiceId: "", // New field for practice
   });
+  const [practices, setPractices] = useState([]);
   const [patients, setPatients] = useState([]);
   const [patientsCount, setPatientsCount] = useState(0);
   const [page, setPage] = useState(1);
   const [sizePerPage, setSizePerPage] = useState(10);
+
+  // Fetch Practices
+  useEffect(() => {
+    const fetchPractices = async () => {
+      const response = await axios('/api/practices/list'); // Adjust this API endpoint as necessary
+      setPractices(response.data);
+    };
+    fetchPractices();
+  }, []);
 
   const columns = [
     {
@@ -71,6 +82,7 @@ const PatientSearch: React.FC = () => {
         firstName: state.firstName,
         middleName: state.middleName,
         lastName: state.lastName,
+        practiceId: state.practiceId,
         page,
         sizePerPage,
       },
@@ -106,6 +118,21 @@ const PatientSearch: React.FC = () => {
               value={state.lastName}
               onChange={handleChange}
             />
+          </Col>
+          <Col>
+            <Form.Control
+              as="select"
+              name="practiceId"
+              value={state.practiceId}
+              onChange={handleChange}
+            >
+              <option value="">Practice</option>
+              {practices.map((practice) => (
+                <option key={practice.id} value={practice.id}>
+                  {practice.name}
+                </option>
+              ))}
+            </Form.Control>
           </Col>
         </Row>
       </Form>

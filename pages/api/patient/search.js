@@ -7,24 +7,37 @@ const handler = createRouter()
   .use(middleware)
   .get(async (req, res) => {
     const {
-      query: { firstName, lastName, page, sizePerPage },
+      query: { firstName, lastName, practiceId, page, sizePerPage },
     } = req;
 
+    const where = {
+      firstName: {
+        [Op.iLike]: `%${firstName}%`,
+      },
+      lastName: {
+        [Op.iLike]: `%${lastName}%`,
+      },
+    };
+
+    const include = [{
+      model: models.Practice,
+      as: "practice",
+      where: {},
+    }];
+
+    if (practiceId) {
+      include[0].where = {
+        id: practiceId // Assuming practiceId is already an integer
+      };
+    }
+
     const patients = await models.Patient.findAndCountAll({
-      where: {
-        firstName: {
-          [Op.iLike]: `%${firstName}%`,
-        },
-        lastName: {
-          [Op.iLike]: `%${lastName}%`,
-        },
-      },
-      include: {
-        model: models.Practice, as: "practice",
-      },
+      where: where,
+      include: include,
       offset: (page - 1) * sizePerPage,
       limit: sizePerPage,
     });
+
     return res.status(200).json(patients);
   });
 

@@ -1,49 +1,69 @@
 const { Pool } = require("pg");
-var fs = require("fs");
+const fs = require("fs");
 const csvParser = require("csv-parser");
 const dotenv = require("dotenv");
 const path = require("path");
-const { log } = require("console");
 
-dotenv.config({
-  path: ".env",
-});
+dotenv.config({ path: ".env" });
 
 const csvFolderPath = path.join(__dirname, 'csv');
+const logDir = path.join(__dirname, 'logs');
 
-const readCSV = (filename) => {
+const practiceId = '0001'
+
+// Read CSV file
+async function readCSV(filename) {
   return new Promise((resolve, reject) => {
     const data = [];
     fs.createReadStream(path.join(csvFolderPath, filename))
       .pipe(csvParser())
-      .on('data', (row) => data.push(row))
-      .on('end', () => {  
-        resolve(data);
-      })
+      .on('data', row => data.push(row))
+      .on('end', () => resolve(data))
       .on('error', reject);
   });
-};
+}
 
-const logError = (error, file) => {
-  const logDir = path.join(__dirname, 'logs');
+// Log errors to file
+function logError(error, file) {
   if (!fs.existsSync(logDir)) {
     fs.mkdirSync(logDir);
   }
-  fs.appendFile(path.join(logDir, file), `${new Date().toISOString()} - ${error}\n`, (err) => {
+  fs.appendFile(path.join(logDir, file), `${new Date().toISOString()} - ${error}\n`, err => {
     if (err) console.error('Error writing to log file:', err);
   });
-};
+}
 
-const importPatientData = async () => {
-
-  // clear the logs folder
-  const logDir = path.join(__dirname, 'logs');
+// Clear the logs folder
+function clearLogs() {
   if (fs.existsSync(logDir)) {
-    fs.readdirSync(logDir).forEach((file, index) => {
-      const curPath = path.join(logDir, file);
-      fs.unlinkSync(curPath);
+    fs.readdirSync(logDir).forEach(file => {
+      fs.unlinkSync(path.join(logDir, file));
     });
   }
+}
+
+// Date parser function
+function dateParser(dateStr) {
+  if (!dateStr) return null;
+  const [year, month, day] = [dateStr.substr(0, 4), dateStr.substr(4, 2), dateStr.substr(6, 2)];
+  return new Date(`${year}-${month}-${day}`);
+}
+
+// Helper functions to format SQL query
+function queryFields(resultObj) {
+  return Object.keys(resultObj).map(key => `"${key}"`).join(",");
+}
+
+function queryDollar(resultObj) {
+  return Object.keys(resultObj).map((_, index) => `$${index + 1}`).join(",");
+}
+
+// Main function to import patient data
+async function importPatientData() {
+  
+  console.time('importPatientData');
+
+  clearLogs();
 
   const pool = new Pool({
     user: process.env.DB_USER,
@@ -52,142 +72,181 @@ const importPatientData = async () => {
     host: process.env.DB_HOST,
   });
 
-  const patients = await readCSV('Patient.csv');
-  const persons = await readCSV('Person.csv');
-  // const charges = await readCSV('Charge.csv');
-  // const transactions = await readCSV('Transaction.csv');
-  // const transactionDetails = await readCSV('TransactionDetail.csv');
+  try {
+    // add a timer 
 
-  console.log('Creating guarantors...')
-  for (const person of persons.filter(p => p.practice_id === '0001')) {
-    try {
-      // console.log(`Processing person: ${person.first_name} ${person.last_name}`);
-      const isGuarantor = patients.find(p => p.guar_id === person.person_id && p.practice_id === '0001');
+    const [patients, persons, charges] = await Promise.all([
+      readCSV('Patient.csv'),
+      readCSV('Person.csv'),
+      readCSV('Charge.csv')
+    ]);
 
-      if (isGuarantor) {
-        // console.log(`Creating guarantor: ${person.first_name} ${person.last_name}`)
-        let guarantorObj = {
-          id: person["person_id"],
-          firstName: person["first_name"],
-          middleName: person["middle_name"],
-          lastName: person["last_name"],
-          dob: dateParser(person["date_of_birth"]),
-          address: person["address_line_1"],
-          zip: person["zip"],
-          city: person["city"],
-          state: person["state"],
-          phone: person["home_phone"],
-          workPhone: person["day_phone"],
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        };
+    console.log('Creating patients...');
 
-        await pool.query(
-          `INSERT INTO "Guarantors"(${queryFields(guarantorObj)}) VALUES(${queryDollar(guarantorObj)})`,
-          Object.values(guarantorObj)
-        );
-
-        // console.log(`Guarantor created: ${person.first_name} ${person.last_name}`)
-      }
-    } catch (error) {
-      console.error(`Errored out, see log: ${person.person_id} - ${person.first_name} ${person.last_name}`)
-      logError(`Error ${error} on ${person.person_id} - ${person.first_name} ${person.last_name}`, 'guarantor.txt');
+    // Process each patient
+    for (const patient of patients.filter(p => p.practice_id === practiceId)) {
+      // Process data for each patient
+      await processPatientData(patient, persons, charges, pool);
     }
+  } catch (error) {
+    console.error('An error occurred:', error);
+    logError(error, 'general.txt');
+  } finally {
+    await pool.end();
   }
 
-  let nullGuarantorCounter = 0;
+  console.timeEnd('importPatientData');
+}
 
-  console.log('Creating patients...')
-  for (const patient of patients.filter(p => p.practice_id === '0001')) {
-    try {
-      const patientInfo = persons.find(p => p.person_id === patient.person_id && p.practice_id === '0001');
-      const guarantorInfo = persons.find(p => (p.person_id === patient.guar_id && p.practice_id === '0001') || (p.person_id === patient.guar_id));
-
-      if(!guarantorInfo){
-        nullGuarantorCounter++;
-        // console.log(`Creating null guarantor: ${patientInfo.first_name} ${patientInfo.last_name}`)
-        let guarantorObj = {
-          id: `NULL-GUARANTOR-${nullGuarantorCounter}`,
-          firstName: patientInfo["first_name"],
-          middleName: patientInfo["middle_name"],
-          lastName: patientInfo["last_name"],
-          dob: dateParser(patientInfo["date_of_birth"]),
-          address: patientInfo["address_line_1"],
-          zip: patientInfo["zip"],
-          city: patientInfo["city"],
-          state: patientInfo["state"],
-          phone: patientInfo["home_phone"],
-          workPhone: patientInfo["day_phone"],
-          practiceId: "2",
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        };
-
-        await pool.query(
-          `INSERT INTO "Guarantors"(${queryFields(guarantorObj)}) VALUES(${queryDollar(guarantorObj)})`,
-          Object.values(guarantorObj)
-        );
-        // console.log(`Null guarantor created: ${patientInfo.first_name} ${patientInfo.last_name}`)
-      }
-
-      // console.log(`Creating patient: ${patientInfo.first_name} ${patientInfo.last_name}`)
-
-      let patientObj = {
-        id: patientInfo["person_id"],
-        firstName: patientInfo["first_name"],
-        middleName: patientInfo["middle_name"],
-        lastName: patientInfo["last_name"],
-        dob: dateParser(patientInfo["date_of_birth"]),
-        address: patientInfo["address_line_1"],
-        zip: patientInfo["zip"],
-        city: patientInfo["city"],
-        state: patientInfo["state"],
-        phone: patientInfo["home_phone"],
-        workPhone: patientInfo["day_phone"],
-        guarantorId: guarantorInfo ? guarantorInfo["person_id"] : `NULL-GUARANTOR-${nullGuarantorCounter}`,
-        practiceId: "2",
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      };
-
-      await pool.query(
-        `INSERT INTO "Patients"(${queryFields(patientObj)}) VALUES(${queryDollar(patientObj)})`,
-        Object.values(patientObj)
-      );
-      console.log(`Patient created: ${patientInfo.first_name} ${patientInfo.last_name}`)
-    } catch (error) {
-      console.error(`Errored out, see log: ${patient.person_id}`)
-      logError(`Error ${error} on ${patient.person_id}`, 'patient.txt');
+// Function to process data for each patient
+async function processPatientData(patient, persons, charges, pool) {
+  try {
+    const patientInfo = persons.find(p => p.person_id === patient.person_id && p.practice_id === practiceId);
+    if (!patientInfo) {
+      console.log(`Person not found: ${patient.person_id}`);
+      logError(`Person not found: ${patient.person_id}`, 'patient.txt');
+      return;
     }
+
+    const patientCharges = charges.filter(c => c.person_id === patient.person_id && c.practice_id === practiceId && parseFloat(c.pat_amt) > 0);
+    if (patientCharges.length === 0) {
+      return;
+    }
+
+    const guarantorInfo = persons.find(p => p.person_id === patient.guar_id && p.practice_id === practiceId);
+    let guarantorId = guarantorInfo ? guarantorInfo["person_id"] : await createNullGuarantor(patientInfo, pool);
+
+    // Create or update guarantor
+    await createOrUpdateGuarantor(guarantorInfo, guarantorId, pool);
+
+    // Create the patient
+    await createPatient(patientInfo, guarantorId, pool);
+
+    // Create Visits and Charges
+    await createVisitsAndCharges(patient, patientCharges, guarantorId, pool);
+
+  } catch (error) {
+    console.error(`Error in processPatientData for ${patient.person_id}:`, error);
+    logError(`Error ${error} on ${patient.person_id}`, 'patient.txt');
   }
 }
 
-function queryFields(resultObj) {
-  return Object.keys(resultObj)
-    .map((key, index) => {
-      return `"${key}"`;
-    })
-    .join(",");
+async function createNullGuarantor(patientInfo, pool) {
+  const nullGuarantorCounter = await getNullGuarantorCount(pool) + 1;
+  const guarantorId = `NULL-GUARANTOR-${nullGuarantorCounter}`;
+  let guarantorObj = {
+    id: guarantorId,
+    ...createGuarantorObject(patientInfo, nullGuarantorCounter)
+  };
+  await createOrUpdateGuarantor(guarantorObj, guarantorId, pool);
+  return guarantorId;
 }
 
-function queryDollar(resultObj) {
-  let ret = [];
-  for (let i = 0; i < Object.keys(resultObj).length; i++) {
-    ret.push(`$${i + 1}`);
+async function getNullGuarantorCount(pool) {
+  const result = await pool.query(`SELECT COUNT(*) FROM "Guarantors" WHERE "id" LIKE 'NULL-GUARANTOR-%'`);
+  return parseInt(result.rows[0].count, 10);
+}
+
+function createGuarantorObject(info, suffix) {
+  return {
+    firstName: info["first_name"],
+    middleName: info["middle_name"],
+    lastName: info["last_name"],
+    dob: dateParser(info["date_of_birth"]),
+    address: info["address_line_1"],
+    zip: info["zip"],
+    city: info["city"],
+    state: info["state"],
+    phone: info["home_phone"],
+    workPhone: info["day_phone"],
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+}
+
+async function createOrUpdateGuarantor(guarantorInfo, guarantorId, pool) {
+  if (guarantorInfo) {
+    let guarantorObj = { id: guarantorId, ...createGuarantorObject(guarantorInfo) };
+
+    const fields = queryFields(guarantorObj);
+    const values = queryDollar(guarantorObj);
+    const updateFields = updateQueryFields(guarantorObj);
+
+    const query = `
+      INSERT INTO "Guarantors"(${fields})
+      VALUES(${values})
+      ON CONFLICT (id)
+      DO UPDATE SET ${updateFields}
+    `;
+
+    await pool.query(query, Object.values(guarantorObj));
   }
-  return ret.join(",");
 }
 
-function dateParser(dateStr) {
-  if (!dateStr) return null;
+function updateQueryFields(obj) {
+  return Object.keys(obj).map((key, index) => `"${key}" = $${index + 1}`).join(", ");
+}
 
-  let year = dateStr.substr(0, 4);
-  let month = dateStr.substr(4, 2);
-  let day = dateStr.substr(6, 2);
+async function createPatient(patientInfo, guarantorId, pool) {
+  let patientObj = {
+    id: patientInfo["person_id"],
+    ...createGuarantorObject(patientInfo), // Assuming patientObj structure is similar to guarantorObj
+    guarantorId: guarantorId,
+    practiceId: "2"
+  };
+  await pool.query(
+    `INSERT INTO "Patients"(${queryFields(patientObj)}) VALUES(${queryDollar(patientObj)})`,
+    Object.values(patientObj)
+  );
+}
 
-  let date = new Date(`${year}-${month}-${day}`);
+async function createVisitsAndCharges(patient, patientCharges, guarantorId, pool) {
+  for (const charge of patientCharges) {
+    const chargeId = `${patient.person_id}-${charge.charge_id}`; // Assuming charge_id is available in charge
+    await createVisit(chargeId, patient.person_id, guarantorId, pool);
+    await createCharge(charge, chargeId, pool);
+  }
+}
 
-  return date;
+async function createVisit(visitId, patientId, guarantorId, pool) {
+  let visitObj = {
+    id: visitId,
+    patientId: patientId,
+    guarantorId: guarantorId,
+    locationId: "na", // Placeholder, replace with actual data if available
+    providerId: null, // Placeholder, replace with actual data if available
+    claimId: null, // Placeholder, replace with actual data if available
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+  await pool.query(
+    `INSERT INTO "Visits"(${queryFields(visitObj)}) VALUES(${queryDollar(visitObj)})`,
+    Object.values(visitObj)
+  );
+}
+
+async function createCharge(charge, visitId, pool) {
+  let chargeObj = {
+    visitId: visitId,
+    providerId: null, // Placeholder, replace with actual data if available
+    procedureId: "misc", // Placeholder, replace with actual data if available
+    amount: parseFloat(charge["pat_amt"]),
+    fromServiceDate: dateParser(charge["begin_date_of_service"]),
+    toServiceDate: dateParser(charge["end_date_of_service"]),
+    postDate: dateParser(charge["end_date_of_service"]),
+    approvedAmount: parseFloat(charge["amt"]),
+    legacyId: null, // Placeholder, replace with actual data if available
+    supervisingProvider: null, // Placeholder, replace with actual data if available
+    lineNumber: null, // Placeholder, replace with actual data if available
+    placeOfService: null, // Placeholder, replace with actual data if available
+    diagId: null, // Placeholder, replace with actual data if available
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+  await pool.query(
+    `INSERT INTO "Charges"(${queryFields(chargeObj)}) VALUES(${queryDollar(chargeObj)})`,
+    Object.values(chargeObj)
+  );
 }
 
 importPatientData();
