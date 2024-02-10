@@ -17,6 +17,7 @@
     "dotenv": "^16.4.1",
     "exceljs": "^4.4.0",
     "express-session": "^1.18.0",
+    "json2csv": "^6.0.0-alpha.2",
     "next": "^13.4.9",
     "next-connect": "^1.0.0",
     "passport": "^0.4.1",

@@ -60,7 +60,6 @@ function queryDollar(resultObj) {
 
 // Main function to import patient data
 async function importPatientData() {
-  
   console.time('importPatientData');
 
   clearLogs();
@@ -166,7 +165,7 @@ function createGuarantorObject(info, suffix) {
 
 async function createOrUpdateGuarantor(guarantorInfo, guarantorId, pool) {
   if (guarantorInfo) {
-    let guarantorObj = { id: guarantorId, ...createGuarantorObject(guarantorInfo) };
+    let guarantorObj = { id: guarantorId, ...createGuarantorObject(guarantorInfo), practiceId: "2" };
 
     const fields = queryFields(guarantorObj);
     const values = queryDollar(guarantorObj);

@@ -58,6 +58,10 @@ const PatientSearch: React.FC = () => {
       dataField: "practice.name",
       label: "Practice Name",
       formatter: (cell, row) => row.practice ? row.practice.name : 'N/A',
+    },
+    {
+      dataField: "balance",
+      label: "Balance",
     }
   ];
 

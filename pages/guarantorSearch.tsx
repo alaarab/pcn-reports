@@ -13,7 +13,9 @@ const GuarantorSearch: React.FC = () => {
     firstName: "",
     middleName: "",
     lastName: "",
+    practiceId: "", // New field for practice
   });
+  const [practices, setPractices] = useState([]);
   const [guarantors, setGuarantors] = useState([]);
   const [guarantorsCount, setGuarantorsCount] = useState(0);
   const [page, setPage] = useState(1);
@@ -46,6 +48,10 @@ const GuarantorSearch: React.FC = () => {
       dataField: "practice.name",
       label: "Practice Name",
       formatter: (cell, row) => row.practice ? row.practice.name : 'N/A',
+    },
+    {
+      dataField: "balance",
+      label: "Balance",
     }
   ];
 
@@ -69,12 +75,22 @@ const GuarantorSearch: React.FC = () => {
         firstName: state.firstName,
         middleName: state.middleName,
         lastName: state.lastName,
+        practiceId: state.practiceId,
         page,
         sizePerPage,
       },
     }),
     [state, page, sizePerPage]
   );
+
+  // Fetch Practices
+  useEffect(() => {
+    const fetchPractices = async () => {
+      const response = await axios('/api/practices/list'); // Adjust this API endpoint as necessary
+      setPractices(response.data);
+    };
+    fetchPractices();
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -104,6 +120,21 @@ const GuarantorSearch: React.FC = () => {
               value={state.lastName}
               onChange={handleChange}
             />
+          </Col>
+          <Col>
+            <Form.Control
+              as="select"
+              name="practiceId"
+              value={state.practiceId}
+              onChange={handleChange}
+            >
+              <option value="">Practice</option>
+              {practices.map((practice) => (
+                <option key={practice.id} value={practice.id}>
+                  {practice.name}
+                </option>
+              ))}
+            </Form.Control>
           </Col>
         </Row>
       </Form>
