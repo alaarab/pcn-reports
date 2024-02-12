@@ -4,6 +4,7 @@ import { Col, Form, Row } from "react-bootstrap";
 import axios from "axios";
 import { formatMMDDYYYY } from "assets/util";
 import BootstrapTable, {
+  amountFormatter,
   dateFormatter,
   patientIdFormatter,
 } from "components/BootstrapTable";
@@ -25,7 +26,7 @@ const PatientSearch: React.FC = () => {
   // Fetch Practices
   useEffect(() => {
     const fetchPractices = async () => {
-      const response = await axios('/api/practices/list'); // Adjust this API endpoint as necessary
+      const response = await axios("/api/practices/list"); // Adjust this API endpoint as necessary
       setPractices(response.data);
     };
     fetchPractices();
@@ -57,12 +58,13 @@ const PatientSearch: React.FC = () => {
     {
       dataField: "practice.name",
       label: "Practice Name",
-      formatter: (cell, row) => row.practice ? row.practice.name : 'N/A',
+      formatter: (cell, row) => (row.practice ? row.practice.name : "N/A"),
     },
     {
       dataField: "balance",
       label: "Balance",
-    }
+      formatter: amountFormatter,
+    },
   ];
 
   function handleChange(evt) {

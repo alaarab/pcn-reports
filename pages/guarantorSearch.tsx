@@ -3,6 +3,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { Col, Form, Row } from "react-bootstrap";
 import axios from "axios";
 import BootstrapTable, {
+  amountFormatter,
   dateFormatter,
   guarantorIdFormatter,
 } from "components/BootstrapTable";
@@ -42,7 +43,7 @@ const GuarantorSearch: React.FC = () => {
     {
       dataField: "dob",
       label: "Date of Birth",
-      dateFormatter: dateFormatter,
+      formatter: dateFormatter,
     },
     {
       dataField: "practice.name",
@@ -52,6 +53,7 @@ const GuarantorSearch: React.FC = () => {
     {
       dataField: "balance",
       label: "Balance",
+      formatter: amountFormatter
     }
   ];
 
