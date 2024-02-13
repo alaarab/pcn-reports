@@ -37,10 +37,11 @@ const handler = createRouter()
 
         // Convert to CSV
         const csvContent = convertToCSV(patientsWithTotal);
+        const date = new Date();
 
         // Set headers for CSV download
         res.setHeader('Content-Type', 'text/csv');
-        res.setHeader('Content-Disposition', 'attachment; filename="patients.csv"');
+        res.setHeader('Content-Disposition', `attachment; filename="Patients-${date.getFullYear()}${String(date.getMonth() + 1).padStart(2, '0')}${String(date.getDate()).padStart(2, '0')}.csv"`);
         return res.status(200).send(csvContent);
     });
 
@@ -53,12 +54,13 @@ export default handler.handler({
 
 // Helper function to convert JSON to CSV
 function convertToCSV(data) {
-    const headers = ['ID', 'FirstName', 'LastName', 'Balance']; // Add other headers
+    const headers = ['ID', 'FirstName', 'LastName', 'Balance', 'Practice']; // Add other headers
     const rows = data.map(patient => [
         patient.id,
         patient.firstName,
         patient.lastName,
         patient.balance,
+        patient.practice.name,
     ]);
 
     return [

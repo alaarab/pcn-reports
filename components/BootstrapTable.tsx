@@ -145,10 +145,9 @@ export function dateFormatter(cell: any): string {
 }
 
 export function amountFormatter(cell: any): string {
-  console.log('numba', cell);
   var formatter = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
   });
-  return formatter.format(cell);
+  return formatter.format(parseFloat(cell));
 }

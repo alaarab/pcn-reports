@@ -13,6 +13,9 @@ const NavBar: React.FC = () => {
         <Nav.Link as={Link} href="/guarantorSearch">
           Guarantors
         </Nav.Link>
+        <Nav.Link as={Link} href="/correctionSearch">
+          Corrections
+        </Nav.Link>
         <Nav.Link as={Link} href="/reports">
           Reports
         </Nav.Link>
