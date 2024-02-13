@@ -332,7 +332,7 @@ const Charge: React.FC<ChargeProps> = (props) => {
         <td>{props.claimId}</td>
         <td>{props.data.providerId}</td>
         <td colSpan={2}>
-          {props.data.procedureId}-{props.data.procedure.description}
+          {props.data.procedure.displayId} - {props.data.procedure.description}
         </td>
         <td>{props.data.placeOfService}</td>
         <td></td>

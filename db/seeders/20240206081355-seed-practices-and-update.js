@@ -16,12 +16,6 @@ module.exports = {
     const [na] = await queryInterface.bulkInsert('Locations', [
       { id: 'na', description: 'N/A', createdAt: new Date(), updatedAt: new Date() },
     ], { returning: true });
-
-    // Create a procedure Misc
-    const [misc] = await queryInterface.bulkInsert('Procedures', [
-      { id: 'misc', description: 'misc', displayId: 'misc', createdAt: new Date(), updatedAt: new Date() },
-    ], { returning: true });
-
   },
 
   async down(queryInterface, Sequelize) {

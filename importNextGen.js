@@ -9,7 +9,7 @@ dotenv.config({ path: ".env" });
 const csvFolderPath = path.join(__dirname, 'csv');
 const logDir = path.join(__dirname, 'logs');
 
-const practiceId = '0001'
+const practiceId = '0001';
 
 // Read CSV file
 async function readCSV(filename) {
@@ -72,7 +72,7 @@ async function importPatientData() {
   });
 
   try {
-    // add a timer 
+    await importProcedureData(pool);
 
     const [patients, persons, charges] = await Promise.all([
       readCSV('Patient.csv'),
@@ -80,11 +80,7 @@ async function importPatientData() {
       readCSV('Charge.csv')
     ]);
 
-    console.log('Creating patients...');
-
-    // Process each patient
     for (const patient of patients.filter(p => p.practice_id === practiceId)) {
-      // Process data for each patient
       await processPatientData(patient, persons, charges, pool);
     }
   } catch (error) {
@@ -146,6 +142,7 @@ async function getNullGuarantorCount(pool) {
   return parseInt(result.rows[0].count, 10);
 }
 
+// Function to create a guarantor object
 function createGuarantorObject(info, suffix) {
   return {
     firstName: info["first_name"],
@@ -193,15 +190,18 @@ async function createPatient(patientInfo, guarantorId, pool) {
     guarantorId: guarantorId,
     practiceId: "2"
   };
-  await pool.query(
-    `INSERT INTO "Patients"(${queryFields(patientObj)}) VALUES(${queryDollar(patientObj)})`,
-    Object.values(patientObj)
-  );
+
+  const query = `
+    INSERT INTO "Patients"(${queryFields(patientObj)})
+    VALUES(${queryDollar(patientObj)})
+  `;
+
+  await pool.query(query, Object.values(patientObj));
 }
 
 async function createVisitsAndCharges(patient, patientCharges, guarantorId, pool) {
   for (const charge of patientCharges) {
-    const chargeId = `${patient.person_id}-${charge.charge_id}`; // Assuming charge_id is available in charge
+    const chargeId = `${patient.person_id}-${charge.charge_id}`;
     await createVisit(chargeId, patient.person_id, guarantorId, pool);
     await createCharge(charge, chargeId, pool);
   }
@@ -218,17 +218,21 @@ async function createVisit(visitId, patientId, guarantorId, pool) {
     createdAt: new Date(),
     updatedAt: new Date(),
   };
-  await pool.query(
-    `INSERT INTO "Visits"(${queryFields(visitObj)}) VALUES(${queryDollar(visitObj)})`,
-    Object.values(visitObj)
-  );
+
+  const query = `
+    INSERT INTO "Visits"(${queryFields(visitObj)})
+    VALUES(${queryDollar(visitObj)})
+  `;
+
+  await pool.query(query, Object.values(visitObj));
 }
 
 async function createCharge(charge, visitId, pool) {
+  const procedureId = await getIdByServiceItemIds(charge.service_item_lib_id, charge.service_item_id, pool);
   let chargeObj = {
     visitId: visitId,
     providerId: null, // Placeholder, replace with actual data if available
-    procedureId: "misc", // Placeholder, replace with actual data if available
+    procedureId: procedureId, // Placeholder, replace with actual data if available
     amount: parseFloat(charge["pat_amt"]),
     fromServiceDate: dateParser(charge["begin_date_of_service"]),
     toServiceDate: dateParser(charge["end_date_of_service"]),
@@ -242,10 +246,50 @@ async function createCharge(charge, visitId, pool) {
     createdAt: new Date(),
     updatedAt: new Date(),
   };
-  await pool.query(
-    `INSERT INTO "Charges"(${queryFields(chargeObj)}) VALUES(${queryDollar(chargeObj)})`,
-    Object.values(chargeObj)
-  );
+
+  const query = `
+    INSERT INTO "Charges"(${queryFields(chargeObj)})
+    VALUES(${queryDollar(chargeObj)})
+  `;
+
+  await pool.query(query, Object.values(chargeObj));
+}
+
+async function importProcedureData(pool) {
+  const procedures = await readCSV('ServiceItemMstr.csv');
+  for (const procedure of procedures) {
+    await createProcedure(procedure, pool);
+  }
+}
+
+async function createProcedure(procedureData, pool) {
+  const procedureObj = {
+    id: `${procedureData.service_item_lib_id}-${procedureData.service_item_id}`,
+    displayId: procedureData.service_item_id,
+    description: procedureData.description,
+    type: 'default', // Set default type or extract from data
+    amount: parseFloat(procedureData.current_price),
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+
+  const fields = queryFields(procedureObj);
+  const values = queryDollar(procedureObj);
+
+  const query = `
+    INSERT INTO "Procedures"(${fields})
+    VALUES(${values})
+    ON CONFLICT (id)
+    DO UPDATE SET ${updateQueryFields(procedureObj)}
+  `;
+
+  await pool.query(query, Object.values(procedureObj));
+}
+
+async function getIdByServiceItemIds(serviceItemLibId, serviceItemId, pool) {
+  const procedureId = `${serviceItemLibId}-${serviceItemId}`;
+  const result = await pool.query(`SELECT id FROM "Procedures" WHERE "Procedures"."id" = $1`, [procedureId]);
+  return result.rows.length > 0 ? result.rows[0].id : null;
 }
 
 importPatientData();
