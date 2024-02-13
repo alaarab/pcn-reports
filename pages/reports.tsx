@@ -14,7 +14,7 @@ const TransactionsReport = () => {
           <a href="/api/reports/guarantor">Guarantor Report</a>
         </li>
         <li>
-          <a href="/api/reports/transaction">Transaction Report</a>
+          <a href="/api/reports/transactions">Transaction Report</a>
         </li>
       </ul>
     </div>

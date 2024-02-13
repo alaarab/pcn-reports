@@ -13,7 +13,7 @@ export const calculatePatientBalance = (patient) => {
     }, 0);
 
   const correctionTotal = patient.correction
-    .reduce((total, { amount }) => total + amount, 0);
+    .reduce((total, { amount }) => total + parseFloat(amount), 0);
 
   return visitTotal - correctionTotal;
 };
