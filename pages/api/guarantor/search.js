@@ -75,16 +75,21 @@ const handler = createRouter()
       };
     }
 
-    const guarantors = await models.Guarantor.findAndCountAll(queryOptions);
+    const guarantors = await models.Guarantor.findAll(queryOptions);
 
-    const guarantorsWithTotal = guarantors.rows.map(guarantor => ({
+    const guarantorsCount = await models.Guarantor.count({
+      where: where,
+      include: practiceId ? [{ model: models.Practice, as: "practice", where: { id: practiceId } }] : []
+    });
+
+    const guarantorsWithTotal = guarantors.map(guarantor => ({
       ...guarantor.toJSON(),
       balance: calculateGuarantorBalance(guarantor),
     }));
 
     return res.status(200).json({
       rows: guarantorsWithTotal,
-      count: guarantors.count,
+      count: guarantorsCount,
     });
   });
 

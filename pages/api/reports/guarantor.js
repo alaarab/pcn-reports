@@ -66,7 +66,7 @@ function convertToCSV(data) {
     guarantor.firstName,
     guarantor.lastName,
     guarantor.balance,
-    guarantor.practice.name
+    guarantor.practice?.name
   ]);
 
   return [

@@ -81,9 +81,18 @@ const handler = createRouter()
       };
     }
 
-    const corrections = await models.Correction.findAndCountAll(queryOptions);
+    const corrections = await models.Correction.findAll(queryOptions);
 
-    const correctionsWithDetails = corrections.rows.map(correction => ({
+    const correctionsCount = await models.Correction.count({
+      where: {
+        date: {
+          [Op.gte]: startDate,
+          [Op.lte]: endDate
+        }
+      }
+    });
+
+    const correctionsWithDetails = corrections.map(correction => ({
       patientName: `${correction.patient.firstName} ${correction.patient.lastName}`,
       guarantorName: correction.patient.guarantor ? `${correction.patient.guarantor.firstName} ${correction.patient.guarantor.lastName}` : 'N/A',
       amount: formatAmount(correction.amount),
@@ -94,7 +103,7 @@ const handler = createRouter()
 
     return res.status(200).json({
       rows: correctionsWithDetails,
-      count: corrections.count,
+      count: correctionsCount,
     });
   });
 

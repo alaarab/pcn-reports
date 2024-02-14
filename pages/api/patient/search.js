@@ -80,16 +80,22 @@ const handler = createRouter()
       };
     }
 
-    const patients = await models.Patient.findAndCountAll(queryOptions);
+    const patientData = await models.Patient.findAll(queryOptions);
 
-    const patientsWithTotal = patients.rows.map(patient => ({
+    // Count total patients with same filters but without pagination
+    const patientCount = await models.Patient.count({
+      where: where,
+      include: practiceId ? [{ model: models.Practice, as: "practice", where: { id: practiceId } }] : []
+    });
+
+    const patientsWithTotal = patientData.map(patient => ({
       ...patient.toJSON(),
       balance: calculatePatientBalance(patient),
     }));
 
     return res.status(200).json({
       rows: patientsWithTotal,
-      count: patients.count,
+      count: patientCount,
     });
   });
 
