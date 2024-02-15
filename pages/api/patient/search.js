@@ -15,7 +15,9 @@ export const calculatePatientBalance = (patient) => {
   const correctionTotal = patient.correction
     .reduce((total, { amount }) => total + parseFloat(amount), 0);
 
-  return visitTotal - correctionTotal;
+  const balance = visitTotal - correctionTotal;
+
+  return parseFloat(balance.toFixed(2));
 };
 
 const handler = createRouter()
@@ -35,11 +37,6 @@ const handler = createRouter()
     };
 
     const include = [
-      {
-        model: models.Practice,
-        as: "practice",
-        where: {},
-      },
       {
         model: models.Visit,
         as: "visit",
