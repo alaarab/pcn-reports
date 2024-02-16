@@ -33,8 +33,7 @@ function csvEscape(field) {
     return stringField;
 }
 
-// Helper function to process a single batch
-const processBatch = async (batchIds) => {
+const processPatientBatch = async (batchIds) => {
   const patients = await models.Patient.findAll({
     where: { id: batchIds },
     include: [{
@@ -73,9 +72,33 @@ const processBatch = async (batchIds) => {
   }
 };
 
+const processGuarantorBatch = async (batchIds) => {
+  const guarantors = await models.Guarantor.findAll({
+    where: { id: batchIds },
+    include: [{
+      model: models.Patient,
+      as: 'patient',
+      attributes: ['id'],
+      required: false
+    }]
+  });
+
+  for (const guarantor of guarantors) {
+    if (guarantor.patient.length === 0) {
+      await models.sequelize.transaction(async (t) => {
+        await models.Guarantor.destroy({ where: { id: guarantor.id }, transaction: t });
+        console.log(`Deleted unlinked guarantor ${guarantor.id}`);
+      });
+    } else {
+      console.log(`Skipping guarantor ${guarantor.id} with linked patients`);
+    }
+  }
+};
+
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    const batchSize = 50; // Adjust the batch size as per your system's capability
+    const patientBatchSize = 50; // Adjust as per your system's capability
+    const guarantorBatchSize = 100; // Adjust as per your system's capability
     const concurrency = 30; // Number of concurrent batches
 
     // Fetch all patient IDs
@@ -84,23 +107,45 @@ module.exports = {
       raw: true
     })).map(p => p.id);
 
-    let currentIndex = 0;
+    let patientIndex = 0;
 
-    const worker = async () => {
-      while (currentIndex < patientIds.length) {
-        const batchStart = currentIndex;
-        const batchIds = patientIds.slice(batchStart, batchStart + batchSize);
-        currentIndex += batchSize;
-
-        console.log(`Worker processing batch starting from index ${batchStart}`);
-        await processBatch(batchIds);
-        console.log(`Worker completed batch starting from index ${batchStart}`);
+    const patientWorker = async () => {
+      while (patientIndex < patientIds.length) {
+        const batchStart = patientIndex;
+        const batchIds = patientIds.slice(batchStart, batchStart + patientBatchSize);
+        patientIndex += patientBatchSize;
+        console.log(`Worker processing patient batch starting from index ${batchStart}`);
+        await processPatientBatch(batchIds);
+        console.log(`Worker completed patient batch starting from index ${batchStart}`);
       }
     };
 
-    const workers = Array.from({ length: concurrency }, () => worker());
-    await Promise.all(workers);
-    console.log('All batches processed');
+    const patientWorkers = Array.from({ length: concurrency }, () => patientWorker());
+    await Promise.all(patientWorkers);
+
+    // Process guarantors
+    const guarantorIds = (await models.Guarantor.findAll({
+      attributes: ['id'],
+      raw: true
+    })).map(g => g.id);
+
+    let guarantorIndex = 0;
+    const guarantorWorker = async () => {
+      while (guarantorIndex < guarantorIds.length) {
+        const batchStart = guarantorIndex;
+        const batchIds = guarantorIds.slice(batchStart, batchStart + guarantorBatchSize);
+        guarantorIndex += guarantorBatchSize;
+        console.log(`Worker processing guarantor batch starting from index ${batchStart}`);
+        await processGuarantorBatch(batchIds);
+        console.log(`Worker completed guarantor batch starting from index ${batchStart}`);
+      }
+    }
+
+    const guarantorWorkers = Array.from({ length: concurrency }, () => guarantorWorker());
+
+    await Promise.all(guarantorWorkers);
+
+    console.log('All patient and guarantor batches processed');
   },
   down: async (queryInterface, Sequelize) => {
     // Logic to revert the migration, if necessary
