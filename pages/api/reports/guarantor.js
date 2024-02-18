@@ -44,7 +44,7 @@ const handler = createRouter()
 
         try {
 
-            const batchSize = 1000; // Adjust as needed
+            const batchSize = 10; // Adjust as needed
             let offset = 0;
             let hasMore = true;
             const headers = ['ID', 'FirstName', 'LastName', 'Balance', 'Practice'].join(',') + '\n';
