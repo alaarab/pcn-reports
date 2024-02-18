@@ -2,7 +2,8 @@ import { createRouter } from "next-connect";
 import middleware from "middlewares/middleware";
 import { calculatePatientBalance } from "../patient/search";
 const models = require("../../../db/models/index");
-import { Transform } from 'stream';
+const fs = require('fs');
+const path = require('path');
 
 export function csvEscape(field) {
     if (field === null || field === undefined) {
@@ -19,81 +20,107 @@ export function csvEscape(field) {
     return stringField;
 }
 
+const csvStoragePath = process.env.CSV_STORAGE_PATH;
+
+// Cleanup function to be called on server start
+export function cleanupResidualFiles() {
+    const generatingFilePath = path.join(csvStoragePath, 'PatientsReport.generating');
+    if (fs.existsSync(generatingFilePath)) {
+        fs.unlinkSync(generatingFilePath);
+    }
+}
+
 const handler = createRouter()
     .use(middleware)
     .get(async (req, res) => {
-
-        res.setHeader('Content-Type', 'text/csv');
         const date = new Date();
-        res.setHeader('Content-Disposition', `attachment; filename="Patients-${date.getFullYear()}${String(date.getMonth() + 1).padStart(2, '0')}${String(date.getDate()).padStart(2, '0')}.csv"`);
+        const csvFileName = `Patients-${date.getFullYear()}${String(date.getMonth() + 1).padStart(2, '0')}${String(date.getDate()).padStart(2, '0')}.csv`;
+        const csvFilePath = path.join(csvStoragePath, csvFileName);
+        const tempCsvFilePath = `${csvFilePath}.tmp`; // Temporary file path
+        const generatingFilePath = `${csvFilePath}.generating`;
 
-        const batchSize = 1000; // Adjust as needed
-        let offset = 0;
-        let hasMore = true;
+        if (fs.existsSync(generatingFilePath)) {
+            return res.status(409).json({ message: "Patient report generation is already in progress." });
+        }
 
-        // Create a stream transformer to format data as CSV
-        const csvTransform = new Transform({
-            writableObjectMode: true,
-            transform(patient, encoding, callback) {
-                const csvRow = [
-                    csvEscape(patient.id),
-                    csvEscape(patient.firstName),
-                    csvEscape(patient.lastName),
-                    csvEscape(patient.balance),
-                    csvEscape(patient.practice?.name)
-                ].join(',') + '\n';
-                callback(null, csvRow);
+        fs.writeFileSync(generatingFilePath, '');
+
+        const existingFiles = fs.readdirSync(csvStoragePath).filter(file => file.startsWith("Patients-") && file.endsWith(".csv"));
+        existingFiles.forEach(file => {
+            const filePathToDelete = path.join(csvStoragePath, file);
+            try {
+                fs.unlinkSync(filePathToDelete);
+            } catch (deleteError) {
+                console.error(`Error deleting file: ${filePathToDelete}`, deleteError);
             }
         });
 
-        // Pipe the transform stream to the response
-        csvTransform.pipe(res);
+        try {
+            const batchSize = 100;
+            let offset = 0;
+            let hasMore = true;
+            const headers = ['ID', 'FirstName', 'LastName', 'Balance', 'Practice'].join(',') + '\n';
+            fs.writeFileSync(tempCsvFilePath, headers);
 
-        // Write CSV headers
-        csvTransform.write(['ID', 'FirstName', 'LastName', 'Balance', 'Practice'].join(',') + '\n');
+            while (hasMore) {
+                const patients = await models.Patient.findAll({
+                    include: [
+                        {
+                            model: models.Visit,
+                            as: "visit",
+                            include: [
+                                { model: models.Charge, as: "charge" },
+                                { model: models.Assignment, as: "assignment" },
+                            ],
+                        },
+                        {
+                            model: models.Practice,
+                            as: "practice",
+                        },
+                        {
+                            model: models.Correction,
+                            as: "correction",
+                        },
+                    ],
+                    limit: batchSize,
+                    offset: offset,
+                });
 
-        while (hasMore) {
+                for (let patient of patients) {
+                    patient.balance = calculatePatientBalance(patient);
+                    if (patient.balance != 0) {
+                        const csvRow = [
+                            csvEscape(patient.id),
+                            csvEscape(patient.firstName),
+                            csvEscape(patient.lastName),
+                            csvEscape(patient.balance),
+                            csvEscape(patient.practice?.name)
+                        ].join(',') + '\n';
+                        fs.appendFileSync(tempCsvFilePath, csvRow);
+                    }
+                }
 
-            console.log('Fetching patients', offset)
-            const patients = await models.Patient.findAll({
-                include: [
-                    {
-                        model: models.Visit,
-                        as: "visit",
-                        include: [
-                            { model: models.Charge, as: "charge" },
-                            { model: models.Assignment, as: "assignment" },
-                        ],
-                    },
-                    {
-                        model: models.Practice,
-                        as: "practice",
-                    },
-                    {
-                        model: models.Correction,
-                        as: "correction",
-                    },
-                ],
-                limit: batchSize,
-                offset: offset,
-            });
-
-            for (let patient of patients) {
-                patient.balance = calculatePatientBalance(patient);
-                if (patient.balance > 0) {
-                    csvTransform.write(patient);
+                if (patients.length < batchSize) {
+                    hasMore = false;
+                } else {
+                    offset += batchSize;
                 }
             }
 
-            if (patients.length < batchSize) {
-                hasMore = false;
-            } else {
-                offset += batchSize;
-            }
-        }
+            fs.renameSync(tempCsvFilePath, csvFilePath);
+            fs.unlinkSync(generatingFilePath);
+            res.status(201).json({ message: "Patient report generated successfully." });
 
-        // End the stream
-        csvTransform.end();
+        } catch (error) {
+            if (fs.existsSync(generatingFilePath)) {
+                fs.unlinkSync(generatingFilePath);
+            }
+            if (fs.existsSync(tempCsvFilePath)) {
+                fs.unlinkSync(tempCsvFilePath);
+            }
+            console.error(error.stack);
+            res.status(500).json({ error: "Error generating patient report." });
+        }
     });
 
 export default handler.handler({
